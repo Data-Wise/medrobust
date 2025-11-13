@@ -1,0 +1,21 @@
+citHeader("To cite medrobust in publications use:")
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "medrobust: Robust Causal Mediation Analysis Under Differential Misclassification",
+  author   = person("Davood", "Tofighi"),
+  year     = 2025,
+  note     = "R package version 0.1.0",
+  url      = "https://github.com/data-wise/medrobust"
+)
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Partial Identification of Causal Mediation Effects Under Differential Misclassification",
+  author   = person("Davood", "Tofighi"),
+  journal  = "Biostatistics",
+  year     = 2025,
+  volume   = "XX",
+  pages    = "XXX--XXX",
+  doi      = "10.1093/biostatistics/xxxxx"
+)

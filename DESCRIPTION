@@ -1,0 +1,50 @@
+Package: medrobust
+Type: Package
+Title: Robust Causal Mediation Analysis Under Differential Misclassification
+Version: 0.1.0
+Authors@R: c(
+    person("Davood", "Tofighi",
+           email = "dtofighi@gmail.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0000-0000-0000"))
+    )
+Maintainer: Davood Tofighi <dtofighi@gmail.com>
+Description: Provides tools for conducting sensitivity analysis for causal
+    mediation effects when the exposure or mediator is measured with
+    differential misclassification (e.g., recall bias, outcome-dependent
+    measurement error). Unlike existing measurement error correction methods
+    that assume non-differential error or require validation data, medrobust
+    derives partial identification bounds that remain valid without
+    gold-standard measurements. The package implements methods for partial
+    identification bounds for Natural Direct Effects (NDE) and Natural Indirect
+    Effects (NIE), data-driven falsification via testable implications,
+    sensitivity analysis over user-specified ranges of misclassification
+    parameters, diagnostic tools and publication-quality visualizations,
+    bootstrap inference for confidence intervals, and synthetic data generation
+    for power analysis and methods research.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 4.0.0)
+Imports:
+    dplyr (>= 1.1.0),
+    ggplot2 (>= 3.4.0),
+    stats,
+    utils,
+    rlang
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    parallel,
+    foreach,
+    doParallel,
+    boot,
+    mediation (>= 4.5.0),
+    EValue (>= 4.1.0),
+    covr
+VignetteBuilder: knitr
+RoxygenNote: 7.3.1
+URL: https://github.com/data-wise/medrobust
+BugReports: https://github.com/data-wise/medrobust/issues
