@@ -1,7 +1,8 @@
-#' Print method for medrobust_bounds objects
+#' Print method for medrobust_bounds objects (S3 - Legacy)
 #'
 #' @description
 #' Provides a clean, user-friendly display of partial identification bounds.
+#' NOTE: This is a legacy S3 method. The package now uses S7 methods (see s7-methods.R).
 #'
 #' @param x An object of class \code{medrobust_bounds}.
 #' @param digits Integer specifying the number of decimal places. Default is 3.
@@ -9,7 +10,7 @@
 #'
 #' @return Invisibly returns the input object.
 #'
-#' @export
+#' @keywords internal
 print.medrobust_bounds <- function(x, digits = 3, ...) {
 
   cat("\n")
@@ -70,17 +71,18 @@ print.medrobust_bounds <- function(x, digits = 3, ...) {
 }
 
 
-#' Summary method for medrobust_bounds objects
+#' Summary method for medrobust_bounds objects (S3 - Legacy)
 #'
 #' @description
 #' Provides detailed diagnostics and summary statistics for the bounds analysis.
+#' NOTE: This is a legacy S3 method. The package now uses S7 methods (see s7-methods.R).
 #'
 #' @param object An object of class \code{medrobust_bounds}.
 #' @param ... Additional arguments (not currently used).
 #'
 #' @return Invisibly returns a list with summary information.
 #'
-#' @export
+#' @keywords internal
 summary.medrobust_bounds <- function(object, ...) {
 
   cat("\n")
@@ -186,10 +188,11 @@ summary.medrobust_bounds <- function(object, ...) {
 }
 
 
-#' Coerce to data frame
+#' Coerce to data frame (S3 - Legacy)
 #'
 #' @description
 #' Extract bounds as a data frame for further analysis or export.
+#' NOTE: This is a legacy S3 method. The package now uses S7 methods (see s7-methods.R).
 #'
 #' @param x An object of class \code{medrobust_bounds}.
 #' @param row.names Optional row names (not used).
@@ -198,7 +201,7 @@ summary.medrobust_bounds <- function(object, ...) {
 #'
 #' @return A data frame with one row containing the bounds.
 #'
-#' @export
+#' @keywords internal
 as.data.frame.medrobust_bounds <- function(x, row.names = NULL,
                                           optional = FALSE, ...) {
 
