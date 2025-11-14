@@ -71,17 +71,27 @@ sensitivity_region <- new_class(
         }
       }
     )
-  ),
-  validator = function(self) {
-    # Check informativeness: at least one endpoint should satisfy Sn + Sp > 1
-    sn_min <- self@sn0_range[1]
-    sp_min <- self@sp0_range[1]
-
-    if ((sn_min + sp_min) <= 1.01) {
-      "Sensitivity region may be non-informative: min(Sn0) + min(Sp0) <= 1"
-    }
-  }
+  )
 )
+
+# Wrap constructor to add warning for non-informative regions
+sensitivity_region_constructor <- sensitivity_region
+sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range) {
+  obj <- sensitivity_region_constructor(
+    sn0_range = sn0_range,
+    sp0_range = sp0_range,
+    psi_sn_range = psi_sn_range,
+    psi_sp_range = psi_sp_range
+  )
+
+  # Issue warning if region may be non-informative
+  if ((sn0_range[1] + sp0_range[1]) <= 1.01) {
+    warning("Sensitivity region may be non-informative: min(Sn0) + min(Sp0) <= 1",
+            call. = FALSE)
+  }
+
+  obj
+}
 
 
 #' Bootstrap Results Class
@@ -213,8 +223,11 @@ medrobust_bounds <- new_class(
       class = class_any,
       default = NULL,
       validator = function(value) {
-        if (!is.null(value) && !inherits(value, "bootstrap_results")) {
-          "bootstrap_results must be NULL or a bootstrap_results object"
+        if (!is.null(value)) {
+          # Check if it's a bootstrap_results S7 object
+          if (!inherits(value, c("bootstrap_results", "medrobust::bootstrap_results"))) {
+            "bootstrap_results must be NULL or a bootstrap_results object"
+          }
         }
       }
     ),
@@ -307,8 +320,8 @@ compatibility_test <- new_class(
 #' S7 class for storing falsification analysis results showing which
 #' regions of the sensitivity space are empirically ruled out.
 #'
-#' @export
-falsification_summary <- new_class(
+#' @keywords internal
+.falsification_summary_class <- new_class(
   name = "falsification_summary",
   package = "medrobust",
   properties = list(
@@ -343,6 +356,42 @@ falsification_summary <- new_class(
     }
   }
 )
+
+#' Create Falsification Summary Object
+#'
+#' @description
+#' Low-level constructor for falsification_summary S7 objects.
+#' Most users should use the falsification_summary() function which analyzes bounds.
+#'
+#' @param overall Overall falsification rate
+#' @param n_evaluated Number of parameter sets evaluated
+#' @param n_compatible Number of compatible parameter sets
+#' @param n_falsified Number of falsified parameter sets
+#' @param by_parameter Parameter-specific falsification (optional)
+#' @param joint_falsification Joint falsification patterns (optional)
+#' @param most_constrained Most constrained parameters (optional)
+#' @param least_constrained Least constrained parameters (optional)
+#' @param plot ggplot2 object (optional)
+#'
+#' @return A falsification_summary S7 object
+#' @export
+new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_falsified,
+                                      by_parameter = NULL, joint_falsification = NULL,
+                                      most_constrained = character(0),
+                                      least_constrained = character(0),
+                                      plot = NULL) {
+  .falsification_summary_class(
+    overall = overall,
+    n_evaluated = as.integer(n_evaluated),
+    n_compatible = as.integer(n_compatible),
+    n_falsified = as.integer(n_falsified),
+    by_parameter = by_parameter,
+    joint_falsification = joint_falsification,
+    most_constrained = most_constrained,
+    least_constrained = least_constrained,
+    plot = plot
+  )
+}
 
 
 #' Simulated Data with Differential Misclassification Class
@@ -468,8 +517,9 @@ as_sensitivity_region <- function(region_list) {
 #' Convert sensitivity_region to list
 #'
 #' @param x sensitivity_region S7 object
+#' @param ... Additional arguments (ignored)
 #' @return Named list
-#' @export
+#' @exportS3Method base::as.list
 as.list.sensitivity_region <- function(x, ...) {
   list(
     sn0_range = x@sn0_range,

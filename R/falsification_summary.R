@@ -118,7 +118,7 @@ falsification_summary <- function(bounds_object,
   }
 
   # Return S7 falsification_summary object
-  return(falsification_summary(
+  return(.falsification_summary_class(
     overall = overall_falsif,
     n_evaluated = as.integer(n_evaluated),
     n_compatible = as.integer(n_compatible),

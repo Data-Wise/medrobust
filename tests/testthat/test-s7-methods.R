@@ -186,7 +186,7 @@ test_that("summary method for compatibility_test works", {
 
 
 test_that("print method for falsification_summary works", {
-  falsif <- falsification_summary(
+  falsif <- new_falsification_summary(
     overall = 0.45,
     n_evaluated = 100L,
     n_compatible = 55L,
@@ -207,7 +207,7 @@ test_that("print method for falsification_summary works", {
 
 
 test_that("summary method for falsification_summary works", {
-  falsif <- falsification_summary(
+  falsif <- new_falsification_summary(
     overall = 0.45,
     n_evaluated = 100L,
     n_compatible = 55L,

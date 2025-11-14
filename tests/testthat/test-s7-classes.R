@@ -331,7 +331,7 @@ test_that("compatibility_test validates correctly", {
 test_that("falsification_summary validates correctly", {
   # Valid falsification summary
   expect_no_error(
-    falsification_summary(
+    new_falsification_summary(
       overall = 0.45,
       n_evaluated = 100L,
       n_compatible = 55L,
@@ -341,7 +341,7 @@ test_that("falsification_summary validates correctly", {
 
   # Invalid: counts don't add up
   expect_error(
-    falsification_summary(
+    new_falsification_summary(
       overall = 0.45,
       n_evaluated = 100L,
       n_compatible = 50L,
@@ -352,7 +352,7 @@ test_that("falsification_summary validates correctly", {
 
   # Invalid: overall rate out of range
   expect_error(
-    falsification_summary(
+    new_falsification_summary(
       overall = 1.5,
       n_evaluated = 100L,
       n_compatible = 55L,
@@ -363,7 +363,7 @@ test_that("falsification_summary validates correctly", {
 
   # Invalid: negative counts
   expect_error(
-    falsification_summary(
+    new_falsification_summary(
       overall = 0.5,
       n_evaluated = 100L,
       n_compatible = -10L,
@@ -424,8 +424,8 @@ test_that("as_sensitivity_region converter works", {
 
   sens_reg <- as_sensitivity_region(region_list)
 
-  # Verify it's an S7 object
-  expect_s3_class(sens_reg, "sensitivity_region")
+  # Verify it's an S7 object with correct class
+  expect_true(inherits(sens_reg, "sensitivity_region"))
 
   # Verify properties
   expect_equal(sens_reg@sn0_range, c(0.7, 0.9))
