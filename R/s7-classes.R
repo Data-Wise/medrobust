@@ -347,8 +347,8 @@ compatibility_test <- new_class(
     n_evaluated = new_property(class = class_integer),
     n_compatible = new_property(class = class_integer),
     n_falsified = new_property(class = class_integer),
-    by_parameter = new_property(class = class_list, default = NULL),
-    joint_falsification = new_property(class = class_list, default = NULL),
+    by_parameter = new_property(class = class_any, default = NULL),
+    joint_falsification = new_property(class = class_any, default = NULL),
     most_constrained = new_property(
       class = class_character,
       default = character(0)
@@ -530,7 +530,7 @@ as_sensitivity_region <- function(region_list) {
 #' @param x sensitivity_region S7 object
 #' @param ... Additional arguments (ignored)
 #' @return Named list
-#' @exportS3Method base::as.list
+#' @export
 as.list.sensitivity_region <- function(x, ...) {
   list(
     sn0_range = x@sn0_range,
