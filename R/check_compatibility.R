@@ -114,28 +114,38 @@ check_compatibility <- function(data,
 
   # Validate that these are valid probabilities
   if (any(c(sn1, sp1) < 0 | c(sn1, sp1) > 1)) {
-    result <- list(
+    return(compatibility_test(
       compatible = FALSE,
       psi = psi,
-      reason = "Invalid probabilities: sn1 or sp1 outside [0,1]",
       sn1 = sn1,
-      sp1 = sp1
-    )
-    class(result) <- "compatibility_test"
-    return(result)
+      sp1 = sp1,
+      n_constraints_total = 0L,
+      n_constraints_satisfied = 0L,
+      n_constraints_violated = 0L,
+      violated_constraints = data.frame(),
+      implied_probabilities = NULL,
+      stratum_details = NULL,
+      misclassified_variable = misclassified_variable,
+      reason = "Invalid probabilities: sn1 or sp1 outside [0,1]"
+    ))
   }
 
   # Check informativeness condition
   if ((sn0 + sp0 - 1) <= tolerance || (sn1 + sp1 - 1) <= tolerance) {
-    result <- list(
+    return(compatibility_test(
       compatible = FALSE,
       psi = psi,
-      reason = "Non-informative misclassification (Sn + Sp ≤ 1)",
       sn1 = sn1,
-      sp1 = sp1
-    )
-    class(result) <- "compatibility_test"
-    return(result)
+      sp1 = sp1,
+      n_constraints_total = 0L,
+      n_constraints_satisfied = 0L,
+      n_constraints_violated = 0L,
+      violated_constraints = data.frame(),
+      implied_probabilities = NULL,
+      stratum_details = NULL,
+      misclassified_variable = misclassified_variable,
+      reason = "Non-informative misclassification (Sn + Sp ≤ 1)"
+    ))
   }
 
   # Prepare data
@@ -167,14 +177,25 @@ check_compatibility <- function(data,
     )
   }
 
-  # Add original psi to result
-  result$psi <- psi
-  result$sn1 <- sn1
-  result$sp1 <- sp1
-  result$misclassified_variable <- misclassified_variable
-
-  class(result) <- "compatibility_test"
-  return(result)
+  # Convert result to S7 compatibility_test object
+  return(compatibility_test(
+    compatible = result$compatible,
+    psi = psi,
+    sn1 = sn1,
+    sp1 = sp1,
+    n_constraints_total = as.integer(result$n_constraints_total),
+    n_constraints_satisfied = as.integer(result$n_constraints_satisfied),
+    n_constraints_violated = as.integer(result$n_constraints_violated),
+    violated_constraints = if (is.null(result$violated_constraints)) {
+      data.frame()
+    } else {
+      result$violated_constraints
+    },
+    implied_probabilities = result$implied_probabilities,
+    stratum_details = result$stratum_details,
+    misclassified_variable = misclassified_variable,
+    reason = result$reason
+  ))
 }
 
 

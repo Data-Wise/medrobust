@@ -6,9 +6,7 @@
 #'
 #' @name s7-classes
 #' @keywords internal
-
-# Import S7
-library(S7)
+#' @importFrom S7 new_class new_property
 
 # =============================================================================
 # Helper Classes

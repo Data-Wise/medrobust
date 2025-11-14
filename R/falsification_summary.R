@@ -59,55 +59,76 @@ falsification_summary <- function(bounds_object,
     stop("bounds_object must be of class 'medrobust_bounds'")
   }
 
-  # Extract compatible sets and sensitivity region
-  compat <- bounds_object$compatible_sets
-  sens_region <- bounds_object$sensitivity_region
+  # Extract compatible sets and sensitivity region (use @ for S7 objects)
+  compat <- bounds_object@compatible_sets
+  sens_region <- bounds_object@sensitivity_region
 
   if (is.null(compat) || nrow(compat) == 0) {
     stop("No compatible parameter sets found")
   }
 
   # Overall falsification
-  overall_falsif <- bounds_object$falsified_proportion
-
-  result <- list(
-    overall = overall_falsif,
-    n_evaluated = bounds_object$n_evaluated,
-    n_compatible = bounds_object$n_compatible,
-    n_falsified = bounds_object$n_evaluated - bounds_object$n_compatible
-  )
+  overall_falsif <- bounds_object@falsified_proportion
+  n_evaluated <- bounds_object@n_evaluated
+  n_compatible <- bounds_object@n_compatible
+  n_falsified <- n_evaluated - n_compatible
 
   # Parameter-specific falsification
+  param_falsif <- NULL
+  most_constrained <- character(0)
+  least_constrained <- character(0)
+
   if (by_parameter) {
     param_falsif <- compute_parameter_falsification(
       compat = compat,
       sens_region = sens_region,
       n_bins = n_bins,
-      n_evaluated = bounds_object$n_evaluated
+      n_evaluated = n_evaluated
     )
-    result$by_parameter <- param_falsif
 
     # Identify most/least constrained
     avg_falsif <- sapply(param_falsif, function(x) mean(x$falsification_rate))
-    result$most_constrained <- names(sort(avg_falsif, decreasing = TRUE))[1:2]
-    result$least_constrained <- names(sort(avg_falsif, decreasing = FALSE))[1:2]
+    most_constrained <- names(sort(avg_falsif, decreasing = TRUE))[1:2]
+    least_constrained <- names(sort(avg_falsif, decreasing = FALSE))[1:2]
   }
 
   # Joint falsification patterns (2D)
-  result$joint_falsification <- compute_joint_falsification(
+  joint_falsif <- compute_joint_falsification(
     compat = compat,
     sens_region = sens_region,
     n_bins = n_bins,
-    n_evaluated = bounds_object$n_evaluated
+    n_evaluated = n_evaluated
   )
 
   # Generate plot
+  plot_obj <- NULL
   if (plot) {
-    result$plot <- plot_falsification(result, bounds_object)
+    # Create temporary result list for plot_falsification
+    temp_result <- list(
+      overall = overall_falsif,
+      n_evaluated = n_evaluated,
+      n_compatible = n_compatible,
+      n_falsified = n_falsified,
+      by_parameter = param_falsif,
+      joint_falsification = joint_falsif,
+      most_constrained = most_constrained,
+      least_constrained = least_constrained
+    )
+    plot_obj <- plot_falsification(temp_result, bounds_object)
   }
 
-  class(result) <- "falsification_summary"
-  return(result)
+  # Return S7 falsification_summary object
+  return(falsification_summary(
+    overall = overall_falsif,
+    n_evaluated = as.integer(n_evaluated),
+    n_compatible = as.integer(n_compatible),
+    n_falsified = as.integer(n_falsified),
+    by_parameter = param_falsif,
+    joint_falsification = joint_falsif,
+    most_constrained = most_constrained,
+    least_constrained = least_constrained,
+    plot = plot_obj
+  ))
 }
 
 
