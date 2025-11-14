@@ -302,7 +302,7 @@ method(summary, compatibility_test) <- function(object, ...) {
 #' @param digits Integer. Number of decimal places. Default is 3.
 #' @param ... Additional arguments (ignored)
 #' @export
-method(print, falsification_summary) <- function(x, digits = 3, ...) {
+method(print, .falsification_summary_class) <- function(x, digits = 3, ...) {
   cat("\n")
   cat(strrep("=", 70), "\n")
   cat("FALSIFICATION SUMMARY\n")
@@ -382,7 +382,7 @@ method(print, falsification_summary) <- function(x, digits = 3, ...) {
 #' @param object A falsification_summary object
 #' @param ... Additional arguments (ignored)
 #' @export
-method(summary, falsification_summary) <- function(object, ...) {
+method(summary, .falsification_summary_class) <- function(object, ...) {
   print(object)
   invisible(object)
 }
@@ -397,7 +397,7 @@ method(summary, falsification_summary) <- function(object, ...) {
 #' @param x A sensitivity_region object
 #' @param ... Additional arguments (ignored)
 #' @export
-method(print, sensitivity_region) <- function(x, ...) {
+method(print, .sensitivity_region_class) <- function(x, ...) {
   cat("\nSensitivity Region (Θ_ψ):\n")
   cat(strrep("-", 40), "\n")
   cat(sprintf("  Sn0:  [%.3f, %.3f]\n", x@sn0_range[1], x@sn0_range[2]))
