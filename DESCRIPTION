@@ -13,15 +13,17 @@ Description: Provides tools for conducting sensitivity analysis for causal
     mediation effects when the exposure or mediator is measured with
     differential misclassification (e.g., recall bias, outcome-dependent
     measurement error). Unlike existing measurement error correction methods
-    that assume non-differential error or require validation data, medrobust
+    that assume non-differential error or require validation data, 'medrobust'
     derives partial identification bounds that remain valid without
-    gold-standard measurements. The package implements methods for partial
-    identification bounds for Natural Direct Effects (NDE) and Natural Indirect
-    Effects (NIE), data-driven falsification via testable implications,
-    sensitivity analysis over user-specified ranges of misclassification
-    parameters, diagnostic tools and publication-quality visualizations,
-    bootstrap inference for confidence intervals, and synthetic data generation
-    for power analysis and methods research.
+    gold-standard measurements. The package implements methods developed in
+    Tofighi (2025) for partial identification bounds for Natural Direct Effects
+    (NDE) and Natural Indirect Effects (NIE), data-driven falsification via
+    testable implications, sensitivity analysis over user-specified ranges of
+    misclassification parameters, diagnostic tools and publication-quality
+    visualizations, bootstrap inference for confidence intervals (percentile and
+    BCa methods), and synthetic data generation for power analysis and methods
+    research. The package handles both mediator misclassification and exposure
+    misclassification within a unified framework.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -32,19 +34,23 @@ Imports:
     ggplot2 (>= 3.4.0),
     stats,
     utils,
-    rlang
+    rlang,
+    parallel
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    parallel,
     foreach,
     doParallel,
     boot,
     mediation (>= 4.5.0),
     EValue (>= 4.1.0),
-    covr
+    covr,
+    gridExtra,
+    scales
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
 URL: https://github.com/data-wise/medrobust
 BugReports: https://github.com/data-wise/medrobust/issues
+Keywords: causal-inference, mediation-analysis, measurement-error,
+    misclassification, partial-identification, sensitivity-analysis
