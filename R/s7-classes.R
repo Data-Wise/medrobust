@@ -6,7 +6,7 @@
 #'
 #' @name s7-classes
 #' @keywords internal
-#' @importFrom S7 new_class new_property class_numeric class_character class_integer class_list class_data.frame class_logical class_call
+#' @importFrom S7 new_class new_property class_numeric class_character class_integer class_list class_data.frame class_logical class_call class_any
 
 # =============================================================================
 # Helper Classes
