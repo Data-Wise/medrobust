@@ -295,3 +295,419 @@ compute_naive_effects <- function(data, exposure, mediator, outcome,
 
   return(list(nie = nie, nde = nde))
 }
+
+
+#' =============================================================================
+#' Effect Computation Functions
+#' =============================================================================
+
+#' Compute Effects from Solved Parameters (Mediator Misclassification)
+#'
+#' @description
+#' Given solved causal parameters {pi_a, gamma_a0, gamma_a1} for each exposure
+#' level and covariate stratum, compute NDE and NIE using g-computation.
+#'
+#' @param solved_params List of solved parameters from mediator misclassification
+#' @param data Data frame with observations
+#' @param C_names Character vector of confounder names
+#' @param effect_scale Character string: "OR", "RR", or "RD"
+#'
+#' @return List with elements nie and nde
+#' @keywords internal
+compute_effects_from_params <- function(solved_params,
+                                       data,
+                                       C_names,
+                                       effect_scale = "OR") {
+
+  # Extract unique strata
+  if (is.null(C_names) || length(C_names) == 0) {
+    # No confounders - single stratum
+    strata_weights <- data.frame(stratum_id = 1, weight = 1)
+  } else {
+    # Compute stratum weights (empirical distribution of C)
+    strata_weights <- data %>%
+      dplyr::group_by(stratum_id) %>%
+      dplyr::summarise(n = n(), .groups = "drop") %>%
+      dplyr::mutate(weight = n / sum(n)) %>%
+      dplyr::select(stratum_id, weight)
+  }
+
+  # Initialize accumulators for counterfactual probabilities
+  # We need: E[Y(a, M(a))], E[Y(a, M(a0))], E[Y(a0, M(a0))]
+
+  E_Y_a_Ma <- 0      # E[Y(a, M(a))]
+  E_Y_a_Ma0 <- 0     # E[Y(a, M(a0))]
+  E_Y_a0_Ma0 <- 0    # E[Y(a0, M(a0))]
+
+  # Loop over strata
+  for (i in 1:nrow(strata_weights)) {
+    s <- strata_weights$stratum_id[i]
+    w <- strata_weights$weight[i]
+
+    # Extract parameters for a=1 and a=0 in this stratum
+    params_a1 <- solved_params[[paste0("a1_s", s)]]
+    params_a0 <- solved_params[[paste0("a0_s", s)]]
+
+    if (is.null(params_a1) || is.null(params_a0)) {
+      next  # Skip if parameters not available for this stratum
+    }
+
+    pi_a1 <- params_a1$pi_a
+    gamma_a1_0 <- params_a1$gamma_a0
+    gamma_a1_1 <- params_a1$gamma_a1
+
+    pi_a0 <- params_a0$pi_a
+    gamma_a0_0 <- params_a0$gamma_a0
+    gamma_a0_1 <- params_a0$gamma_a1
+
+    # Compute E[Y(a=1, M(a=1)) | C=c]
+    # = P(M(1)=1|C) * P(Y(1)=1|M=1,C) + P(M(1)=0|C) * P(Y(1)=1|M=0,C)
+    # = pi_a1 * gamma_a1_1 + (1-pi_a1) * gamma_a1_0
+    E_Y_a_Ma_c <- pi_a1 * gamma_a1_1 + (1 - pi_a1) * gamma_a1_0
+
+    # Compute E[Y(a=1, M(a=0)) | C=c]
+    # = P(M(0)=1|C) * P(Y(1)=1|M=1,C) + P(M(0)=0|C) * P(Y(1)=1|M=0,C)
+    # = pi_a0 * gamma_a1_1 + (1-pi_a0) * gamma_a1_0
+    E_Y_a_Ma0_c <- pi_a0 * gamma_a1_1 + (1 - pi_a0) * gamma_a1_0
+
+    # Compute E[Y(a=0, M(a=0)) | C=c]
+    # = pi_a0 * gamma_a0_1 + (1-pi_a0) * gamma_a0_0
+    E_Y_a0_Ma0_c <- pi_a0 * gamma_a0_1 + (1 - pi_a0) * gamma_a0_0
+
+    # Accumulate weighted averages
+    E_Y_a_Ma <- E_Y_a_Ma + w * E_Y_a_Ma_c
+    E_Y_a_Ma0 <- E_Y_a_Ma0 + w * E_Y_a_Ma0_c
+    E_Y_a0_Ma0 <- E_Y_a0_Ma0 + w * E_Y_a0_Ma0_c
+  }
+
+  # Compute effects on different scales
+  if (effect_scale == "OR") {
+    # Convert probabilities to odds
+    odds_a_Ma <- E_Y_a_Ma / (1 - E_Y_a_Ma + 1e-10)
+    odds_a_Ma0 <- E_Y_a_Ma0 / (1 - E_Y_a_Ma0 + 1e-10)
+    odds_a0_Ma0 <- E_Y_a0_Ma0 / (1 - E_Y_a0_Ma0 + 1e-10)
+
+    # NIE = OR(a, M(a) vs M(a0))
+    nie <- odds_a_Ma / (odds_a_Ma0 + 1e-10)
+
+    # NDE = OR(a vs a0, M(a0))
+    nde <- odds_a_Ma0 / (odds_a0_Ma0 + 1e-10)
+
+  } else if (effect_scale == "RR") {
+    # Risk ratios
+    nie <- E_Y_a_Ma / (E_Y_a_Ma0 + 1e-10)
+    nde <- E_Y_a_Ma0 / (E_Y_a0_Ma0 + 1e-10)
+
+  } else if (effect_scale == "RD") {
+    # Risk differences
+    nie <- E_Y_a_Ma - E_Y_a_Ma0
+    nde <- E_Y_a_Ma0 - E_Y_a0_Ma0
+
+  } else {
+    stop("Unknown effect_scale: ", effect_scale)
+  }
+
+  # Return effects
+  return(list(
+    nie = nie,
+    nde = nde,
+    E_Y_a_Ma = E_Y_a_Ma,
+    E_Y_a_Ma0 = E_Y_a_Ma0,
+    E_Y_a0_Ma0 = E_Y_a0_Ma0
+  ))
+}
+
+
+#' Compute Effects from Joint Probabilities (Exposure Misclassification)
+#'
+#' @description
+#' Given solved true joint probabilities P(A=a, M=m, Y=y | C=c), compute
+#' NDE and NIE using g-computation.
+#'
+#' @param P_true_list List of true joint probabilities from exposure misclassification
+#' @param data Data frame with observations
+#' @param C_names Character vector of confounder names
+#' @param effect_scale Character string: "OR", "RR", or "RD"
+#'
+#' @return List with elements nie and nde
+#' @keywords internal
+compute_effects_from_joint_probs <- function(P_true_list,
+                                            data,
+                                            C_names,
+                                            effect_scale = "OR") {
+
+  # Extract unique strata and compute weights
+  if (is.null(C_names) || length(C_names) == 0) {
+    strata_weights <- data.frame(stratum_id = 1, weight = 1)
+  } else {
+    strata_weights <- data %>%
+      dplyr::group_by(stratum_id) %>%
+      dplyr::summarise(n = n(), .groups = "drop") %>%
+      dplyr::mutate(weight = n / sum(n)) %>%
+      dplyr::select(stratum_id, weight)
+  }
+
+  # Initialize accumulators
+  E_Y_a_Ma <- 0
+  E_Y_a_Ma0 <- 0
+  E_Y_a0_Ma0 <- 0
+
+  # Loop over strata
+  for (i in 1:nrow(strata_weights)) {
+    s <- strata_weights$stratum_id[i]
+    w <- strata_weights$weight[i]
+
+    # Extract all joint probabilities for this stratum
+    # P(A=a, M=m, Y=y | C=c)
+    P_array <- array(0, dim = c(2, 2, 2))  # [A, M, Y]
+
+    for (m in 0:1) {
+      for (y in 0:1) {
+        key <- paste0("m", m, "_y", y, "_s", s)
+        if (key %in% names(P_true_list)) {
+          probs <- P_true_list[[key]]
+          P_array[2, m+1, y+1] <- probs["P_1"]  # A=1
+          P_array[1, m+1, y+1] <- probs["P_0"]  # A=0
+        }
+      }
+    }
+
+    # Normalize to ensure probabilities sum to 1 within stratum
+    total_prob <- sum(P_array)
+    if (total_prob > 1e-6) {
+      P_array <- P_array / total_prob
+    } else {
+      next  # Skip empty stratum
+    }
+
+    # Compute conditional probabilities needed for g-computation
+
+    # 1. P(M=m | A=a, C=c)
+    P_M_given_A <- array(0, dim = c(2, 2))  # [A, M]
+    for (a in 0:1) {
+      P_A <- sum(P_array[a+1, , ])
+      if (P_A > 1e-6) {
+        for (m in 0:1) {
+          P_M_given_A[a+1, m+1] <- sum(P_array[a+1, m+1, ]) / P_A
+        }
+      }
+    }
+
+    # 2. P(Y=1 | A=a, M=m, C=c)
+    P_Y1_given_AM <- array(0, dim = c(2, 2))  # [A, M]
+    for (a in 0:1) {
+      for (m in 0:1) {
+        P_AM <- sum(P_array[a+1, m+1, ])
+        if (P_AM > 1e-6) {
+          P_Y1_given_AM[a+1, m+1] <- P_array[a+1, m+1, 2] / P_AM
+        }
+      }
+    }
+
+    # Compute counterfactual expectations
+
+    # E[Y(a=1, M(a=1)) | C=c]
+    # = sum_m P(M(1)=m|C) * P(Y(1)=1|M=m,C)
+    # = sum_m P(M=m|A=1,C) * P(Y=1|A=1,M=m,C)
+    E_Y_a_Ma_c <- sum(P_M_given_A[2, ] * P_Y1_given_AM[2, ])
+
+    # E[Y(a=1, M(a=0)) | C=c]
+    # = sum_m P(M(0)=m|C) * P(Y(1)=1|M=m,C)
+    # = sum_m P(M=m|A=0,C) * P(Y=1|A=1,M=m,C)
+    E_Y_a_Ma0_c <- sum(P_M_given_A[1, ] * P_Y1_given_AM[2, ])
+
+    # E[Y(a=0, M(a=0)) | C=c]
+    # = sum_m P(M=m|A=0,C) * P(Y=1|A=0,M=m,C)
+    E_Y_a0_Ma0_c <- sum(P_M_given_A[1, ] * P_Y1_given_AM[1, ])
+
+    # Accumulate weighted averages
+    E_Y_a_Ma <- E_Y_a_Ma + w * E_Y_a_Ma_c
+    E_Y_a_Ma0 <- E_Y_a_Ma0 + w * E_Y_a_Ma0_c
+    E_Y_a0_Ma0 <- E_Y_a0_Ma0 + w * E_Y_a0_Ma0_c
+  }
+
+  # Compute effects on different scales
+  if (effect_scale == "OR") {
+    odds_a_Ma <- E_Y_a_Ma / (1 - E_Y_a_Ma + 1e-10)
+    odds_a_Ma0 <- E_Y_a_Ma0 / (1 - E_Y_a_Ma0 + 1e-10)
+    odds_a0_Ma0 <- E_Y_a0_Ma0 / (1 - E_Y_a0_Ma0 + 1e-10)
+
+    nie <- odds_a_Ma / (odds_a_Ma0 + 1e-10)
+    nde <- odds_a_Ma0 / (odds_a0_Ma0 + 1e-10)
+
+  } else if (effect_scale == "RR") {
+    nie <- E_Y_a_Ma / (E_Y_a_Ma0 + 1e-10)
+    nde <- E_Y_a_Ma0 / (E_Y_a0_Ma0 + 1e-10)
+
+  } else if (effect_scale == "RD") {
+    nie <- E_Y_a_Ma - E_Y_a_Ma0
+    nde <- E_Y_a_Ma0 - E_Y_a0_Ma0
+
+  } else {
+    stop("Unknown effect_scale: ", effect_scale)
+  }
+
+  return(list(
+    nie = nie,
+    nde = nde,
+    E_Y_a_Ma = E_Y_a_Ma,
+    E_Y_a_Ma0 = E_Y_a_Ma0,
+    E_Y_a0_Ma0 = E_Y_a0_Ma0
+  ))
+}
+
+
+#' Compute Total Causal Effect (TCE)
+#'
+#' @description
+#' Compute the total causal effect: TCE = NDE + NIE (on appropriate scale)
+#'
+#' @param nie Natural Indirect Effect
+#' @param nde Natural Direct Effect
+#' @param effect_scale Character string: "OR", "RR", or "RD"
+#'
+#' @return Total causal effect
+#' @keywords internal
+compute_tce <- function(nie, nde, effect_scale = "OR") {
+
+  if (effect_scale %in% c("OR", "RR")) {
+    # Multiplicative scale: TCE = NDE * NIE
+    tce <- nde * nie
+  } else if (effect_scale == "RD") {
+    # Additive scale: TCE = NDE + NIE
+    tce <- nde + nie
+  } else {
+    stop("Unknown effect_scale: ", effect_scale)
+  }
+
+  return(tce)
+}
+
+
+#' Compute Proportion Mediated
+#'
+#' @description
+#' Compute the proportion of the total effect that is mediated
+#'
+#' @param nie Natural Indirect Effect
+#' @param nde Natural Direct Effect
+#' @param effect_scale Character string: "OR", "RR", or "RD"
+#'
+#' @return Proportion mediated (PM)
+#' @keywords internal
+compute_proportion_mediated <- function(nie, nde, effect_scale = "OR") {
+
+  tce <- compute_tce(nie, nde, effect_scale)
+
+  if (effect_scale %in% c("OR", "RR")) {
+    # For multiplicative effects:
+    # PM = (NDE * NIE - NDE) / (NDE * NIE - 1)
+    #    = (TCE - NDE) / (TCE - 1)
+    #    = NDE * (NIE - 1) / (NDE * NIE - 1)
+
+    if (abs(tce - 1) < 1e-6) {
+      pm <- NA  # Undefined when TCE = 1 (no total effect)
+    } else {
+      pm <- (tce - nde) / (tce - 1)
+    }
+
+  } else if (effect_scale == "RD") {
+    # For additive effects:
+    # PM = NIE / TCE
+
+    if (abs(tce) < 1e-6) {
+      pm <- NA  # Undefined when TCE = 0
+    } else {
+      pm <- nie / tce
+    }
+
+  } else {
+    stop("Unknown effect_scale: ", effect_scale)
+  }
+
+  return(pm)
+}
+
+
+#' Convert Effects Between Scales
+#'
+#' @description
+#' Approximate conversion between OR, RR, and RD scales.
+#' Note: Exact conversion generally requires knowing baseline risks.
+#'
+#' @param effect Numeric effect estimate
+#' @param from_scale Character string: current scale
+#' @param to_scale Character string: desired scale
+#' @param baseline_risk Numeric: baseline outcome probability (needed for conversions)
+#'
+#' @return Converted effect estimate
+#' @keywords internal
+convert_effect_scale <- function(effect,
+                                 from_scale = "OR",
+                                 to_scale = "RR",
+                                 baseline_risk = NULL) {
+
+  if (from_scale == to_scale) {
+    return(effect)
+  }
+
+  # Conversion requires baseline risk for most transformations
+  if (is.null(baseline_risk)) {
+    warning("Baseline risk not provided. Conversion may be inaccurate.")
+    baseline_risk <- 0.5  # Default assumption
+  }
+
+  # OR to RR
+  if (from_scale == "OR" && to_scale == "RR") {
+    # RR ≈ OR / (1 - p0 + p0 * OR)
+    # where p0 is baseline risk
+    rr <- effect / (1 - baseline_risk + baseline_risk * effect)
+    return(rr)
+  }
+
+  # RR to OR
+  if (from_scale == "RR" && to_scale == "OR") {
+    # OR ≈ RR * (1 - p0) / (1 - RR * p0)
+    or <- effect * (1 - baseline_risk) / (1 - effect * baseline_risk + 1e-10)
+    return(or)
+  }
+
+  # OR to RD
+  if (from_scale == "OR" && to_scale == "RD") {
+    # RD = p1 - p0
+    # where p1 = p0 * OR / (1 - p0 + p0 * OR)
+    p1 <- baseline_risk * effect / (1 - baseline_risk + baseline_risk * effect)
+    rd <- p1 - baseline_risk
+    return(rd)
+  }
+
+  # RD to OR
+  if (from_scale == "RD" && to_scale == "OR") {
+    # p1 = p0 + RD
+    # OR = [p1 / (1-p1)] / [p0 / (1-p0)]
+    p1 <- baseline_risk + effect
+    p1 <- max(0.001, min(0.999, p1))  # Keep in valid range
+    or <- (p1 / (1 - p1)) / (baseline_risk / (1 - baseline_risk) + 1e-10)
+    return(or)
+  }
+
+  # RR to RD
+  if (from_scale == "RR" && to_scale == "RD") {
+    # p1 = RR * p0
+    # RD = p1 - p0
+    p1 <- effect * baseline_risk
+    rd <- p1 - baseline_risk
+    return(rd)
+  }
+
+  # RD to RR
+  if (from_scale == "RD" && to_scale == "RR") {
+    # p1 = p0 + RD
+    # RR = p1 / p0
+    p1 <- baseline_risk + effect
+    rr <- p1 / (baseline_risk + 1e-10)
+    return(rr)
+  }
+
+  stop("Unsupported conversion: ", from_scale, " to ", to_scale)
+}
