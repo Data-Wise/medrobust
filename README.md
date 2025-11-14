@@ -16,8 +16,9 @@ Unlike existing measurement error correction methods that assume non-differentia
 - **Data-driven falsification** via testable implications
 - **Sensitivity analysis** over user-specified ranges of misclassification parameters
 - **Diagnostic tools** and publication-quality visualizations
-- **Bootstrap inference** for confidence intervals
+- **Bootstrap inference** for confidence intervals (percentile and BCa methods)
 - **Synthetic data generation** for power analysis and methods research
+- **Modern S7 OOP system** for type safety, automatic validation, and robust error checking
 
 ## Installation
 
