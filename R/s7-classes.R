@@ -340,6 +340,99 @@ falsification_summary <- new_class(
 )
 
 
+#' Simulated Data with Differential Misclassification Class
+#'
+#' @description
+#' S7 class for storing simulated data with known differential misclassification,
+#' used for power analysis and methods validation.
+#'
+#' @export
+simulated_dm_data <- new_class(
+  name = "simulated_dm_data",
+  package = "medrobust",
+  properties = list(
+    observed = new_property(class = class_data.frame),
+    truth = new_property(class = class_data.frame, default = NULL),
+    true_effects = new_property(class = class_list, default = NULL),
+    generation_params = new_property(
+      class = class_list,
+      validator = function(value) {
+        required <- c("n", "true_params", "dm_params", "misclass_type")
+        missing <- setdiff(required, names(value))
+        if (length(missing) > 0) {
+          paste("generation_params must contain:", paste(required, collapse = ", "))
+        }
+      }
+    ),
+    misclassification_applied = new_property(class = class_list, default = NULL)
+  ),
+  validator = function(self) {
+    if (nrow(self@observed) < 10) {
+      "observed data must have at least 10 rows"
+    } else if (!is.null(self@truth) && nrow(self@truth) != nrow(self@observed)) {
+      "truth and observed must have same number of rows"
+    } else if (self@generation_params$n != nrow(self@observed)) {
+      "generation_params$n must match nrow(observed)"
+    }
+  }
+)
+
+
+#' Power Analysis Result Class
+#'
+#' @description
+#' S7 class for storing power analysis results for partial identification bounds.
+#'
+#' @export
+power_analysis_result <- new_class(
+  name = "power_analysis_result",
+  package = "medrobust",
+  properties = list(
+    power_curve = new_property(
+      class = class_data.frame,
+      validator = function(value) {
+        required_cols <- c("n", "power", "coverage", "mean_width", "median_width")
+        missing <- setdiff(required_cols, names(value))
+        if (length(missing) > 0) {
+          paste("power_curve must have columns:", paste(required_cols, collapse = ", "))
+        }
+      }
+    ),
+    true_effect = new_property(class = class_numeric),
+    target_power = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (value <= 0 || value >= 1) {
+          "target_power must be in (0, 1)"
+        }
+      }
+    ),
+    target_width = new_property(class = class_numeric, default = NULL),
+    recommended_n_power = new_property(class = class_integer, default = NA_integer_),
+    recommended_n_width = new_property(class = class_integer, default = NA_integer_),
+    simulation_params = new_property(
+      class = class_list,
+      validator = function(value) {
+        required <- c("true_params", "dm_params", "sensitivity_region", "effect")
+        missing <- setdiff(required, names(value))
+        if (length(missing) > 0) {
+          paste("simulation_params must contain:", paste(required, collapse = ", "))
+        }
+      }
+    )
+  ),
+  validator = function(self) {
+    if (any(self@power_curve$power < 0 | self@power_curve$power > 1)) {
+      "power values must be in [0, 1]"
+    } else if (any(self@power_curve$coverage < 0 | self@power_curve$coverage > 1)) {
+      "coverage values must be in [0, 1]"
+    } else if (any(self@power_curve$mean_width < 0, na.rm = TRUE)) {
+      "mean_width values must be non-negative"
+    }
+  }
+)
+
+
 # =============================================================================
 # Constructor Helper Functions
 # =============================================================================

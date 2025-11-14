@@ -434,3 +434,277 @@ method(print, bootstrap_results) <- function(x, ...) {
 
   invisible(x)
 }
+
+# =============================================================================
+# Methods for simulated_dm_data
+# =============================================================================
+
+#' Print method for simulated_dm_data
+#'
+#' @param x A simulated_dm_data object
+#' @param ... Additional arguments (ignored)
+#' @export
+method(print, simulated_dm_data) <- function(x, ...) {
+  
+  cat("\n")
+  cat(strrep("=", 70), "\n")
+  cat("SIMULATED DATA WITH DIFFERENTIAL MISCLASSIFICATION\n")
+  cat(strrep("=", 70), "\n\n")
+  
+  # Sample size
+  cat("Sample size: n =", nrow(x@observed), "\n")
+  cat("Misclassified variable:", 
+      tools::toTitleCase(x@generation_params$misclass_type), "\n\n")
+  
+  # Misclassification parameters
+  cat(strrep("-", 70), "\n")
+  cat("MISCLASSIFICATION PARAMETERS\n")
+  cat(strrep("-", 70), "\n\n")
+  
+  dm <- x@generation_params$dm_params
+  cat("Specified:\n")
+  cat("  Sn0:", sprintf("%.3f", dm$sn0), "\n")
+  cat("  Sp0:", sprintf("%.3f", dm$sp0), "\n")
+  cat("  ψ_Sn:", sprintf("%.3f", dm$psi_sn), "\n")
+  cat("  ψ_Sp:", sprintf("%.3f", dm$psi_sp), "\n\n")
+  
+  if (!is.null(x@misclassification_applied)) {
+    emp <- x@misclassification_applied$empirical
+    cat("Empirical (from simulated data):\n")
+    cat("  Sn0:", sprintf("%.3f", emp$sn0), "\n")
+    cat("  Sp0:", sprintf("%.3f", emp$sp0), "\n")
+    cat("  Sn1:", sprintf("%.3f", emp$sn1), "\n")
+    cat("  Sp1:", sprintf("%.3f", emp$sp1), "\n")
+    cat("  Overall misclassification rate:", 
+        sprintf("%.1f%%\n\n", 100 * x@misclassification_applied$misclassification_rate))
+  }
+  
+  # True causal effects
+  if (!is.null(x@true_effects)) {
+    cat(strrep("-", 70), "\n")
+    cat("TRUE CAUSAL EFFECTS\n")
+    cat(strrep("-", 70), "\n\n")
+    
+    cat("Odds Ratio Scale:\n")
+    cat("  NIE:", sprintf("%.3f", x@true_effects$NIE_OR), "\n")
+    cat("  NDE:", sprintf("%.3f", x@true_effects$NDE_OR), "\n")
+    cat("  TCE:", sprintf("%.3f", x@true_effects$TCE_OR), "\n")
+    cat("  PM:", sprintf("%.3f", x@true_effects$PM_OR), "\n\n")
+    
+    cat("Risk Ratio Scale:\n")
+    cat("  NIE:", sprintf("%.3f", x@true_effects$NIE_RR), "\n")
+    cat("  NDE:", sprintf("%.3f", x@true_effects$NDE_RR), "\n")
+    cat("  TCE:", sprintf("%.3f", x@true_effects$TCE_RR), "\n\n")
+    
+    cat("Risk Difference Scale:\n")
+    cat("  NIE:", sprintf("%.3f", x@true_effects$NIE_RD), "\n")
+    cat("  NDE:", sprintf("%.3f", x@true_effects$NDE_RD), "\n")
+    cat("  TCE:", sprintf("%.3f", x@true_effects$TCE_RD), "\n\n")
+  }
+  
+  # Data preview
+  cat(strrep("-", 70), "\n")
+  cat("DATA PREVIEW\n")
+  cat(strrep("-", 70), "\n\n")
+  
+  cat("Observed data (first 6 rows):\n")
+  print(head(x@observed))
+  
+  if (!is.null(x@truth)) {
+    cat("\nTrue data (first 6 rows):\n")
+    print(head(x@truth))
+  }
+  
+  cat("\n")
+  cat(strrep("=", 70), "\n")
+  cat("Use x@observed for analysis with bound_ne()\n")
+  cat("Use x@true_effects to check if true effects are in bounds\n")
+  cat(strrep("=", 70), "\n\n")
+  
+  invisible(x)
+}
+
+
+#' Summary method for simulated_dm_data
+#'
+#' @param object A simulated_dm_data object
+#' @param ... Additional arguments (ignored)
+#' @export
+method(summary, simulated_dm_data) <- function(object, ...) {
+  
+  print(object)
+  
+  # Additional diagnostics
+  cat("\n")
+  cat(strrep("=", 70), "\n")
+  cat("ADDITIONAL DIAGNOSTICS\n")
+  cat(strrep("=", 70), "\n\n")
+  
+  # Variable distributions
+  cat("Variable Distributions (Observed Data):\n\n")
+  
+  for (var in names(object@observed)) {
+    if (is.numeric(object@observed[[var]])) {
+      vals <- unique(object@observed[[var]])
+      if (length(vals) <= 10) {
+        # Categorical/binary
+        tab <- table(object@observed[[var]])
+        prop <- prop.table(tab)
+        cat(var, ":\n")
+        print(data.frame(Value = names(tab), Count = as.numeric(tab), 
+                        Proportion = as.numeric(prop)))
+        cat("\n")
+      } else {
+        # Continuous
+        cat(var, ": mean =", sprintf("%.3f", mean(object@observed[[var]])),
+            ", sd =", sprintf("%.3f", sd(object@observed[[var]])), "\n\n")
+      }
+    }
+  }
+  
+  # Confusion matrix
+  if (!is.null(object@misclassification_applied$confusion_matrix)) {
+    cat("\nConfusion Matrix (True vs. Observed):\n")
+    print(object@misclassification_applied$confusion_matrix)
+    cat("\n")
+  }
+  
+  invisible(object)
+}
+
+
+# =============================================================================
+# Methods for power_analysis_result
+# =============================================================================
+
+#' Print method for power_analysis_result
+#'
+#' @param x A power_analysis_result object
+#' @param ... Additional arguments (ignored)
+#' @export
+method(print, power_analysis_result) <- function(x, ...) {
+  
+  cat("\n")
+  cat(strrep("=", 70), "\n")
+  cat("POWER ANALYSIS RESULTS\n")
+  cat(strrep("=", 70), "\n\n")
+  
+  cat("Effect:", x@simulation_params$effect, "\n")
+  cat("True effect value:", sprintf("%.3f", x@true_effect), "\n")
+  cat("Misclassified variable:", 
+      tools::toTitleCase(x@simulation_params$misclass_type), "\n\n")
+  
+  cat(strrep("-", 70), "\n")
+  cat("POWER CURVE\n")
+  cat(strrep("-", 70), "\n\n")
+  
+  print(x@power_curve, row.names = FALSE)
+  
+  cat("\n")
+  cat(strrep("-", 70), "\n")
+  cat("RECOMMENDATIONS\n")
+  cat(strrep("-", 70), "\n\n")
+  
+  if (!is.na(x@recommended_n_power)) {
+    cat("To achieve power ≥", x@target_power, ":\n")
+    cat("  Recommended sample size: n =", x@recommended_n_power, "\n\n")
+  } else {
+    cat("Target power", x@target_power, "not achieved at any tested sample size\n")
+    cat("  Consider: larger sample sizes or stronger effects\n\n")
+  }
+  
+  if (!is.null(x@target_width) && !is.na(x@recommended_n_width)) {
+    cat("To achieve bound width ≤", x@target_width, ":\n")
+    cat("  Recommended sample size: n =", x@recommended_n_width, "\n\n")
+  } else if (!is.null(x@target_width)) {
+    cat("Target width", x@target_width, "not achieved at any tested sample size\n")
+    cat("  Consider: larger sample sizes or narrower sensitivity region\n\n")
+  }
+  
+  cat(strrep("=", 70), "\n")
+  cat("Use plot() to visualize power and width curves\n")
+  cat(strrep("=", 70), "\n\n")
+  
+  invisible(x)
+}
+
+
+#' Plot method for power_analysis_result
+#'
+#' @param x A power_analysis_result object
+#' @param ... Additional arguments (ignored)
+#' @importFrom ggplot2 ggplot aes geom_line geom_point geom_hline geom_ribbon
+#' @importFrom ggplot2 scale_y_continuous labs theme_bw
+#' @export
+method(plot, power_analysis_result) <- function(x, ...) {
+  
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("ggplot2 required for plotting")
+  }
+  
+  # Power curve
+  p1 <- ggplot2::ggplot(x@power_curve, 
+                       ggplot2::aes(x = n, y = power)) +
+    ggplot2::geom_line(linewidth = 1, color = "steelblue") +
+    ggplot2::geom_point(size = 3, color = "steelblue") +
+    ggplot2::geom_hline(yintercept = x@target_power, 
+                       linetype = "dashed", color = "red") +
+    ggplot2::scale_y_continuous(limits = c(0, 1), 
+                               labels = function(x) paste0(100*x, "%")) +
+    ggplot2::labs(
+      title = "Power Curve",
+      subtitle = paste("Target power =", x@target_power),
+      x = "Sample Size",
+      y = "Power (Proportion Rejecting Null)"
+    ) +
+    ggplot2::theme_bw()
+  
+  # Width curve
+  p2 <- ggplot2::ggplot(x@power_curve, 
+                       ggplot2::aes(x = n, y = median_width)) +
+    ggplot2::geom_line(linewidth = 1, color = "coral") +
+    ggplot2::geom_point(size = 3, color = "coral") +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = median_width - sd_width,
+                                     ymax = median_width + sd_width),
+                        alpha = 0.2, fill = "coral") +
+    ggplot2::labs(
+      title = "Bound Width",
+      subtitle = "Median ± SD across simulations",
+      x = "Sample Size",
+      y = paste("Bound Width (", x@simulation_params$effect, ")")
+    ) +
+    ggplot2::theme_bw()
+  
+  if (!is.null(x@target_width)) {
+    p2 <- p2 + ggplot2::geom_hline(yintercept = x@target_width,
+                                   linetype = "dashed", color = "red")
+  }
+  
+  # Coverage curve
+  p3 <- ggplot2::ggplot(x@power_curve,
+                       ggplot2::aes(x = n, y = coverage)) +
+    ggplot2::geom_line(linewidth = 1, color = "darkgreen") +
+    ggplot2::geom_point(size = 3, color = "darkgreen") +
+    ggplot2::geom_hline(yintercept = 0.95, linetype = "dashed", color = "red") +
+    ggplot2::scale_y_continuous(limits = c(0, 1),
+                               labels = function(x) paste0(100*x, "%")) +
+    ggplot2::labs(
+      title = "Coverage Rate",
+      subtitle = "Proportion of bounds containing true effect",
+      x = "Sample Size",
+      y = "Coverage"
+    ) +
+    ggplot2::theme_bw()
+  
+  # Combine plots
+  if (requireNamespace("gridExtra", quietly = TRUE)) {
+    combined <- gridExtra::grid.arrange(p1, p2, p3, ncol = 1)
+  } else if (requireNamespace("patchwork", quietly = TRUE)) {
+    combined <- p1 / p2 / p3
+  } else {
+    combined <- list(power = p1, width = p2, coverage = p3)
+    message("Install 'gridExtra' or 'patchwork' to display combined plot")
+  }
+  
+  return(combined)
+}

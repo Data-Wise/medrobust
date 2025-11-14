@@ -440,3 +440,197 @@ test_that("as_sensitivity_region converter works", {
   expect_equal(back_to_list$psi_sn_range, region_list$psi_sn_range)
   expect_equal(back_to_list$psi_sp_range, region_list$psi_sp_range)
 })
+
+
+test_that("simulated_dm_data validates correctly", {
+  # Valid simulation data
+  obs_data <- data.frame(
+    A_star = rbinom(100, 1, 0.5),
+    M = rbinom(100, 1, 0.5),
+    Y = rbinom(100, 1, 0.5),
+    C1 = rbinom(100, 1, 0.5)
+  )
+
+  truth_data <- data.frame(
+    A = rbinom(100, 1, 0.5),
+    M = rbinom(100, 1, 0.5),
+    Y = rbinom(100, 1, 0.5),
+    C1 = rbinom(100, 1, 0.5)
+  )
+
+  gen_params <- list(
+    n = 100,
+    true_params = list(beta_AM = 0.4, theta_AY = 0.4, theta_MY = 0.4),
+    dm_params = list(sn0 = 0.85, sp0 = 0.85, psi_sn = 1.5, psi_sp = 1.0),
+    misclass_type = "exposure",
+    confounders = 1,
+    confounder_params = list(type = "binary"),
+    effect_modification = FALSE,
+    seed = 123
+  )
+
+  expect_no_error(
+    simulated_dm_data(
+      observed = obs_data,
+      truth = truth_data,
+      generation_params = gen_params
+    )
+  )
+
+  # Invalid: too few rows
+  expect_error(
+    simulated_dm_data(
+      observed = obs_data[1:5, ],
+      truth = NULL,
+      generation_params = gen_params
+    ),
+    "observed data must have at least 10 rows"
+  )
+
+  # Invalid: mismatched dimensions
+  expect_error(
+    simulated_dm_data(
+      observed = obs_data,
+      truth = truth_data[1:50, ],
+      generation_params = gen_params
+    ),
+    "truth and observed must have same number of rows"
+  )
+
+  # Invalid: n mismatch
+  gen_params_wrong <- gen_params
+  gen_params_wrong$n <- 200
+  expect_error(
+    simulated_dm_data(
+      observed = obs_data,
+      truth = NULL,
+      generation_params = gen_params_wrong
+    ),
+    "generation_params\\$n must match nrow\\(observed\\)"
+  )
+
+  # Invalid: missing required generation_params
+  expect_error(
+    simulated_dm_data(
+      observed = obs_data,
+      truth = NULL,
+      generation_params = list(n = 100)
+    ),
+    "generation_params must contain"
+  )
+})
+
+
+test_that("power_analysis_result validates correctly", {
+  # Valid power analysis result
+  power_df <- data.frame(
+    n = c(100, 200, 300),
+    power = c(0.5, 0.7, 0.85),
+    coverage = c(0.95, 0.94, 0.96),
+    mean_width = c(0.8, 0.6, 0.5),
+    median_width = c(0.75, 0.55, 0.48),
+    sd_width = c(0.1, 0.08, 0.07),
+    mean_lower = c(1.0, 1.0, 1.0),
+    mean_upper = c(1.8, 1.6, 1.5)
+  )
+
+  sim_params <- list(
+    true_params = list(beta_AM = 0.4, theta_AY = 0.4, theta_MY = 0.4),
+    dm_params = list(sn0 = 0.85, sp0 = 0.85, psi_sn = 1.5, psi_sp = 1.0),
+    sensitivity_region = list(
+      sn0_range = c(0.8, 0.9),
+      sp0_range = c(0.8, 0.9),
+      psi_sn_range = c(1.0, 2.0),
+      psi_sp_range = c(1.0, 1.0)
+    ),
+    effect = "NIE",
+    misclass_type = "exposure",
+    n_sim = 100,
+    seed = 123
+  )
+
+  expect_no_error(
+    power_analysis_result(
+      power_curve = power_df,
+      true_effect = 1.5,
+      target_power = 0.80,
+      target_width = 0.3,
+      recommended_n_power = 300L,
+      recommended_n_width = 300L,
+      simulation_params = sim_params
+    )
+  )
+
+  # Invalid: power values out of range
+  power_df_invalid <- power_df
+  power_df_invalid$power[1] <- 1.5
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df_invalid,
+      true_effect = 1.5,
+      target_power = 0.80,
+      simulation_params = sim_params
+    ),
+    "power values must be in \\[0, 1\\]"
+  )
+
+  # Invalid: coverage out of range
+  power_df_invalid2 <- power_df
+  power_df_invalid2$coverage[1] <- -0.1
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df_invalid2,
+      true_effect = 1.5,
+      target_power = 0.80,
+      simulation_params = sim_params
+    ),
+    "coverage values must be in \\[0, 1\\]"
+  )
+
+  # Invalid: negative width
+  power_df_invalid3 <- power_df
+  power_df_invalid3$mean_width[1] <- -0.5
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df_invalid3,
+      true_effect = 1.5,
+      target_power = 0.80,
+      simulation_params = sim_params
+    ),
+    "mean_width values must be non-negative"
+  )
+
+  # Invalid: target_power out of range
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df,
+      true_effect = 1.5,
+      target_power = 1.5,
+      simulation_params = sim_params
+    ),
+    "target_power must be in \\(0, 1\\)"
+  )
+
+  # Invalid: missing required columns
+  power_df_incomplete <- power_df[, 1:3]
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df_incomplete,
+      true_effect = 1.5,
+      target_power = 0.80,
+      simulation_params = sim_params
+    ),
+    "power_curve must have columns"
+  )
+
+  # Invalid: missing required simulation_params
+  expect_error(
+    power_analysis_result(
+      power_curve = power_df,
+      true_effect = 1.5,
+      target_power = 0.80,
+      simulation_params = list(effect = "NIE")
+    ),
+    "simulation_params must contain"
+  )
+})
