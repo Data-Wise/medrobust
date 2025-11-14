@@ -1,154 +1,253 @@
-#' Compute bounds when exposure is misclassified
+#' Bounds for Exposure Misclassification
 #'
 #' @description
-#' Internal function implementing partial identification bounds when the
-#' exposure A is measured with error as A*, and the error is differential
-#' (depends on outcome Y).
+#' Internal function implementing Algorithm 5.1 from the paper for
+#' differential misclassification of the exposure.
 #'
 #' @inheritParams bound_ne
 #' @keywords internal
 #' @noRd
-bound_ne_exposure <- function(data, exposure, mediator, outcome, confounders,
-                              sensitivity_region, n_grid, effect_scale, verbose) {
+bound_ne_exposure <- function(data,
+                              exposure,
+                              mediator,
+                              outcome,
+                              confounders,
+                              sensitivity_region,
+                              n_grid,
+                              effect_scale,
+                              parallel,
+                              n_cores,
+                              cache,
+                              cache_dir,
+                              verbose) {
 
-  if (verbose) message("Implementation: Exposure misclassification (Section 5)")
+  # Extract variable names
+  A_star_name <- exposure
+  M_name <- mediator
+  Y_name <- outcome
+  C_names <- confounders
 
-  # Extract observed data distributions
-  obs_data <- extract_observed_data(data, exposure, mediator, outcome, confounders)
+  # Create parameter grid
+  if (verbose) cat("Creating parameter grid...\n")
+  param_grid <- create_parameter_grid(sensitivity_region, n_grid)
+  n_total <- nrow(param_grid)
 
-  # Create grid over sensitivity parameter space
-  grid <- create_sensitivity_grid(sensitivity_region, n_grid)
+  # Compute naive estimates
+  naive_estimates <- compute_naive_effects(data, A_star_name, M_name,
+                                           Y_name, C_names, effect_scale)
 
-  if (verbose) {
-    message("Sensitivity grid: ", nrow(grid), " parameter combinations")
+  # Initialize storage
+  compatible_params <- list()
+  nie_values <- numeric(0)
+  nde_values <- numeric(0)
+
+  # Setup parallel processing
+  if (parallel) {
+    if (is.null(n_cores)) {
+      n_cores <- parallel::detectCores() - 1
+    }
+    if (verbose) cat("Using", n_cores, "cores for parallel processing\n")
+
+    cl <- parallel::makeCluster(n_cores)
+    on.exit(parallel::stopCluster(cl))
+
+    parallel::clusterExport(cl, c("data", "A_star_name", "M_name", "Y_name",
+                                   "C_names", "effect_scale"),
+                           envir = environment())
+    parallel::clusterEvalQ(cl, library(dplyr))
   }
 
-  # Initialize storage for compatible parameters and bounds
-  compatible_params <- list()
-  nie_bounds <- c()
-  nde_bounds <- c()
+  # Progress bar
+  if (verbose) {
+    pb <- txtProgressBar(min = 0, max = n_total, style = 3)
+  }
 
-  # Loop over grid points
-  for (i in seq_len(nrow(grid))) {
-    psi <- as.list(grid[i, ])
+  # Main evaluation function
+  evaluate_param_set <- function(i, param_row) {
+    # Extract parameters
+    sn0 <- param_row$sn0
+    sp0 <- param_row$sp0
+    psi_sn <- param_row$psi_sn
+    psi_sp <- param_row$psi_sp
 
-    # Check testable implications
-    compat_result <- check_compatibility_exposure(obs_data, psi)
+    # Compute sn1, sp1
+    sn1 <- odds_to_prob(psi_sn * prob_to_odds(sn0))
+    sp1 <- odds_to_prob(psi_sp * prob_to_odds(sp0))
 
-    if (compat_result$compatible) {
-      # Store compatible parameter
-      compatible_params[[length(compatible_params) + 1]] <- psi
+    # Validate
+    if (any(c(sn1, sp1) < 0 | c(sn1, sp1) > 1)) {
+      return(NULL)
+    }
 
-      # Compute implied bounds for this psi
-      bounds <- compute_implied_bounds_exposure(obs_data, psi, effect_scale)
+    # Check informativeness
+    if ((sn0 + sp0 - 1) <= 0.01 || (sn1 + sp1 - 1) <= 0.01) {
+      return(NULL)
+    }
 
-      nie_bounds <- c(nie_bounds, bounds$nie_lower, bounds$nie_upper)
-      nde_bounds <- c(nde_bounds, bounds$nde_lower, bounds$nde_upper)
+    # Get strata
+    if (is.null(C_names) || length(C_names) == 0) {
+      strata <- data.frame(stratum_id = 1)
+      data$stratum_id <- 1
+    } else {
+      data <- data |>
+        dplyr::group_by(across(all_of(C_names))) |>
+        dplyr::mutate(stratum_id = cur_group_id()) |>
+        dplyr::ungroup()
+      strata <- data |>
+        dplyr::select(stratum_id, all_of(C_names)) |>
+        dplyr::distinct()
+    }
+
+    # Initialize storage for implied true joint probabilities
+    P_true_list <- list()
+    compatible <- TRUE
+
+    # Loop over (M, Y, stratum) combinations
+    for (m in c(0, 1)) {
+      for (y in c(0, 1)) {
+        for (s in strata$stratum_id) {
+          # Get observed data for this (M=m, Y=y, stratum=s) combination
+          data_mys <- data |>
+            dplyr::filter(!!sym(M_name) == m, !!sym(Y_name) == y, stratum_id == s)
+
+          if (nrow(data_mys) < 5) {
+            compatible <- FALSE
+            break
+          }
+
+          # Compute observed P*(A*=a* | M=m, Y=y, C=c)
+          obs_probs <- data_mys |>
+            dplyr::group_by(!!sym(A_star_name)) |>
+            dplyr::summarise(n = n(), .groups = "drop") |>
+            dplyr::mutate(prob = n / sum(n))
+
+          # Extract P*_1my and P*_0my
+          P_star_1 <- obs_probs$prob[obs_probs[[A_star_name]] == 1]
+          P_star_0 <- obs_probs$prob[obs_probs[[A_star_name]] == 0]
+
+          if (length(P_star_1) == 0) P_star_1 <- 0
+          if (length(P_star_0) == 0) P_star_0 <- 0
+
+          # Select sensitivity/specificity based on Y
+          sn_y <- if (y == 1) sn1 else sn0
+          sp_y <- if (y == 1) sp1 else sp0
+
+          # Check testable implications (Proposition 5.1)
+          # Condition 1: P*_1my / P*_0my >= (1-sp_y) / sp_y
+          if (P_star_0 > 1e-6) {
+            if (P_star_1 / P_star_0 < (1 - sp_y) / sp_y - 1e-6) {
+              compatible <- FALSE
+              break
+            }
+          }
+
+          # Condition 2: P*_0my / P*_1my >= (1-sn_y) / sn_y
+          if (P_star_1 > 1e-6) {
+            if (P_star_0 / P_star_1 < (1 - sn_y) / sn_y - 1e-6) {
+              compatible <- FALSE
+              break
+            }
+          }
+
+          # Solve for true P_1my and P_0my using matrix inversion
+          # P_1my = (sp_y * P*_1my - (1-sp_y) * P*_0my) / (sn_y + sp_y - 1)
+          # P_0my = (sn_y * P*_0my - (1-sn_y) * P*_1my) / (sn_y + sp_y - 1)
+
+          denom <- sn_y + sp_y - 1
+          P_1my <- (sp_y * P_star_1 - (1 - sp_y) * P_star_0) / denom
+          P_0my <- (sn_y * P_star_0 - (1 - sn_y) * P_star_1) / denom
+
+          # Check non-negativity
+          if (P_1my < -1e-6 || P_0my < -1e-6) {
+            compatible <- FALSE
+            break
+          }
+
+          # Ensure non-negative (numerical precision)
+          P_1my <- max(0, P_1my)
+          P_0my <- max(0, P_0my)
+
+          # Store
+          key <- paste0("m", m, "_y", y, "_s", s)
+          P_true_list[[key]] <- c(P_1 = P_1my, P_0 = P_0my,
+                                   stratum_id = s, M = m, Y = y)
+        }
+        if (!compatible) break
+      }
+      if (!compatible) break
+    }
+
+    # If compatible, compute effects
+    if (compatible) {
+      effects <- compute_effects_from_joint_probs(
+        P_true_list = P_true_list,
+        data = data,
+        C_names = C_names,
+        effect_scale = effect_scale
+      )
+
+      return(list(
+        compatible = TRUE,
+        params = param_row,
+        nie = effects$nie,
+        nde = effects$nde,
+        P_true = P_true_list
+      ))
+    } else {
+      return(NULL)
     }
   }
 
-  # Aggregate bounds across compatible set
-  if (length(compatible_params) == 0) {
-    warning("No compatible parameters found! All sensitivity parameters falsified.")
-    return(list(
-      NIE_lower = NA,
-      NIE_upper = NA,
-      NDE_lower = NA,
-      NDE_upper = NA,
-      compatible_sets = data.frame(),
-      falsified_proportion = 1.0,
-      data_summary = obs_data
-    ))
+  # Execute loop
+  if (parallel) {
+    results <- parallel::parLapply(cl, 1:n_total, function(i) {
+      evaluate_param_set(i, param_grid[i, ])
+    })
+  } else {
+    results <- lapply(1:n_total, function(i) {
+      if (verbose && i %% max(1, floor(n_total/100)) == 0) {
+        setTxtProgressBar(pb, i)
+      }
+      evaluate_param_set(i, param_grid[i, ])
+    })
   }
 
-  result <- list(
-    NIE_lower = min(nie_bounds, na.rm = TRUE),
-    NIE_upper = max(nie_bounds, na.rm = TRUE),
-    NDE_lower = min(nde_bounds, na.rm = TRUE),
-    NDE_upper = max(nde_bounds, na.rm = TRUE),
-    compatible_sets = do.call(rbind, lapply(compatible_params, as.data.frame)),
-    falsified_proportion = 1 - length(compatible_params) / nrow(grid),
-    data_summary = obs_data
-  )
+  if (verbose) close(pb)
 
-  if (verbose) {
-    message(sprintf("Compatible parameters: %d / %d (%.1f%% falsified)",
-                   length(compatible_params), nrow(grid),
-                   result$falsified_proportion * 100))
+  # Extract compatible results
+  results <- Filter(Negate(is.null), results)
+
+  if (length(results) == 0) {
+    stop("No compatible parameter sets found. Consider widening sensitivity_region.")
   }
 
-  return(result)
-}
+  # Extract bounds
+  nie_values <- sapply(results, function(x) x$nie)
+  nde_values <- sapply(results, function(x) x$nde)
 
+  NIE_lower <- min(nie_values, na.rm = TRUE)
+  NIE_upper <- max(nie_values, na.rm = TRUE)
+  NDE_lower <- min(nde_values, na.rm = TRUE)
+  NDE_upper <- max(nde_values, na.rm = TRUE)
 
-#' Check compatibility for exposure misclassification
-#'
-#' @description
-#' Implements testable implications from Section 5 of the paper.
-#' Returns whether a given set of sensitivity parameters is compatible
-#' with the observed data distribution.
-#'
-#' @param obs_data List containing observed data distributions
-#' @param psi List of sensitivity parameters (sn0, sp0, psi_sn, psi_sp)
-#' @keywords internal
-#' @noRd
-check_compatibility_exposure <- function(obs_data, psi) {
+  # Extract compatible sets
+  compatible_sets <- do.call(rbind, lapply(results, function(x) x$params))
+  compatible_sets$NIE <- sapply(results, function(x) x$nie)
+  compatible_sets$NDE <- sapply(results, function(x) x$nde)
 
-  # TODO: Implement testable implications from paper Section 5
-  # This should check inequalities that must hold if psi is compatible
-  # with the observed joint distribution P(A*,M,Y|C)
-
-  # PLACEHOLDER: Return TRUE for now
-  # User will need to provide the actual testable implications
-
-  compatible <- TRUE
-  violated_constraints <- character(0)
-
-  # Example structure (to be replaced with actual implementation):
-  # constraint_1 <- check_inequality_1(obs_data, psi)
-  # constraint_2 <- check_inequality_2(obs_data, psi)
-  # ...
-  # compatible <- all(constraint_1, constraint_2, ...)
+  # Falsification
+  n_compatible <- length(results)
+  falsified_proportion <- 1 - (n_compatible / n_total)
 
   return(list(
-    compatible = compatible,
-    violated_constraints = violated_constraints
-  ))
-}
-
-
-#' Compute implied bounds for exposure misclassification
-#'
-#' @description
-#' Given compatible sensitivity parameters, compute the implied bounds
-#' on NDE and NIE using the identification formulas from Section 5.
-#'
-#' @param obs_data List containing observed data distributions
-#' @param psi List of sensitivity parameters
-#' @param effect_scale Scale for effect measures ("OR", "RR", or "RD")
-#' @keywords internal
-#' @noRd
-compute_implied_bounds_exposure <- function(obs_data, psi, effect_scale) {
-
-  # TODO: Implement identification bounds from paper Section 5
-  # This should:
-  # 1. Use psi to correct for misclassification bias
-  # 2. Compute bounds on true joint distribution P(A,M,Y|C)
-  # 3. Plug into natural effect definitions
-  # 4. Return bounds on specified scale (OR/RR/RD)
-
-  # PLACEHOLDER: Return dummy bounds
-  # User will need to provide the actual identification formulas
-
-  nie_lower <- 1.0
-  nie_upper <- 1.5
-  nde_lower <- 1.0
-  nde_upper <- 1.3
-
-  return(list(
-    nie_lower = nie_lower,
-    nie_upper = nie_upper,
-    nde_lower = nde_lower,
-    nde_upper = nde_upper
+    NIE_lower = NIE_lower,
+    NIE_upper = NIE_upper,
+    NDE_lower = NDE_lower,
+    NDE_upper = NDE_upper,
+    compatible_sets = compatible_sets,
+    n_compatible = n_compatible,
+    n_evaluated = n_total,
+    falsified_proportion = falsified_proportion,
+    naive_estimates = naive_estimates
   ))
 }
