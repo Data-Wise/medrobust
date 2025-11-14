@@ -120,8 +120,8 @@ bootstrap_results <- new_class(
     boot_nie_upper = new_property(class = class_numeric),
     boot_nde_lower = new_property(class = class_numeric),
     boot_nde_upper = new_property(class = class_numeric),
-    z0 = new_property(class = class_numeric, default = NULL),
-    acceleration = new_property(class = class_numeric, default = NULL)
+    z0 = new_property(class = class_any, default = NULL),
+    acceleration = new_property(class = class_any, default = NULL)
   ),
   validator = function(self) {
     if (self@n_failed > self@n_reps) {
@@ -210,11 +210,16 @@ medrobust_bounds <- new_class(
     ),
     naive_estimates = new_property(class = class_list, default = NULL),
     bootstrap_results = new_property(
-      class = bootstrap_results,
-      default = NULL
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !inherits(value, "bootstrap_results")) {
+          "bootstrap_results must be NULL or a bootstrap_results object"
+        }
+      }
     ),
     data_summary = new_property(class = class_list, default = NULL),
-    call = new_property(class = class_call, default = NULL)
+    call = new_property(class = class_any, default = NULL)
   ),
   validator = function(self) {
     # Validate bound ordering
@@ -244,8 +249,8 @@ compatibility_test <- new_class(
   properties = list(
     compatible = new_property(class = class_logical),
     psi = new_property(class = class_list),
-    sn1 = new_property(class = class_numeric, default = NULL),
-    sp1 = new_property(class = class_numeric, default = NULL),
+    sn1 = new_property(class = class_any, default = NULL),
+    sp1 = new_property(class = class_any, default = NULL),
     n_constraints_total = new_property(
       class = class_integer,
       default = 0L
@@ -279,7 +284,7 @@ compatibility_test <- new_class(
       }
     ),
     reason = new_property(
-      class = class_character,
+      class = class_any,
       default = NULL
     )
   ),
@@ -352,7 +357,15 @@ simulated_dm_data <- new_class(
   package = "medrobust",
   properties = list(
     observed = new_property(class = class_data.frame),
-    truth = new_property(class = class_data.frame, default = NULL),
+    truth = new_property(
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !is.data.frame(value)) {
+          "truth must be NULL or a data.frame"
+        }
+      }
+    ),
     true_effects = new_property(class = class_list, default = NULL),
     generation_params = new_property(
       class = class_list,
