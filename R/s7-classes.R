@@ -18,8 +18,8 @@
 #' Defines the sensitivity parameter space Theta_Psi for differential
 #' misclassification analysis.
 #'
-#' @export
-sensitivity_region <- new_class(
+#' @keywords internal
+.sensitivity_region_class <- new_class(
   name = "sensitivity_region",
   package = "medrobust",
   properties = list(
@@ -74,10 +74,21 @@ sensitivity_region <- new_class(
   )
 )
 
-# Wrap constructor to add warning for non-informative regions
-sensitivity_region_constructor <- sensitivity_region
+#' Create Sensitivity Region
+#'
+#' @description
+#' Constructor for sensitivity_region S7 objects. Issues a warning if the
+#' region may be non-informative (Sn + Sp <= 1).
+#'
+#' @param sn0_range Numeric vector of length 2: [min, max] for baseline sensitivity
+#' @param sp0_range Numeric vector of length 2: [min, max] for baseline specificity
+#' @param psi_sn_range Numeric vector of length 2: [min, max] for sensitivity OR
+#' @param psi_sp_range Numeric vector of length 2: [min, max] for specificity OR
+#'
+#' @return A sensitivity_region S7 object
+#' @export
 sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range) {
-  obj <- sensitivity_region_constructor(
+  obj <- .sensitivity_region_class(
     sn0_range = sn0_range,
     sp0_range = sp0_range,
     psi_sn_range = psi_sn_range,
@@ -216,7 +227,7 @@ medrobust_bounds <- new_class(
       }
     ),
     sensitivity_region = new_property(
-      class = sensitivity_region
+      class = .sensitivity_region_class
     ),
     naive_estimates = new_property(class = class_list, default = NULL),
     bootstrap_results = new_property(
