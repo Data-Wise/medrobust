@@ -1,0 +1,376 @@
+#' S7 Class Definitions for medrobust Package
+#'
+#' @description
+#' This file contains all S7 class definitions for the medrobust package,
+#' replacing the previous S3 implementation with a modern, type-safe OOP system.
+#'
+#' @name s7-classes
+#' @keywords internal
+
+# Import S7
+library(S7)
+
+# =============================================================================
+# Helper Classes
+# =============================================================================
+
+#' Sensitivity Region Class
+#'
+#' @description
+#' Defines the sensitivity parameter space Theta_Psi for differential
+#' misclassification analysis.
+#'
+#' @export
+sensitivity_region <- new_class(
+  name = "sensitivity_region",
+  package = "medrobust",
+  properties = list(
+    sn0_range = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 2) {
+          "sn0_range must have length 2 (min, max)"
+        } else if (value[1] < 0 || value[2] > 1) {
+          "sn0_range values must be in [0, 1]"
+        } else if (value[1] >= value[2]) {
+          "sn0_range[1] must be < sn0_range[2]"
+        }
+      }
+    ),
+    sp0_range = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 2) {
+          "sp0_range must have length 2 (min, max)"
+        } else if (value[1] < 0 || value[2] > 1) {
+          "sp0_range values must be in [0, 1]"
+        } else if (value[1] >= value[2]) {
+          "sp0_range[1] must be < sp0_range[2]"
+        }
+      }
+    ),
+    psi_sn_range = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 2) {
+          "psi_sn_range must have length 2 (min, max)"
+        } else if (value[1] <= 0) {
+          "psi_sn_range values must be positive (odds ratios)"
+        } else if (value[1] >= value[2]) {
+          "psi_sn_range[1] must be < psi_sn_range[2]"
+        }
+      }
+    ),
+    psi_sp_range = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 2) {
+          "psi_sp_range must have length 2 (min, max)"
+        } else if (value[1] <= 0) {
+          "psi_sp_range values must be positive (odds ratios)"
+        } else if (value[1] >= value[2]) {
+          "psi_sp_range[1] must be < psi_sp_range[2]"
+        }
+      }
+    )
+  ),
+  validator = function(self) {
+    # Check informativeness: at least one endpoint should satisfy Sn + Sp > 1
+    sn_min <- self@sn0_range[1]
+    sp_min <- self@sp0_range[1]
+
+    if ((sn_min + sp_min) <= 1.01) {
+      "Sensitivity region may be non-informative: min(Sn0) + min(Sp0) <= 1"
+    }
+  }
+)
+
+
+#' Bootstrap Results Class
+#'
+#' @description
+#' Stores bootstrap inference results for partial identification bounds.
+#'
+#' @export
+bootstrap_results <- new_class(
+  name = "bootstrap_results",
+  package = "medrobust",
+  properties = list(
+    method = new_property(
+      class = class_character,
+      validator = function(value) {
+        if (!value %in% c("percentile", "bca")) {
+          "method must be 'percentile' or 'bca'"
+        }
+      }
+    ),
+    n_reps = new_property(class = class_integer),
+    n_failed = new_property(class = class_integer, default = 0L),
+    confidence_level = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (value <= 0 || value >= 1) {
+          "confidence_level must be in (0, 1)"
+        }
+      }
+    ),
+    nie_lower_ci = new_property(class = class_numeric),
+    nie_upper_ci = new_property(class = class_numeric),
+    nde_lower_ci = new_property(class = class_numeric),
+    nde_upper_ci = new_property(class = class_numeric),
+    boot_nie_lower = new_property(class = class_numeric),
+    boot_nie_upper = new_property(class = class_numeric),
+    boot_nde_lower = new_property(class = class_numeric),
+    boot_nde_upper = new_property(class = class_numeric),
+    z0 = new_property(class = class_numeric, default = NULL),
+    acceleration = new_property(class = class_numeric, default = NULL)
+  ),
+  validator = function(self) {
+    if (self@n_failed > self@n_reps) {
+      "@n_failed cannot exceed @n_reps"
+    }
+  }
+)
+
+
+# =============================================================================
+# Main Result Classes
+# =============================================================================
+
+#' Medrobust Bounds Class
+#'
+#' @description
+#' S7 class for storing partial identification bounds for natural direct
+#' and indirect effects under differential misclassification.
+#'
+#' @export
+medrobust_bounds <- new_class(
+  name = "medrobust_bounds",
+  package = "medrobust",
+  properties = list(
+    NIE_lower = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 1) {
+          "NIE_lower must be a scalar"
+        }
+      }
+    ),
+    NIE_upper = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 1) {
+          "NIE_upper must be a scalar"
+        }
+      }
+    ),
+    NDE_lower = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 1) {
+          "NDE_lower must be a scalar"
+        }
+      }
+    ),
+    NDE_upper = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (length(value) != 1) {
+          "NDE_upper must be a scalar"
+        }
+      }
+    ),
+    compatible_sets = new_property(class = class_data.frame),
+    n_compatible = new_property(class = class_integer),
+    n_evaluated = new_property(class = class_integer),
+    falsified_proportion = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (value < 0 || value > 1) {
+          "falsified_proportion must be in [0, 1]"
+        }
+      }
+    ),
+    effect_scale = new_property(
+      class = class_character,
+      validator = function(value) {
+        if (!value %in% c("OR", "RR", "RD")) {
+          "effect_scale must be 'OR', 'RR', or 'RD'"
+        }
+      }
+    ),
+    misclassified_variable = new_property(
+      class = class_character,
+      validator = function(value) {
+        if (!value %in% c("exposure", "mediator")) {
+          "misclassified_variable must be 'exposure' or 'mediator'"
+        }
+      }
+    ),
+    sensitivity_region = new_property(
+      class = sensitivity_region
+    ),
+    naive_estimates = new_property(class = class_list, default = NULL),
+    bootstrap_results = new_property(
+      class = bootstrap_results,
+      default = NULL
+    ),
+    data_summary = new_property(class = class_list, default = NULL),
+    call = new_property(class = class_call, default = NULL)
+  ),
+  validator = function(self) {
+    # Validate bound ordering
+    if (self@NIE_lower > self@NIE_upper) {
+      "@NIE_lower must be <= @NIE_upper"
+    } else if (self@NDE_lower > self@NDE_upper) {
+      "@NDE_lower must be <= @NDE_upper"
+    } else if (self@n_compatible > self@n_evaluated) {
+      "@n_compatible cannot exceed @n_evaluated"
+    } else if (self@n_compatible < 0 || self@n_evaluated < 0) {
+      "@n_compatible and @n_evaluated must be non-negative"
+    }
+  }
+)
+
+
+#' Compatibility Test Class
+#'
+#' @description
+#' S7 class for storing results of compatibility tests for specific
+#' misclassification parameter values.
+#'
+#' @export
+compatibility_test <- new_class(
+  name = "compatibility_test",
+  package = "medrobust",
+  properties = list(
+    compatible = new_property(class = class_logical),
+    psi = new_property(class = class_list),
+    sn1 = new_property(class = class_numeric, default = NULL),
+    sp1 = new_property(class = class_numeric, default = NULL),
+    n_constraints_total = new_property(
+      class = class_integer,
+      default = 0L
+    ),
+    n_constraints_satisfied = new_property(
+      class = class_integer,
+      default = 0L
+    ),
+    n_constraints_violated = new_property(
+      class = class_integer,
+      default = 0L
+    ),
+    violated_constraints = new_property(
+      class = class_data.frame,
+      default = data.frame()
+    ),
+    implied_probabilities = new_property(
+      class = class_list,
+      default = NULL
+    ),
+    stratum_details = new_property(
+      class = class_list,
+      default = NULL
+    ),
+    misclassified_variable = new_property(
+      class = class_character,
+      validator = function(value) {
+        if (!value %in% c("exposure", "mediator")) {
+          "misclassified_variable must be 'exposure' or 'mediator'"
+        }
+      }
+    ),
+    reason = new_property(
+      class = class_character,
+      default = NULL
+    )
+  ),
+  validator = function(self) {
+    if (self@n_constraints_satisfied + self@n_constraints_violated !=
+        self@n_constraints_total) {
+      "Constraint counts don't add up correctly"
+    } else if (!is.null(self@sn1) && (self@sn1 < 0 || self@sn1 > 1)) {
+      "@sn1 must be in [0, 1]"
+    } else if (!is.null(self@sp1) && (self@sp1 < 0 || self@sp1 > 1)) {
+      "@sp1 must be in [0, 1]"
+    }
+  }
+)
+
+
+#' Falsification Summary Class
+#'
+#' @description
+#' S7 class for storing falsification analysis results showing which
+#' regions of the sensitivity space are empirically ruled out.
+#'
+#' @export
+falsification_summary <- new_class(
+  name = "falsification_summary",
+  package = "medrobust",
+  properties = list(
+    overall = new_property(
+      class = class_numeric,
+      validator = function(value) {
+        if (value < 0 || value > 1) {
+          "overall falsification rate must be in [0, 1]"
+        }
+      }
+    ),
+    n_evaluated = new_property(class = class_integer),
+    n_compatible = new_property(class = class_integer),
+    n_falsified = new_property(class = class_integer),
+    by_parameter = new_property(class = class_list, default = NULL),
+    joint_falsification = new_property(class = class_list, default = NULL),
+    most_constrained = new_property(
+      class = class_character,
+      default = character(0)
+    ),
+    least_constrained = new_property(
+      class = class_character,
+      default = character(0)
+    ),
+    plot = new_property(class = class_any, default = NULL)
+  ),
+  validator = function(self) {
+    if (self@n_compatible + self@n_falsified != self@n_evaluated) {
+      "n_compatible + n_falsified must equal n_evaluated"
+    } else if (self@n_compatible < 0 || self@n_falsified < 0) {
+      "Counts must be non-negative"
+    }
+  }
+)
+
+
+# =============================================================================
+# Constructor Helper Functions
+# =============================================================================
+
+#' Create sensitivity_region object from list
+#'
+#' @param region_list List with sn0_range, sp0_range, psi_sn_range, psi_sp_range
+#' @return sensitivity_region S7 object
+#' @export
+as_sensitivity_region <- function(region_list) {
+  sensitivity_region(
+    sn0_range = region_list$sn0_range,
+    sp0_range = region_list$sp0_range,
+    psi_sn_range = region_list$psi_sn_range,
+    psi_sp_range = region_list$psi_sp_range
+  )
+}
+
+
+#' Convert sensitivity_region to list
+#'
+#' @param x sensitivity_region S7 object
+#' @return Named list
+#' @export
+as.list.sensitivity_region <- function(x, ...) {
+  list(
+    sn0_range = x@sn0_range,
+    sp0_range = x@sp0_range,
+    psi_sn_range = x@psi_sn_range,
+    psi_sp_range = x@psi_sp_range
+  )
+}

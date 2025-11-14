@@ -222,27 +222,51 @@ bound_ne <- function(data,
   end_time <- Sys.time()
   computation_time <- difftime(end_time, start_time, units = "secs")
 
-  # Construct output object
-  output <- structure(
-    list(
-      NIE_lower = bounds_result$NIE_lower,
-      NIE_upper = bounds_result$NIE_upper,
-      NDE_lower = bounds_result$NDE_lower,
-      NDE_upper = bounds_result$NDE_upper,
-      compatible_sets = bounds_result$compatible_sets,
-      falsified_proportion = bounds_result$falsified_proportion,
-      effect_scale = effect_scale,
-      n_evaluated = bounds_result$n_evaluated,
-      n_compatible = bounds_result$n_compatible,
-      computation_time = as.numeric(computation_time),
-      call = match.call(),
-      data_summary = data_summary,
-      sensitivity_region = sensitivity_region,
-      misclassified_variable = misclassified_variable,
-      bootstrap_results = if (bootstrap) bootstrap_results else NULL,
-      naive_estimates = bounds_result$naive_estimates
-    ),
-    class = "medrobust_bounds"
+  # Convert sensitivity_region to S7 class if needed
+  if (!inherits(sensitivity_region, "sensitivity_region")) {
+    sens_region_s7 <- as_sensitivity_region(sensitivity_region)
+  } else {
+    sens_region_s7 <- sensitivity_region
+  }
+
+  # Convert bootstrap results to S7 class if available
+  bootstrap_s7 <- NULL
+  if (bootstrap && !is.null(bootstrap_results)) {
+    bootstrap_s7 <- bootstrap_results(
+      method = bootstrap_results$method,
+      n_reps = as.integer(bootstrap_results$n_reps),
+      n_failed = as.integer(bootstrap_results$n_failed),
+      confidence_level = bootstrap_results$confidence_level,
+      nie_lower_ci = bootstrap_results$nie_lower_ci,
+      nie_upper_ci = bootstrap_results$nie_upper_ci,
+      nde_lower_ci = bootstrap_results$nde_lower_ci,
+      nde_upper_ci = bootstrap_results$nde_upper_ci,
+      boot_nie_lower = bootstrap_results$boot_nie_lower,
+      boot_nie_upper = bootstrap_results$boot_nie_upper,
+      boot_nde_lower = bootstrap_results$boot_nde_lower,
+      boot_nde_upper = bootstrap_results$boot_nde_upper,
+      z0 = bootstrap_results$z0,
+      acceleration = bootstrap_results$acceleration
+    )
+  }
+
+  # Construct S7 output object
+  output <- medrobust_bounds(
+    NIE_lower = bounds_result$NIE_lower,
+    NIE_upper = bounds_result$NIE_upper,
+    NDE_lower = bounds_result$NDE_lower,
+    NDE_upper = bounds_result$NDE_upper,
+    compatible_sets = bounds_result$compatible_sets,
+    n_compatible = as.integer(bounds_result$n_compatible),
+    n_evaluated = as.integer(bounds_result$n_evaluated),
+    falsified_proportion = bounds_result$falsified_proportion,
+    effect_scale = effect_scale,
+    misclassified_variable = misclassified_variable,
+    sensitivity_region = sens_region_s7,
+    naive_estimates = bounds_result$naive_estimates,
+    bootstrap_results = bootstrap_s7,
+    data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
+    call = match.call()
   )
 
   if (verbose) {

@@ -1,7 +1,7 @@
 Package: medrobust
 Type: Package
 Title: Robust Causal Mediation Analysis Under Differential Misclassification
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
     person("Davood", "Tofighi",
            email = "dtofighi@gmail.com",
@@ -30,6 +30,7 @@ LazyData: true
 Depends:
     R (>= 4.0.0)
 Imports:
+    S7 (>= 0.1.0),
     dplyr (>= 1.1.0),
     ggplot2 (>= 3.4.0),
     stats,
