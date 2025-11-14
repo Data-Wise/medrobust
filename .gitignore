@@ -54,6 +54,13 @@ rsconnect/
 
 # VSCode
 .vscode/
+medrobust.code-workspace
 
 # Testing
 tests/testthat/_snaps/
+
+# renv
+renv/library/
+renv/local/
+renv/staging/
+renv/.cache/
