@@ -4,22 +4,84 @@
 **Branch:** `claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im`
 **Status:** S7 OOP conversion complete, ready for local testing
 
+**Development Tools:** renv (reproducible environments), Quarto (modern vignettes), S7 (OOP system)
+
 ---
 
 ## Table of Contents
 
 1. [Initial Setup](#initial-setup)
-2. [Package Dependencies](#package-dependencies)
-3. [Building and Loading](#building-and-loading)
-4. [Testing the S7 Implementation](#testing-the-s7-implementation)
-5. [Running Test Suite](#running-test-suite)
-6. [Documentation Generation](#documentation-generation)
-7. [Package Validation](#package-validation)
-8. [Development Workflow](#development-workflow)
-9. [Merging to Main](#merging-to-main)
-10. [Validation Checklist](#validation-checklist)
-11. [Troubleshooting](#troubleshooting)
-12. [Next Steps](#next-steps)
+2. [renv Setup (Reproducible Environment)](#renv-setup-reproducible-environment)
+3. [Package Dependencies](#package-dependencies)
+4. [Building and Loading](#building-and-loading)
+5. [Testing the S7 Implementation](#testing-the-s7-implementation)
+6. [Running Test Suite](#running-test-suite)
+7. [Documentation Generation](#documentation-generation)
+8. [Package Validation](#package-validation)
+9. [Development Workflow](#development-workflow)
+10. [Local Editing and Git Workflow](#local-editing-and-git-workflow)
+11. [Merging to Main](#merging-to-main)
+12. [Validation Checklist](#validation-checklist)
+13. [Troubleshooting](#troubleshooting)
+14. [Next Steps](#next-steps)
+
+---
+
+## Overview: Complete Development Workflow
+
+This document guides you through local development of the medrobust R package using modern tools:
+
+### 🔄 Typical Development Session
+
+```bash
+# 1. Pull latest changes
+git pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+```r
+# 2. Restore packages (if renv.lock changed)
+renv::restore()
+
+# 3. Load package for development
+library(devtools)
+load_all()
+
+# 4. Make your changes to R/*.R files
+# 5. Test interactively
+# Try your changes in console...
+
+# 6. Run tests
+test()
+
+# 7. Update documentation
+document()
+
+# 8. Check package
+check()
+
+# 9. Update renv if you installed packages
+renv::snapshot()
+```
+
+```bash
+# 10. Commit and push
+git add .
+git commit -m "Your descriptive message"
+git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+### 📚 Key Resources
+
+- **`RENV_SETUP.md`** - Reproducible environment setup and troubleshooting
+- **`QUARTO_VIGNETTES_SETUP.md`** - Creating modern vignettes with Quarto
+- **This file (`WORKFLOW.md`)** - Complete local development workflow
+
+### 🎯 Quick Navigation
+
+- **First time setup?** → Start with [Initial Setup](#1-initial-setup) and [renv Setup](#2-renv-setup-reproducible-environment)
+- **Want to make changes?** → See [Local Editing and Git Workflow](#10-local-editing-and-git-workflow)
+- **Having problems?** → Check [Troubleshooting](#13-troubleshooting)
+- **Ready to merge?** → See [Merging to Main](#11-merging-to-main)
 
 ---
 
@@ -53,18 +115,97 @@ ls R/s7-methods.R
 ls R/simulate_dm_data.R
 ls R/power_analysis.R
 ls tests/testthat/test-s7-classes.R
+ls RENV_SETUP.md
+ls QUARTO_VIGNETTES_SETUP.md
 ```
 
 ---
 
-## 2. Package Dependencies
+## 2. renv Setup (Reproducible Environment)
 
-### Install Required Packages
+### Why renv?
 
-Open R and run:
+This package uses **renv** for reproducible package development:
+- ✅ All developers use the same package versions
+- ✅ Isolated from system R library
+- ✅ Easy rollback if updates break things
+- ✅ Simplified CI/CD setup
+
+**📖 See `RENV_SETUP.md` for comprehensive renv documentation.**
+
+### Initialize renv (First Time Only)
 
 ```r
-# Core dependencies
+# Install renv if not already installed
+install.packages("renv")
+
+# Navigate to medrobust directory
+setwd("path/to/medrobust")
+
+# Initialize renv (creates renv/ directory and renv.lock)
+renv::init()
+
+# This will:
+# - Create renv/library/ (project-specific packages)
+# - Create renv.lock (package versions)
+# - Create .Rprofile (activates renv on startup)
+# - Scan DESCRIPTION and install dependencies
+```
+
+### Restore Environment (Subsequent Times)
+
+```r
+# When you open the project, renv activates automatically
+# If packages are out of sync with renv.lock:
+
+renv::restore()
+
+# This installs all packages from renv.lock to match other developers
+```
+
+### Daily renv Usage
+
+```r
+# Check status (compares installed vs. renv.lock)
+renv::status()
+
+# After installing new packages, update renv.lock
+renv::snapshot()
+
+# Commit renv.lock to git after snapshot
+```
+
+---
+
+## 3. Package Dependencies
+
+### Option A: Using renv (Recommended)
+
+```r
+# renv automatically installs dependencies from DESCRIPTION
+# when you run renv::init() or renv::restore()
+
+# Check what's installed
+renv::status()
+
+# Install additional development tools
+renv::install(c(
+  "devtools",
+  "testthat",
+  "roxygen2",
+  "covr",
+  "pkgdown",
+  "quarto"
+))
+
+# Update renv.lock after installing
+renv::snapshot()
+```
+
+### Option B: Manual Installation (Without renv)
+
+```r
+# Core dependencies (from DESCRIPTION)
 install.packages(c(
   "S7",           # S7 OOP system
   "dplyr",        # Data manipulation
@@ -81,12 +222,6 @@ install.packages(c(
   "covr",         # Code coverage (optional)
   "pkgdown"       # Website generation (optional)
 ))
-
-# Optional visualization dependencies
-install.packages(c(
-  "gridExtra",    # For power_analysis plots
-  "patchwork"     # Alternative for plot composition
-))
 ```
 
 ### Verify Installation
@@ -95,11 +230,14 @@ install.packages(c(
 # Check S7 is installed correctly
 library(S7)
 packageVersion("S7")  # Should be >= 0.1.0
+
+# Check renv status (if using renv)
+renv::status()  # Should show "No issues found"
 ```
 
 ---
 
-## 3. Building and Loading
+## 4. Building and Loading
 
 ### Option A: Development Loading (Recommended)
 
@@ -137,7 +275,7 @@ library(medrobust)
 
 ---
 
-## 4. Testing the S7 Implementation
+## 5. Testing the S7 Implementation
 
 ### Test 1: Create S7 Objects Manually
 
@@ -346,7 +484,7 @@ if (exists("arsenic_synthetic")) {
 
 ---
 
-## 5. Running Test Suite
+## 6. Running Test Suite
 
 ### Run All Tests
 
@@ -397,7 +535,7 @@ Total: **31+ passing tests**
 
 ---
 
-## 6. Documentation Generation
+## 7. Documentation Generation
 
 ### Generate roxygen2 Documentation
 
@@ -445,7 +583,7 @@ build_site()
 
 ---
 
-## 7. Package Validation
+## 8. Package Validation
 
 ### R CMD check
 
@@ -500,80 +638,318 @@ R CMD check --no-manual --no-build-vignettes medrobust_0.1.0.9000.tar.gz
 
 ---
 
-## 8. Development Workflow
+## 9. Development Workflow
 
-### Typical Development Cycle
+### Typical Development Cycle (with renv)
+
+This is the complete cycle for making changes to the package:
 
 ```r
-# 1. Make changes to R/*.R files
-# 2. Load changes
+# 1. Start R session - renv activates automatically
+# 2. Check environment is in sync
+renv::status()
+
+# 3. If needed, restore packages
+renv::restore()
+
+# 4. Load package for development
+library(devtools)
 load_all()
 
-# 3. Test interactively
-# Try your changes in console
+# 5. Make changes to R/*.R files in your editor
+# 6. Reload changes
+load_all()
 
-# 4. Run tests
+# 7. Test interactively in console
+# Try your changes...
+
+# 8. Run automated tests
 test()
 
-# 5. Update documentation
+# 9. Update documentation
 document()
 
-# 6. Check package
+# 10. Check package
 check()
 
-# 7. Commit changes
-# (done in terminal)
+# 11. If you installed new packages, update renv.lock
+renv::snapshot()
+
+# 12. Commit changes (done in terminal - see next section)
 ```
 
-### Git Workflow
+### Quick Development Loop
 
-```bash
-# Check status
-git status
+For rapid iteration:
 
-# Stage changes
-git add R/your-modified-file.R
-git add tests/testthat/your-test-file.R
-
-# Commit with descriptive message
-git commit -m "Add feature X with S7 validation"
-
-# Push to remote
-git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
-
-# Create pull request on GitHub when ready
+```r
+# Edit R files → Save
+load_all()  # Reload
+# Test in console
+# Repeat
 ```
 
-### Making Changes
+### Before Committing Checklist
 
-**Example: Add a new S7 method**
+```r
+# 1. Load latest changes
+load_all()
 
-1. Edit `R/s7-methods.R`:
-   ```r
-   #' @export
-   method(plot, simulated_dm_data) <- function(x, ...) {
-     # Your implementation
-   }
-   ```
+# 2. All tests pass
+test()
 
-2. Add tests in `tests/testthat/test-s7-methods.R`:
-   ```r
-   test_that("plot method for simulated_dm_data works", {
-     # Your test
-   })
-   ```
+# 3. Documentation up to date
+document()
 
-3. Update and check:
-   ```r
-   load_all()
-   document()
-   test()
-   check()
-   ```
+# 4. Package checks clean
+check()
+
+# 5. renv.lock up to date (if you installed packages)
+renv::snapshot()
+
+# 6. Check git status
+system("git status")
+```
 
 ---
 
-## 9. Merging to Main
+## 10. Local Editing and Git Workflow
+
+### Making Local Changes to Files
+
+#### Step 1: Edit Files in Your Editor
+
+You can edit any file in the package using your preferred editor:
+- **R code**: `R/*.R` files
+- **Tests**: `tests/testthat/*.R` files
+- **Documentation**: Roxygen comments in R files
+- **Vignettes**: `vignettes/*.qmd` files (see `QUARTO_VIGNETTES_SETUP.md`)
+- **Configuration**: `DESCRIPTION`, `NAMESPACE` (auto-generated)
+
+**Example: Adding a new function**
+
+1. Create or edit file: `R/my_new_function.R`
+   ```r
+   #' Title of My Function
+   #'
+   #' @description
+   #' Description of what it does
+   #'
+   #' @param x Description of parameter
+   #' @return Description of return value
+   #' @export
+   #'
+   #' @examples
+   #' my_new_function(x = 5)
+   my_new_function <- function(x) {
+     # Implementation
+     x * 2
+   }
+   ```
+
+2. Test it:
+   ```r
+   load_all()
+   my_new_function(5)
+   ```
+
+3. Add tests in `tests/testthat/test-my_new_function.R`:
+   ```r
+   test_that("my_new_function works", {
+     expect_equal(my_new_function(5), 10)
+     expect_equal(my_new_function(0), 0)
+   })
+   ```
+
+4. Update documentation:
+   ```r
+   document()
+   ```
+
+#### Step 2: Check Your Changes
+
+```r
+# Load and test
+load_all()
+test()
+
+# Generate documentation
+document()
+
+# Run R CMD check
+check()
+```
+
+### Git Workflow: Committing Changes
+
+#### Basic Git Commands
+
+```bash
+# 1. Check what files changed
+git status
+
+# 2. View changes in detail
+git diff
+
+# 3. Stage specific files
+git add R/my_new_function.R
+git add tests/testthat/test-my_new_function.R
+git add man/my_new_function.Rd  # Auto-generated by document()
+
+# Or stage all modified files
+git add -u
+
+# 4. Commit with clear message
+git commit -m "Add my_new_function for computing X
+
+- Implements algorithm for X
+- Adds comprehensive tests
+- Includes documentation and examples"
+
+# 5. Push to remote
+git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+#### Committing renv Changes
+
+If you installed/updated packages:
+
+```bash
+# After renv::snapshot(), commit the lock file
+git add renv.lock
+git commit -m "Update package dependencies
+
+- Add ggplot2 for visualization
+- Update dplyr to 1.1.4"
+git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+### Git Workflow: Pulling Changes
+
+When other developers (or Claude) make changes:
+
+```bash
+# 1. Fetch and pull latest changes
+git pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+
+# 2. In R, restore packages if renv.lock changed
+```
+
+```r
+renv::restore()  # Install packages from updated renv.lock
+```
+
+### Complete Example: Adding a New Feature
+
+**Scenario**: Add a plot method for `simulated_dm_data`
+
+```bash
+# In terminal: Make sure you're on right branch
+git status
+git pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+```r
+# In R: Make sure environment is current
+renv::restore()
+load_all()
+```
+
+**Step 1: Edit** `R/s7-methods.R` and add:
+
+```r
+#' Plot Method for simulated_dm_data
+#'
+#' @export
+method(plot, simulated_dm_data) <- function(x, ...) {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("ggplot2 required for plotting")
+  }
+
+  # Create plot
+  p <- ggplot2::ggplot(x@observed, ggplot2::aes(x = M, y = Y)) +
+    ggplot2::geom_point() +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "Simulated Data")
+
+  print(p)
+  invisible(x)
+}
+```
+
+**Step 2: Add test** in `tests/testthat/test-s7-methods.R`:
+
+```r
+test_that("plot method for simulated_dm_data works", {
+  skip_if_not_installed("ggplot2")
+
+  sim <- simulate_dm_data(n = 50, seed = 123)
+  expect_no_error(plot(sim))
+})
+```
+
+**Step 3: Test locally**
+
+```r
+load_all()
+
+# Try it
+sim <- simulate_dm_data(n = 100, seed = 123)
+plot(sim)
+
+# Run tests
+test()
+
+# Update docs
+document()
+
+# Check package
+check()
+```
+
+**Step 4: Commit and push**
+
+```bash
+git status
+git add R/s7-methods.R
+git add tests/testthat/test-s7-methods.R
+git add man/  # Documentation files
+git add NAMESPACE  # May be updated
+
+git commit -m "Add plot method for simulated_dm_data class
+
+- Creates ggplot2 visualization of simulated data
+- Adds test coverage for plot method
+- Updates documentation"
+
+git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+### Troubleshooting Git Push
+
+If push is rejected:
+
+```bash
+# Pull latest changes first
+git pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+
+# Resolve any merge conflicts if they occur
+# Then push again
+git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
+```
+
+### Best Practices
+
+- ✅ **Commit frequently** with clear messages
+- ✅ **Test before committing** (`test()` and `check()`)
+- ✅ **Update renv.lock** after installing packages (`renv::snapshot()`)
+- ✅ **Pull before editing** to get latest changes
+- ✅ **Push regularly** to backup your work
+- ✅ **Use descriptive commit messages** explaining why, not just what
+
+---
+
+## 11. Merging to Main
 
 ### When Ready to Merge
 
@@ -612,7 +988,7 @@ git push origin --delete claude/check-measurement-error-project-011CV4N39kJ3T4Fd
 
 ---
 
-## 10. Validation Checklist
+## 12. Validation Checklist
 
 Before merging to main, verify:
 
@@ -662,7 +1038,7 @@ Before merging to main, verify:
 
 ---
 
-## 11. Troubleshooting
+## 13. Troubleshooting
 
 ### S7 Package Not Found
 
@@ -747,33 +1123,103 @@ try(sensitivity_region(
 # Should show error message
 ```
 
+### renv Issues
+
+**renv not activating:**
+```r
+# Manually activate
+renv::activate()
+
+# Or rebuild .Rprofile
+renv::init()
+```
+
+**Packages out of sync:**
+```r
+# Check status
+renv::status()
+
+# Restore from renv.lock
+renv::restore()
+
+# Or sync with DESCRIPTION
+renv::hydrate()
+renv::snapshot()
+```
+
+**Package installation fails:**
+```r
+# Clear cache and retry
+renv::purge("packagename")
+renv::install("packagename")
+
+# Or restore from clean state
+renv::restore(clean = TRUE)
+```
+
+**After pulling git changes, packages don't work:**
+```r
+# Restore packages from updated renv.lock
+renv::restore()
+
+# If problems persist, clean install
+renv::restore(clean = TRUE)
+```
+
+**📖 See `RENV_SETUP.md` for more renv troubleshooting.**
+
 ---
 
-## 12. Next Steps
+## 14. Next Steps
 
 ### Immediate Actions
 
-1. **Clone and test locally** (follow sections 1-4)
-2. **Run full test suite** to verify everything works
-3. **Generate documentation** to see how it looks
-4. **Run R CMD check** to catch any platform-specific issues
+1. **Initialize renv** (if not already done)
+   ```r
+   renv::init()
+   renv::snapshot()
+   ```
+   **See `RENV_SETUP.md` for detailed instructions.**
+
+2. **Clone and test locally** (follow sections 1-5)
+3. **Run full test suite** to verify everything works
+4. **Generate documentation** to see how it looks
+5. **Run R CMD check** to catch any platform-specific issues
 
 ### Short-term Goals
 
-5. **Create example datasets** (optional)
+6. **Create Quarto vignettes** (recommended)
+
+   **📖 See `QUARTO_VIGNETTES_SETUP.md` for complete guide with templates.**
+
+   Quick start:
+   ```bash
+   # Install Quarto CLI
+   # macOS: brew install quarto
+   # Windows: choco install quarto
+   # Linux: see QUARTO_VIGNETTES_SETUP.md
+   ```
+
+   ```r
+   # Add quarto to dependencies
+   renv::install("quarto")
+   renv::snapshot()
+
+   # Create vignettes/ directory
+   dir.create("vignettes", showWarnings = FALSE)
+
+   # Copy templates from QUARTO_VIGNETTES_SETUP.md
+   # - introduction.qmd
+   # - simulation-studies.qmd
+   # - power-analysis.qmd
+   ```
+
+7. **Create example datasets** (if not already present)
    - Generate realistic `arsenic_synthetic` data
    - Create `example_param_grids` object
    - Create `validation_subsample` data
 
-6. **Write vignettes** (optional but recommended)
-   ```r
-   # Create vignette
-   usethis::use_vignette("introduction")
-   usethis::use_vignette("simulation-studies")
-   usethis::use_vignette("power-analysis")
-   ```
-
-7. **Add more examples**
+8. **Add more examples**
    - Real-world case studies
    - Comparison with naive analysis
    - Sensitivity to misclassification
@@ -817,7 +1263,9 @@ try(sensitivity_region(
 
 ## Summary
 
-The medrobust package now has **complete S7 OOP implementation** with:
+The medrobust package now has **complete S7 OOP implementation** with modern development tools:
+
+### Package Features
 
 - **7 S7 classes** with full validation
 - **18 S7 methods** (print, summary, conversion, plotting)
@@ -825,12 +1273,25 @@ The medrobust package now has **complete S7 OOP implementation** with:
 - **31+ tests** covering all S7 functionality
 - **Complete documentation** for all datasets
 
+### Development Tools
+
+- **renv** for reproducible environments (see `RENV_SETUP.md`)
+- **Quarto** for modern vignettes (see `QUARTO_VIGNETTES_SETUP.md`)
+- **S7** for type-safe object-oriented programming
+- **devtools** for streamlined package development
+
 ### Quick Start Command Sequence
 
 ```r
 # In R console
 library(devtools)
 setwd("path/to/medrobust")
+
+# Initialize renv (first time only)
+renv::init()
+
+# Or restore environment (subsequent times)
+renv::restore()
 
 # Load and test
 load_all()
@@ -844,6 +1305,7 @@ print(sim)
 
 ### Key Files to Review
 
+**Core Implementation:**
 - `R/s7-classes.R` - S7 class definitions
 - `R/s7-methods.R` - S7 method implementations
 - `R/simulate_dm_data.R` - Data simulation
@@ -851,13 +1313,34 @@ print(sim)
 - `tests/testthat/test-s7-classes.R` - S7 tests
 - `NAMESPACE` - Exported functions/classes
 
+**Setup Guides:**
+- `WORKFLOW.md` - This file (local development workflow)
+- `RENV_SETUP.md` - Reproducible environment setup
+- `QUARTO_VIGNETTES_SETUP.md` - Modern vignette creation
+
+**Configuration:**
+- `DESCRIPTION` - Package metadata and dependencies
+- `renv.lock` - Package versions (created after `renv::init()`)
+- `.Rprofile` - Activates renv (created after `renv::init()`)
+
 ---
 
 **Questions or Issues?**
 
-- Check troubleshooting section above
+- Check [Troubleshooting](#13-troubleshooting) section above
 - Review test files for usage examples
 - Examine existing S7 methods for patterns
 - Run `devtools::check()` for diagnostic information
+- Consult `RENV_SETUP.md` for renv problems
+- Consult `QUARTO_VIGNETTES_SETUP.md` for vignette help
 
 **The package is ready for local testing and use!** 🎉
+
+---
+
+**Next Steps:**
+
+1. Initialize renv: `renv::init()`
+2. Create Quarto vignettes (see `QUARTO_VIGNETTES_SETUP.md`)
+3. Test all functionality locally
+4. Merge to main when ready
