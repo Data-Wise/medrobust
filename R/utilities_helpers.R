@@ -103,8 +103,8 @@ validate_sensitivity_region <- function(sens_region) {
       stop("'", elem, "' must be a numeric vector of length 2")
     }
 
-    if (range_vals[1] >= range_vals[2]) {
-      stop("'", elem, "' must have min < max")
+    if (range_vals[1] > range_vals[2]) {
+      stop("'", elem, "' must have min <= max")
     }
 
     # Check bounds for probabilities

@@ -7,6 +7,7 @@
 #' @inheritParams bound_ne
 #' @keywords internal
 #' @noRd
+#' @importFrom rlang sym !!
 bound_ne_exposure <- function(data,
                               exposure,
                               mediator,

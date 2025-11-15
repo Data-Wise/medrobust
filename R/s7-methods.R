@@ -98,7 +98,9 @@ method(summary, medrobust_bounds) <- function(object, ...) {
   print(object)
 
   # Additional diagnostics
-  cat("ADDITIONAL DIAGNOSTICS\n")
+  cat("\n")
+  cat(strrep("=", 70), "\n")
+  cat("DETAILED SUMMARY\n")
   cat(strrep("=", 70), "\n\n")
 
   # Sensitivity region
@@ -218,7 +220,7 @@ method(print, compatibility_test) <- function(x, ...) {
 
   # Result
   if (x@compatible) {
-    cat("RESULT: COMPATIBLE ✓\n")
+    cat("RESULT: Compatible ✓\n")
     cat(strrep("-", 70), "\n\n")
 
     cat("The specified misclassification parameters are consistent with\n")
@@ -235,7 +237,7 @@ method(print, compatibility_test) <- function(x, ...) {
     }
 
   } else {
-    cat("RESULT: INCOMPATIBLE ✗\n")
+    cat("RESULT: NOT Compatible ✗\n")
     cat(strrep("-", 70), "\n\n")
 
     if (!is.null(x@reason)) {
@@ -280,13 +282,23 @@ method(summary, compatibility_test) <- function(object, ...) {
 
   # Additional details if available
   if (!is.null(object@stratum_details) && length(object@stratum_details) > 0) {
-    cat("STRATUM-LEVEL DETAILS\n")
+    cat("\n")
+    cat(strrep("=", 70), "\n")
+    cat("DETAILED COMPATIBILITY ANALYSIS\n")
     cat(strrep("=", 70), "\n\n")
+
+    cat("STRATUM-LEVEL DETAILS\n")
+    cat(strrep("-", 70), "\n\n")
 
     for (stratum_name in names(object@stratum_details)) {
       detail <- object@stratum_details[[stratum_name]]
       cat("Stratum:", stratum_name, "\n")
-      cat("  Compatible:", if (is.na(detail$compatible)) "NA" else detail$compatible, "\n")
+      if (!is.null(detail$satisfied)) {
+        cat("  Satisfied:", detail$satisfied, "\n")
+      }
+      if (!is.null(detail$n_satisfied)) {
+        cat("  Constraints satisfied:", detail$n_satisfied, "\n")
+      }
       if (!is.null(detail$reason)) {
         cat("  Reason:", detail$reason, "\n")
       }
@@ -457,7 +469,7 @@ method(print, bootstrap_results) <- function(x, ...) {
   cat(strrep("-", 50), "\n")
   cat(sprintf("Method: %s\n", x@method))
   cat(sprintf("Replications: %d (failed: %d)\n", x@n_reps, x@n_failed))
-  cat(sprintf("Confidence Level: %.1f%%\n\n", 100 * x@confidence_level))
+  cat(sprintf("Confidence Level: %.0f%%\n\n", 100 * x@confidence_level))
 
   cat(sprintf("NIE Lower: [%.4f, %.4f]\n", x@nie_lower_ci[1], x@nie_lower_ci[2]))
   cat(sprintf("NIE Upper: [%.4f, %.4f]\n", x@nie_upper_ci[1], x@nie_upper_ci[2]))

@@ -57,8 +57,8 @@ NULL
           "psi_sn_range must have length 2 (min, max)"
         } else if (value[1] <= 0) {
           "psi_sn_range values must be positive (odds ratios)"
-        } else if (value[1] >= value[2]) {
-          "psi_sn_range[1] must be < psi_sn_range[2]"
+        } else if (value[1] > value[2]) {
+          "psi_sn_range[1] must be <= psi_sn_range[2]"
         }
       }
     ),
@@ -69,8 +69,8 @@ NULL
           "psi_sp_range must have length 2 (min, max)"
         } else if (value[1] <= 0) {
           "psi_sp_range values must be positive (odds ratios)"
-        } else if (value[1] >= value[2]) {
-          "psi_sp_range[1] must be < psi_sp_range[2]"
+        } else if (value[1] > value[2]) {
+          "psi_sp_range[1] must be <= psi_sp_range[2]"
         }
       }
     )

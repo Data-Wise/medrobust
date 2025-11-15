@@ -81,7 +81,7 @@ compute_joint_distribution <- function(var1, var2, var3) {
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr group_by summarise n
+#' @importFrom dplyr group_by summarise n cur_group_id
 compute_stratified_joint_distribution <- function(data, exposure, mediator,
                                                   outcome, confounders) {
 
