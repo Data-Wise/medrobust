@@ -273,7 +273,8 @@ We can test whether specific misclassification parameters are compatible with th
 #| tbl-cap: "Compatibility test results for specified misclassification parameters"
 #| message: false
 
-# Test the true parameters (we know them from simulation)
+# Test specific misclassification parameters
+# psi must contain all four parameters: sn0, sp0, psi_sn, psi_sp
 compatibility <- check_compatibility(
   data = sim_data$observed,
   exposure = "A_star",
@@ -281,9 +282,12 @@ compatibility <- check_compatibility(
   outcome = "Y",
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
-  psi = list(sn = 1.5, sp = 1.0),
-  sn0 = 0.85,
-  sp0 = 0.90
+  psi = list(
+    sn0 = 0.85,      # Baseline sensitivity
+    sp0 = 0.90,      # Baseline specificity
+    psi_sn = 1.5,    # Differential sensitivity (OR)
+    psi_sp = 1.0     # Non-differential specificity
+  )
 )
 
 print(compatibility)
