@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   warning = FALSE,
   message = FALSE,
-  eval = FALSE  # Don't evaluate code chunks (examples only)
+  eval = FALSE # Don't evaluate code chunks (examples only)
 )
 ```
 
@@ -47,11 +47,19 @@ With a regular grid approach:
 grid_sizes <- data.frame(
   n_grid = c(5, 10, 20, 50, 100),
   evaluations = c(5^4, 10^4, 20^4, 50^4, 100^4),
-  time_estimate = c("10-30 sec", "2-5 min", "30-60 min", "~270 hrs", "~180 days")
+  time_estimate = c(
+    "10-30 sec",
+    "2-5 min",
+    "30-60 min",
+    "~270 hrs",
+    "~180 days"
+  )
 )
-knitr::kable(grid_sizes,
-             col.names = c("Grid Resolution", "Evaluations", "Estimated Time*"),
-             caption = "*Single-core, approximate")
+knitr::kable(
+  grid_sizes,
+  col.names = c("Grid Resolution", "Evaluations", "Estimated Time*"),
+  caption = "*Single-core, approximate"
+)
 ```
 
 This exponential growth makes fine-grained grids (n_grid ≥ 50) impractical with exhaustive search.
@@ -81,16 +89,20 @@ Instead of evaluating all n_grid^4^ points, advanced algorithms sample strategic
 ```{r}
 #| echo: false
 lhs_perf <- data.frame(
-  Metric = c("Evaluations (n_grid=10)",
-             "Evaluations (n_grid=50)",
-             "Speedup (n_grid=10)",
-             "Speedup (n_grid=50)",
-             "Accuracy"),
-  Value = c("~100 (vs 10,000)",
-            "~2,500 (vs 6.25M)",
-            "67x faster",
-            "~9,000x faster",
-            "Bounds within 10-30% width")
+  Metric = c(
+    "Evaluations (n_grid=10)",
+    "Evaluations (n_grid=50)",
+    "Speedup (n_grid=10)",
+    "Speedup (n_grid=50)",
+    "Accuracy"
+  ),
+  Value = c(
+    "~100 (vs 10,000)",
+    "~2,500 (vs 6.25M)",
+    "67x faster",
+    "~9,000x faster",
+    "Bounds within 10-30% width"
+  )
 )
 knitr::kable(lhs_perf)
 ```
@@ -113,7 +125,7 @@ bounds <- bound_ne(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
-  n_grid = 50  # LHS evaluates ~2,500 points instead of 6.25M
+  n_grid = 50 # LHS evaluates ~2,500 points instead of 6.25M
 )
 ```
 
@@ -122,11 +134,13 @@ bounds <- bound_ne(
 **What it is**: Exhaustive evaluation of all n_grid^4^ combinations.
 
 **Performance**:
+
 - Evaluations: n_grid^4^ (always)
 - Speed: Baseline (1x)
 - Accuracy: Exact min/max over grid
 
 **When to use**:
+
 - Publication-quality results requiring exact bounds
 - Small grids (n_grid ≤ 10) where speed is acceptable
 - When computational budget allows
@@ -139,7 +153,7 @@ bounds <- bound_ne(
 bounds_exact <- bound_ne(
   ...,
   n_grid = 10,
-  grid_method = "regular"  # 10,000 evaluations
+  grid_method = "regular" # 10,000 evaluations
 )
 ```
 
@@ -188,6 +202,7 @@ bounds_sobol <- bound_ne(
 - Accuracy: Good for identifying compatible regions
 
 **When to use**:
+
 - High falsification rate expected (>80% incompatible)
 - Sparse compatible regions
 - Medium-sized grids (10 ≤ n_grid ≤ 30)
@@ -267,7 +282,7 @@ bounds_binary <- bound_ne(
 bounds_auto <- bound_ne(
   ...,
   n_grid = 50,
-  grid_method = "auto"  # Adapts to your data
+  grid_method = "auto" # Adapts to your data
 )
 ```
 
@@ -310,10 +325,20 @@ perf_comp <- data.frame(
   NDE_Lower = c(2.030, 1.996, 2.080, 2.085, 2.050),
   NDE_Upper = c(3.328, 3.476, 2.971, 2.965, 3.250)
 )
-knitr::kable(perf_comp,
-             col.names = c("Method", "Time (sec)", "Evaluations", "Speedup",
-                          "NIE Lower", "NIE Upper", "NDE Lower", "NDE Upper"),
-             caption = "*Adaptive doesn't help when all points are compatible")
+knitr::kable(
+  perf_comp,
+  col.names = c(
+    "Method",
+    "Time (sec)",
+    "Evaluations",
+    "Speedup",
+    "NIE Lower",
+    "NIE Upper",
+    "NDE Lower",
+    "NDE Upper"
+  ),
+  caption = "*Adaptive doesn't help when all points are compatible"
+)
 ```
 
 **Key observations**:
@@ -331,9 +356,11 @@ large_grid <- data.frame(
   Est_Time = c("~270 hours", "**~1.8 min**", "~1.8 min", "~0.4-1.8 min"),
   Speedup = c("1x", "**~9,000x**", "~9,000x", "~9,000-40,000x")
 )
-knitr::kable(large_grid,
-             col.names = c("Method", "Evaluations", "Estimated Time", "Speedup"),
-             caption = "Performance for n_grid=50 (single-core)")
+knitr::kable(
+  large_grid,
+  col.names = c("Method", "Evaluations", "Estimated Time", "Speedup"),
+  caption = "Performance for n_grid=50 (single-core)"
+)
 ```
 
 ## Recommended Workflow
@@ -356,7 +383,7 @@ bounds_quick <- bound_ne(
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
   n_grid = 20,
-  grid_method = "lhs",  # Fast exploration
+  grid_method = "lhs", # Fast exploration
   verbose = TRUE
 )
 
@@ -379,7 +406,7 @@ bounds_refined <- bound_ne(
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
   n_grid = 50,
-  grid_method = "auto",  # Adapts to data characteristics
+  grid_method = "auto", # Adapts to data characteristics
   verbose = TRUE
 )
 ```
@@ -402,8 +429,8 @@ bounds_exact <- bound_ne(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
-  n_grid = 100,  # High resolution
-  grid_method = "regular",  # Exact bounds
+  n_grid = 100, # High resolution
+  grid_method = "regular", # Exact bounds
   parallel = TRUE,
   n_cores = n_cores,
   verbose = TRUE
@@ -420,12 +447,16 @@ Sampling methods (LHS, Sobol) produce approximate bounds:
 #| echo: false
 accuracy <- data.frame(
   Comparison = c("Regular vs LHS", "Regular vs Sobol", "Regular vs Binary"),
-  Typical_Difference = c("10-30% narrower with sampling",
-                        "10-30% narrower with sampling",
-                        "5-15% variation"),
-  Acceptable_For = c("Exploratory, sensitivity analysis, time constraints",
-                    "Exploratory, high-dimensional",
-                    "Boundary estimation, monotonic cases")
+  Typical_Difference = c(
+    "10-30% narrower with sampling",
+    "10-30% narrower with sampling",
+    "5-15% variation"
+  ),
+  Acceptable_For = c(
+    "Exploratory, sensitivity analysis, time constraints",
+    "Exploratory, high-dimensional",
+    "Boundary estimation, monotonic cases"
+  )
 )
 knitr::kable(accuracy)
 ```
@@ -461,8 +492,8 @@ bounds_fast <- bound_ne(
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
   n_grid = 50,
-  grid_method = "lhs",    # 99% fewer evaluations
-  parallel = TRUE,         # Additional speedup
+  grid_method = "lhs", # 99% fewer evaluations
+  parallel = TRUE, # Additional speedup
   n_cores = 8,
   verbose = TRUE
 )
@@ -481,25 +512,38 @@ bounds_fast <- bound_ne(
 ```{r}
 #| echo: false
 selection <- data.frame(
-  Scenario = c("Initial exploration",
-               "Large grids (n_grid > 20)",
-               "Exact results needed",
-               "Sparse compatibility",
-               "Monotonic bounds",
-               "Unsure",
-               "Publication quality"),
-  Recommended = c("LHS", "LHS or Sobol", "Regular", "Sobol or Adaptive",
-                 "Binary", "Auto", "Regular (large n_grid)"),
-  Reason = c("Fastest, broad coverage",
-            "1000x+ speedup",
-            "Complete coverage",
-            "Focused search",
-            "Finds edges efficiently",
-            "Adapts to problem",
-            "Exact bounds")
+  Scenario = c(
+    "Initial exploration",
+    "Large grids (n_grid > 20)",
+    "Exact results needed",
+    "Sparse compatibility",
+    "Monotonic bounds",
+    "Unsure",
+    "Publication quality"
+  ),
+  Recommended = c(
+    "LHS",
+    "LHS or Sobol",
+    "Regular",
+    "Sobol or Adaptive",
+    "Binary",
+    "Auto",
+    "Regular (large n_grid)"
+  ),
+  Reason = c(
+    "Fastest, broad coverage",
+    "1000x+ speedup",
+    "Complete coverage",
+    "Focused search",
+    "Finds edges efficiently",
+    "Adapts to problem",
+    "Exact bounds"
+  )
 )
-knitr::kable(selection,
-             col.names = c("Scenario", "Recommended Method", "Reason"))
+knitr::kable(
+  selection,
+  col.names = c("Scenario", "Recommended Method", "Reason")
+)
 ```
 
 ## Algorithm Implementation Details
@@ -535,16 +579,20 @@ All methods use:
 #| echo: false
 complexity <- data.frame(
   Method = c("Regular", "LHS", "Sobol", "Adaptive", "Binary", "Auto"),
-  Time_Complexity = c("O(n_grid^4)",
-                     "O(sqrt(n_grid^4)) = O(n_grid^2)",
-                     "O(n_grid^2)",
-                     "O(n_coarse^4 + k·n_fine^4)",
-                     "O(log(n_grid) · n_boundary)",
-                     "O(n_probe + best_method)"),
+  Time_Complexity = c(
+    "O(n_grid^4)",
+    "O(sqrt(n_grid^4)) = O(n_grid^2)",
+    "O(n_grid^2)",
+    "O(n_coarse^4 + k·n_fine^4)",
+    "O(log(n_grid) · n_boundary)",
+    "O(n_probe + best_method)"
+  ),
   Space_Complexity = c("O(n_compatible)", rep("O(n_compatible)", 5))
 )
-knitr::kable(complexity,
-             col.names = c("Method", "Time Complexity", "Space Complexity"))
+knitr::kable(
+  complexity,
+  col.names = c("Method", "Time Complexity", "Space Complexity")
+)
 ```
 
 Where:
@@ -575,7 +623,7 @@ bounds <- bound_ne(
     psi_sp_range = c(0.8, 1.5)
   ),
   n_grid = 20,
-  grid_method = "lhs"  # Fast
+  grid_method = "lhs" # Fast
 )
 ```
 
@@ -597,11 +645,11 @@ bounds_pub <- bound_ne(
     psi_sn_range = c(0.8, 1.5),
     psi_sp_range = c(0.8, 1.5)
   ),
-  n_grid = 100,            # High resolution
+  n_grid = 100, # High resolution
   grid_method = "regular", # Exact
   parallel = TRUE,
   n_cores = 8,
-  bootstrap = TRUE,        # Add CIs
+  bootstrap = TRUE, # Add CIs
   bootstrap_reps = 1000
 )
 ```
