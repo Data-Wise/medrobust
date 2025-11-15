@@ -11,6 +11,9 @@ format:
     theme: cosmo
     highlight-style: github
     df-print: paged
+execute:
+  eval: false
+  echo: true
 vignette: >
   %\VignetteIndexEntry{Getting Started with medrobust}
   %\VignetteEngine{quarto::html}
@@ -70,9 +73,8 @@ devtools::install_github("data-wise/medrobust")
 
 ```{r}
 #| label: load-package
-#| eval: true
+#| eval: false
 #| echo: true
-#| message: false
 library(medrobust)
 ```
 
@@ -246,7 +248,7 @@ summary(bounds)
 
 ```{r}
 #| label: fig-sensitivity-plot
-#| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios
+#| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios"
 #| eval: true
 #| echo: true
 #| message: false
@@ -366,8 +368,7 @@ As a special case, we can handle non-differential misclassification by setting `
 
 ```{r}
 #| label: tbl-nondiff-misclass
-#| tbl-cap: "Computed bounds on NIE and NDE under non-differential exposure
-#| misclassification"
+#| tbl-cap: "Computed bounds on NIE and NDE under non-differential exposure misclassification"
 #| eval: true
 #| echo: true
 #| message: false
