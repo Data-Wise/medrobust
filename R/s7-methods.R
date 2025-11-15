@@ -18,6 +18,7 @@ NULL
 #'
 #' @param x A medrobust_bounds object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, medrobust_bounds) <- function(x, ...) {
   cat("\n")
@@ -90,6 +91,7 @@ method(print, medrobust_bounds) <- function(x, ...) {
 #'
 #' @param object A medrobust_bounds object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(summary, medrobust_bounds) <- function(object, ...) {
   # Print basic info
@@ -146,6 +148,7 @@ method(summary, medrobust_bounds) <- function(object, ...) {
 #'
 #' @param x A medrobust_bounds object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(as.data.frame, medrobust_bounds) <- function(x, ...) {
   result <- data.frame(
@@ -190,6 +193,7 @@ method(as.data.frame, medrobust_bounds) <- function(x, ...) {
 #'
 #' @param x A compatibility_test object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, compatibility_test) <- function(x, ...) {
   cat("\n")
@@ -266,7 +270,9 @@ method(print, compatibility_test) <- function(x, ...) {
 #' Summary method for compatibility_test
 #'
 #' @param object A compatibility_test object
+#' @noRd
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(summary, compatibility_test) <- function(object, ...) {
   # Print basic info
@@ -303,7 +309,9 @@ method(summary, compatibility_test) <- function(object, ...) {
 #'
 #' @param x A falsification_summary object
 #' @param digits Integer. Number of decimal places. Default is 3.
+#' @noRd
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, .falsification_summary_class) <- function(x, digits = 3, ...) {
   cat("\n")
@@ -383,7 +391,9 @@ method(print, .falsification_summary_class) <- function(x, digits = 3, ...) {
 #' Summary method for falsification_summary
 #'
 #' @param object A falsification_summary object
+#' @noRd
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(summary, .falsification_summary_class) <- function(object, ...) {
   print(object)
@@ -398,7 +408,9 @@ method(summary, .falsification_summary_class) <- function(object, ...) {
 #' Print method for sensitivity_region
 #'
 #' @param x A sensitivity_region object
+#' @noRd
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, .sensitivity_region_class) <- function(x, ...) {
   cat("\nSensitivity Region (Θ_ψ):\n")
@@ -419,8 +431,10 @@ method(print, .sensitivity_region_class) <- function(x, ...) {
 
 #' Print method for bootstrap_results
 #'
+#' @noRd
 #' @param x A bootstrap_results object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, bootstrap_results) <- function(x, ...) {
   cat("\nBootstrap Confidence Intervals\n")
@@ -444,8 +458,10 @@ method(print, bootstrap_results) <- function(x, ...) {
 
 #' Print method for simulated_dm_data
 #'
+#' @noRd
 #' @param x A simulated_dm_data object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, simulated_dm_data) <- function(x, ...) {
   
@@ -532,6 +548,7 @@ method(print, simulated_dm_data) <- function(x, ...) {
 #'
 #' @param object A simulated_dm_data object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(summary, simulated_dm_data) <- function(object, ...) {
   
@@ -584,6 +601,7 @@ method(summary, simulated_dm_data) <- function(object, ...) {
 #'
 #' @param x A power_analysis_result object
 #' @param ... Additional arguments (ignored)
+#' @noRd
 #' @export
 method(print, power_analysis_result) <- function(x, ...) {
   
@@ -638,6 +656,7 @@ method(print, power_analysis_result) <- function(x, ...) {
 #' @param ... Additional arguments (ignored)
 #' @importFrom ggplot2 ggplot aes geom_line geom_point geom_hline geom_ribbon
 #' @importFrom ggplot2 scale_y_continuous labs theme_bw
+#' @noRd
 #' @export
 method(plot, power_analysis_result) <- function(x, ...) {
   

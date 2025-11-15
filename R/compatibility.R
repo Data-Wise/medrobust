@@ -4,7 +4,12 @@
 #' Tests whether a specific set of misclassification parameters is compatible
 #' with the observed data distribution by evaluating testable implications.
 #'
-#' @inheritParams bound_ne
+#' @param data Data frame containing exposure, mediator, outcome, and confounders
+#' @param exposure Character string name of exposure variable
+#' @param mediator Character string name of mediator variable
+#' @param outcome Character string name of outcome variable
+#' @param confounders Character vector of confounder names
+#' @param misclassified_variable Either "exposure" or "mediator"
 #' @param psi A named list of sensitivity parameters containing:
 #'   \itemize{
 #'     \item \code{sn0}: Sensitivity when Y=0
