@@ -528,17 +528,4 @@ as_sensitivity_region <- function(region_list) {
 }
 
 
-#' Convert sensitivity_region to list
-#'
-#' @param x sensitivity_region S7 object
-#' @param ... Additional arguments (ignored)
-#' @return Named list
-#' @export
-as.list.sensitivity_region <- function(x, ...) {
-  list(
-    sn0_range = x@sn0_range,
-    sp0_range = x@sp0_range,
-    psi_sn_range = x@psi_sn_range,
-    psi_sp_range = x@psi_sp_range
-  )
-}
+# Note: as.list method for sensitivity_region is defined as an S7 method in s7-methods.R

@@ -151,34 +151,34 @@ method(summary, medrobust_bounds) <- function(object, ...) {
 #' @noRd
 #' @export
 method(as.data.frame, medrobust_bounds) <- function(x, ...) {
+  # Create wide-format data frame with one row
   result <- data.frame(
-    effect = c("NIE", "NIE", "NDE", "NDE"),
-    bound = c("lower", "upper", "lower", "upper"),
-    value = c(x@NIE_lower, x@NIE_upper, x@NDE_lower, x@NDE_upper),
-    width = c(
-      x@NIE_upper - x@NIE_lower,
-      x@NIE_upper - x@NIE_lower,
-      x@NDE_upper - x@NDE_lower,
-      x@NDE_upper - x@NDE_lower
-    ),
-    scale = x@effect_scale,
+    NIE_lower = x@NIE_lower,
+    NIE_upper = x@NIE_upper,
+    NDE_lower = x@NDE_lower,
+    NDE_upper = x@NDE_upper,
+    NIE_width = x@NIE_upper - x@NIE_lower,
+    NDE_width = x@NDE_upper - x@NDE_lower,
+    effect_scale = x@effect_scale,
+    misclassified_variable = x@misclassified_variable,
+    n_compatible = x@n_compatible,
+    n_evaluated = x@n_evaluated,
+    falsified_proportion = x@falsified_proportion,
     stringsAsFactors = FALSE
   )
 
-  # Add CIs if available
+  # Add bootstrap CIs if available
   if (!is.null(x@bootstrap_results)) {
-    result$ci_lower <- c(
-      x@bootstrap_results@nie_lower_ci[1],
-      x@bootstrap_results@nie_upper_ci[1],
-      x@bootstrap_results@nde_lower_ci[1],
-      x@bootstrap_results@nde_upper_ci[1]
-    )
-    result$ci_upper <- c(
-      x@bootstrap_results@nie_lower_ci[2],
-      x@bootstrap_results@nie_upper_ci[2],
-      x@bootstrap_results@nde_lower_ci[2],
-      x@bootstrap_results@nde_upper_ci[2]
-    )
+    result$NIE_lower_ci_lower <- x@bootstrap_results@nie_lower_ci[1]
+    result$NIE_lower_ci_upper <- x@bootstrap_results@nie_lower_ci[2]
+    result$NIE_upper_ci_lower <- x@bootstrap_results@nie_upper_ci[1]
+    result$NIE_upper_ci_upper <- x@bootstrap_results@nie_upper_ci[2]
+    result$NDE_lower_ci_lower <- x@bootstrap_results@nde_lower_ci[1]
+    result$NDE_lower_ci_upper <- x@bootstrap_results@nde_lower_ci[2]
+    result$NDE_upper_ci_lower <- x@bootstrap_results@nde_upper_ci[1]
+    result$NDE_upper_ci_upper <- x@bootstrap_results@nde_upper_ci[2]
+    result$bootstrap_method <- x@bootstrap_results@method
+    result$bootstrap_n_reps <- x@bootstrap_results@n_reps
   }
 
   return(result)
@@ -422,6 +422,22 @@ method(print, .sensitivity_region_class) <- function(x, ...) {
   cat(strrep("-", 40), "\n\n")
 
   invisible(x)
+}
+
+
+#' as.list method for sensitivity_region
+#'
+#' @param x A sensitivity_region object
+#' @param ... Additional arguments (ignored)
+#' @noRd
+#' @export
+method(as.list, .sensitivity_region_class) <- function(x, ...) {
+  list(
+    sn0_range = x@sn0_range,
+    sp0_range = x@sp0_range,
+    psi_sn_range = x@psi_sn_range,
+    psi_sp_range = x@psi_sp_range
+  )
 }
 
 

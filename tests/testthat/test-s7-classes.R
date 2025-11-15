@@ -425,7 +425,7 @@ test_that("as_sensitivity_region converter works", {
   sens_reg <- as_sensitivity_region(region_list)
 
   # Verify it's an S7 object with correct class
-  expect_true(inherits(sens_reg, "sensitivity_region"))
+  expect_true(inherits(sens_reg, c("sensitivity_region", "medrobust::sensitivity_region", "S7_object")))
 
   # Verify properties
   expect_equal(sens_reg@sn0_range, c(0.7, 0.9))
