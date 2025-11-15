@@ -31,11 +31,11 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' data("arsenic_synthetic")
 #' str(arsenic_synthetic)
 #' table(arsenic_synthetic$A_star, arsenic_synthetic$Y)
 #'
-#' \dontrun{
 #' # Run analysis
 #' bounds <- bound_ne(
 #'   data = arsenic_synthetic,
@@ -87,11 +87,11 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' data("example_param_grids")
 #' names(example_param_grids)
 #'
 #' # Use a pre-defined grid
-#' \dontrun{
 #' bounds <- bound_ne(
 #'   data = my_data,
 #'   exposure = "A_star",
@@ -132,6 +132,7 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' data("validation_subsample")
 #'
 #' # Compute misclassification parameters by outcome
@@ -142,6 +143,7 @@
 #'     Sn = sum(A == 1 & A_star == 1) / sum(A == 1),
 #'     Sp = sum(A == 0 & A_star == 0) / sum(A == 0)
 #'   )
+#' }
 #'
 #' @keywords datasets
 "validation_subsample"

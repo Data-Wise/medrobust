@@ -5,7 +5,10 @@
 #'
 #' @name s7-methods
 #' @keywords internal
+NULL
+
 #' @importFrom S7 method method<-
+NULL
 
 # =============================================================================
 # Methods for medrobust_bounds

@@ -3,8 +3,9 @@
 #' @description
 #' Miscellaneous helper functions for computing causal effects.
 #'
+#' @name effect_helpers
 #' @keywords internal
-#' @noRd
+NULL
 
 #' Check for Effect Reversal
 #'
