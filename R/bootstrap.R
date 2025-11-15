@@ -67,10 +67,10 @@ compute_bootstrap_ci <- function(data,
       )
 
       return(c(
-        nie_lower = boot_bounds$NIE_lower,
-        nie_upper = boot_bounds$NIE_upper,
-        nde_lower = boot_bounds$NDE_lower,
-        nde_upper = boot_bounds$NDE_upper
+        nie_lower = boot_bounds@NIE_lower,
+        nie_upper = boot_bounds@NIE_upper,
+        nde_lower = boot_bounds@NDE_lower,
+        nde_upper = boot_bounds@NDE_upper
       ))
 
     }, error = function(e) {

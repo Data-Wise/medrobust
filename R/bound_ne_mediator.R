@@ -29,54 +29,12 @@ bound_ne_mediator <- function(data,
   Y_name <- outcome
   C_names <- confounders
 
-  # Create parameter grid
-  if (verbose) cat("Creating parameter grid...\n")
-  param_grid <- create_parameter_grid(sensitivity_region, n_grid)
-  n_total <- nrow(param_grid)
-
   # Compute naive estimates (for comparison)
   naive_estimates <- compute_naive_effects(data, A_name, M_star_name,
                                            Y_name, C_names, effect_scale)
 
-  # Initialize storage for compatible sets and effects
-  compatible_params <- list()
-  nie_values <- numeric(0)
-  nde_values <- numeric(0)
-
-  # Setup parallel processing if requested
-  if (parallel) {
-    if (is.null(n_cores)) {
-      n_cores <- parallel::detectCores() - 1
-    }
-    if (verbose) cat("Using", n_cores, "cores for parallel processing\n")
-
-    cl <- parallel::makeCluster(n_cores)
-    on.exit(parallel::stopCluster(cl))
-
-    # Export necessary objects to cluster
-    parallel::clusterExport(cl, c("data", "A_name", "M_star_name", "Y_name",
-                                   "C_names", "effect_scale"),
-                           envir = environment())
-
-    # Export required utility functions to workers
-    parallel::clusterExport(cl, c(
-      "odds_to_prob", "prob_to_odds"
-    ), envir = asNamespace("medrobust"))
-
-    # Load required packages on each worker
-    parallel::clusterEvalQ(cl, {
-      library(dplyr)
-      library(rlang)
-    })
-  }
-
-  # Progress bar
-  if (verbose) {
-    pb <- txtProgressBar(min = 0, max = n_total, style = 3)
-  }
-
-  # Main loop over parameter grid
-  evaluate_param_set <- function(i, param_row) {
+  # Define evaluation function for parameter sets
+  evaluate_param_set <- function(param_row) {
     # Extract parameters
     sn0 <- param_row$sn0
     sp0 <- param_row$sp0
@@ -243,24 +201,125 @@ bound_ne_mediator <- function(data,
     }
   }
 
-  # Execute loop (parallel or sequential)
-  if (parallel) {
-    results <- parallel::parLapply(cl, 1:n_total, function(i) {
-      evaluate_param_set(i, param_grid[i, ])
-    })
+  # Grid search algorithm dispatch
+  use_advanced_method <- (grid_method != "regular") &&
+    ((grid_method == "adaptive" && use_adaptive_grid && n_grid >= 10) ||
+       grid_method %in% c("auto", "lhs", "sobol", "binary"))
+
+  if (use_advanced_method) {
+    if (verbose) cat("Using advanced grid search method:", grid_method, "\n")
+
+    # Wrapper to convert two-argument interface to single-argument
+    evaluate_wrapper <- function(i, param_row) {
+      evaluate_param_set(param_row)
+    }
+
+    # Choose appropriate grid search algorithm
+    if (grid_method == "lhs") {
+      # Latin Hypercube Sampling - typically use sqrt(n_grid^4) samples
+      target_samples <- ceiling(sqrt(n_grid^4))
+      results <- latin_hypercube_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_wrapper,
+        n_samples = target_samples,
+        verbose = verbose
+      )
+    } else if (grid_method == "sobol") {
+      # Sobol sequence - use similar number of samples as LHS
+      target_samples <- ceiling(sqrt(n_grid^4))
+      results <- sobol_sequence_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_wrapper,
+        n_samples = target_samples,
+        verbose = verbose
+      )
+    } else if (grid_method == "binary") {
+      # Binary search on bounds
+      results <- binary_search_bounds(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_wrapper,
+        n_iterations = n_grid,
+        verbose = verbose
+      )
+    } else if (grid_method == "auto") {
+      # Auto-selection based on problem characteristics
+      results <- auto_grid_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_wrapper,
+        n_grid = n_grid,
+        verbose = verbose
+      )
+    } else if (grid_method == "adaptive") {
+      # Adaptive two-stage refinement
+      results <- adaptive_grid_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_wrapper,
+        n_grid_fine = n_grid,
+        coarse_factor = 5,
+        verbose = verbose
+      )
+    }
+
+    # Extract compatible results from advanced search
+    results <- Filter(Negate(is.null), results)
+
   } else {
-    results <- lapply(1:n_total, function(i) {
-      if (verbose && i %% max(1, floor(n_total/100)) == 0) {
-        setTxtProgressBar(pb, i)
+    # Regular grid search (original implementation)
+    if (verbose) cat("Using regular grid search\n")
+    param_grid <- create_parameter_grid(sensitivity_region, n_grid)
+    n_total <- nrow(param_grid)
+
+    # Setup parallel processing if requested
+    if (parallel) {
+      if (is.null(n_cores)) {
+        n_cores <- parallel::detectCores() - 1
       }
-      evaluate_param_set(i, param_grid[i, ])
-    })
+      if (verbose) cat("Using", n_cores, "cores for parallel processing\n")
+
+      cl <- parallel::makeCluster(n_cores)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
+
+      # Export necessary objects to cluster
+      parallel::clusterExport(cl, c("data", "A_name", "M_star_name", "Y_name",
+                                     "C_names", "effect_scale"),
+                             envir = environment())
+
+      # Export required utility functions to workers
+      parallel::clusterExport(cl, c(
+        "odds_to_prob", "prob_to_odds"
+      ), envir = asNamespace("medrobust"))
+
+      # Load required packages on each worker
+      parallel::clusterEvalQ(cl, {
+        library(dplyr)
+        library(rlang)
+      })
+    }
+
+    # Progress bar
+    if (verbose) {
+      pb <- txtProgressBar(min = 0, max = n_total, style = 3)
+    }
+
+    # Execute loop (parallel or sequential)
+    if (parallel) {
+      results <- parallel::parLapply(cl, 1:n_total, function(i) {
+        evaluate_param_set(param_grid[i, ])
+      })
+    } else {
+      results <- lapply(1:n_total, function(i) {
+        if (verbose && i %% max(1, floor(n_total/100)) == 0) {
+          setTxtProgressBar(pb, i)
+        }
+        evaluate_param_set(param_grid[i, ])
+      })
+    }
+
+    if (verbose) close(pb)
+
+    # Extract compatible results
+    results <- Filter(Negate(is.null), results)
   }
-
-  if (verbose) close(pb)
-
-  # Extract compatible results
-  results <- Filter(Negate(is.null), results)
 
   if (length(results) == 0) {
     stop("No compatible parameter sets found. Consider widening sensitivity_region.")
@@ -280,9 +339,28 @@ bound_ne_mediator <- function(data,
   compatible_sets$NIE <- sapply(results, function(x) x$nie)
   compatible_sets$NDE <- sapply(results, function(x) x$nde)
 
-  # Compute falsification proportion
+  # Compute number of compatible and evaluated
   n_compatible <- length(results)
-  falsified_proportion <- 1 - (n_compatible / n_total)
+  if (use_advanced_method) {
+    # For advanced methods, count how many were actually evaluated
+    if (grid_method == "lhs" || grid_method == "sobol") {
+      n_evaluated <- target_samples
+    } else if (grid_method == "adaptive") {
+      # Coarse grid + fine grid evaluations
+      n_coarse <- ceiling(n_grid / 5)^4
+      n_evaluated <- n_coarse + n_compatible * 5^4
+    } else {
+      # For auto and binary, use actual number returned
+      n_evaluated <- length(results) + sum(sapply(results, function(x) {
+        if (!is.null(x$n_evaluated)) x$n_evaluated else 0
+      }))
+    }
+  } else {
+    # Regular grid: use full grid size
+    n_evaluated <- n_total
+  }
+
+  falsified_proportion <- 1 - (n_compatible / n_evaluated)
 
   # Return results
   return(list(
@@ -292,7 +370,7 @@ bound_ne_mediator <- function(data,
     NDE_upper = NDE_upper,
     compatible_sets = compatible_sets,
     n_compatible = n_compatible,
-    n_evaluated = n_total,
+    n_evaluated = n_evaluated,
     falsified_proportion = falsified_proportion,
     naive_estimates = naive_estimates
   ))

@@ -74,6 +74,8 @@ devtools::install_github("data-wise/medrobust")
 ```{r}
 #| label: load-package
 library(medrobust)
+library(parallel)
+n_cores <- detectCores() - 2 # Leave two cores free
 ```
 
 ## Key Concepts
@@ -225,7 +227,7 @@ bounds <- bound_ne(
   n_grid = 10, # Grid resolution (use 50+ for production)
   effect_scale = "OR",
   parallel = TRUE, # Enable parallel processing
-  n_cores = 4, # Use 4 cores (adjust based on your system)
+  n_cores = n_cores, # Use maximum available cores minus 2 (adjust based on your system)
   verbose = FALSE,
   grid_method = "lhs" # (default) Latin Hypercube Sampling for efficiency
 )
@@ -318,7 +320,7 @@ bounds_with_ci <- bound_ne(
   bootstrap = TRUE,
   bootstrap_reps = 100, # Use 1000+ for production
   parallel = TRUE,
-  n_cores = 4,
+  n_cores = n_cores,
   confidence_level = 0.95,
   verbose = TRUE,
   grid_method = "lhs" # (default) Latin Hypercube Sampling for efficiency
@@ -646,7 +648,7 @@ Enable parallel processing to dramatically reduce computation time:
 
 # Detect available cores
 library(parallel)
-n_cores <- detectCores() - 1 # Leave one core free
+n_cores <- detectCores() - 2 # Leave two cores free
 
 # Enable parallelization
 bounds <- bound_ne(

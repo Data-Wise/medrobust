@@ -138,66 +138,9 @@ create_sensitivity_grid <- function(sensitivity_region, n_grid) {
 }
 
 
-#' Compute bootstrap confidence intervals
-#'
-#' @description
-#' Bootstrap resampling to obtain confidence intervals for bounds.
-#'
-#' @keywords internal
-#' @noRd
-compute_bootstrap_ci <- function(data, bound_function, params, reps,
-                                confidence_level, parallel, n_cores, verbose) {
-
-  # Setup parallel backend if requested
-  if (parallel) {
-    if (is.null(n_cores)) {
-      n_cores <- parallel::detectCores() - 1
-    }
-    # TODO: Setup parallel::makeCluster if needed
-  }
-
-  # Bootstrap loop
-  bootstrap_results <- replicate(reps, {
-    # Resample data
-    boot_indices <- sample(1:nrow(data), replace = TRUE)
-    boot_data <- data[boot_indices, ]
-
-    # Update params with bootstrap data
-    boot_params <- params
-    boot_params$data <- boot_data
-    boot_params$bootstrap <- FALSE  # Don't nest bootstrap
-    boot_params$verbose <- FALSE
-
-    # Compute bounds
-    tryCatch({
-      bounds <- do.call(bound_function, boot_params)
-      c(NIE_lower = bounds$NIE_lower,
-        NIE_upper = bounds$NIE_upper,
-        NDE_lower = bounds$NDE_lower,
-        NDE_upper = bounds$NDE_upper)
-    }, error = function(e) {
-      c(NIE_lower = NA, NIE_upper = NA, NDE_lower = NA, NDE_upper = NA)
-    })
-  }, simplify = FALSE)
-
-  # Combine results
-  bootstrap_matrix <- do.call(rbind, bootstrap_results)
-
-  # Compute confidence intervals
-  alpha <- 1 - confidence_level
-  ci_lower <- alpha / 2
-  ci_upper <- 1 - alpha / 2
-
-  ci_results <- list(
-    NIE_lower_ci = quantile(bootstrap_matrix[, "NIE_lower"], c(ci_lower, ci_upper), na.rm = TRUE),
-    NIE_upper_ci = quantile(bootstrap_matrix[, "NIE_upper"], c(ci_lower, ci_upper), na.rm = TRUE),
-    NDE_lower_ci = quantile(bootstrap_matrix[, "NDE_lower"], c(ci_lower, ci_upper), na.rm = TRUE),
-    NDE_upper_ci = quantile(bootstrap_matrix[, "NDE_upper"], c(ci_lower, ci_upper), na.rm = TRUE),
-    bootstrap_distribution = bootstrap_matrix
-  )
-
-  return(ci_results)
-}
+# NOTE: compute_bootstrap_ci() has been moved to R/bootstrap.R with full implementation
+# including percentile and BCa methods. The old placeholder version has been removed
+# to avoid naming conflicts.
 
 
 #' Convert between effect scales
