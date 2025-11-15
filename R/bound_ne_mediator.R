@@ -56,10 +56,15 @@ bound_ne_mediator <- function(data,
                                    "C_names", "effect_scale"),
                            envir = environment())
 
+    # Export required utility functions to workers
+    parallel::clusterExport(cl, c(
+      "odds_to_prob", "prob_to_odds"
+    ), envir = asNamespace("medrobust"))
+
     # Load required packages on each worker
     parallel::clusterEvalQ(cl, {
       library(dplyr)
-      library(medrobust)
+      library(rlang)
     })
   }
 

@@ -57,10 +57,15 @@ bound_ne_exposure <- function(data,
                                    "C_names", "effect_scale"),
                            envir = environment())
 
+    # Export required utility functions to workers
+    parallel::clusterExport(cl, c(
+      "odds_to_prob", "prob_to_odds", "compute_effects_from_joint_probs"
+    ), envir = asNamespace("medrobust"))
+
     # Load required packages on workers
     parallel::clusterEvalQ(cl, {
       library(dplyr)
-      library(medrobust)
+      library(rlang)
     })
   }
 
