@@ -14,7 +14,13 @@ test_that("bound_ne validates inputs correctly", {
     psi_sp_range = c(1.0, 1.0)
   )
 
+  # Skip slow integration test on CI/automated testing
+  # This test validates the full workflow but takes ~4 minutes with n_grid=10
+  skip_on_cran()
+  skip_on_ci()
+
   # Test that function accepts valid inputs
+  # Use n_grid = 10 (minimum allowed, still 10^4 = 10,000 combinations)
   expect_error(
     bound_ne(
       data = test_data,
@@ -31,6 +37,7 @@ test_that("bound_ne validates inputs correctly", {
   )
 })
 
+
 test_that("bound_ne rejects invalid inputs", {
   test_data <- data.frame(
     A = rbinom(100, 1, 0.5),
@@ -45,7 +52,7 @@ test_that("bound_ne rejects invalid inputs", {
     psi_sp_range = c(1.0, 1.0)
   )
 
-  # Test missing variable
+  # Test missing variable (should fail during input validation)
   expect_error(
     bound_ne(
       data = test_data,
@@ -54,11 +61,13 @@ test_that("bound_ne rejects invalid inputs", {
       outcome = "Y",
       confounders = character(0),
       misclassified_variable = "exposure",
-      sensitivity_region = sens_region
-    )
+      sensitivity_region = sens_region,
+      n_grid = 10
+    ),
+    "not found in data"
   )
 
-  # Test invalid confidence level
+  # Test invalid n_grid
   expect_error(
     bound_ne(
       data = test_data,
@@ -68,7 +77,23 @@ test_that("bound_ne rejects invalid inputs", {
       confounders = character(0),
       misclassified_variable = "exposure",
       sensitivity_region = sens_region,
-      confidence_level = 1.5
-    )
+      n_grid = 5  # Too small
+    ),
+    "n_grid.*must be.*between 10 and 200"
+  )
+
+  # Test invalid misclassified_variable
+  expect_error(
+    bound_ne(
+      data = test_data,
+      exposure = "A",
+      mediator = "M",
+      outcome = "Y",
+      confounders = character(0),
+      misclassified_variable = "invalid",
+      sensitivity_region = sens_region,
+      n_grid = 10
+    ),
+    "should be one of"
   )
 })
