@@ -1,7 +1,3 @@
-project:
-  type: website
-  output-dir: ../inst/doc
-
 format:
   html:
     toc: true
