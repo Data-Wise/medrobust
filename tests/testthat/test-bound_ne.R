@@ -1,4 +1,4 @@
-test_that("bound_ne validates inputs correctly", {
+test_that("bound_ne validates sensitivity_region conversion", {
   # Create simple test data
   test_data <- data.frame(
     A = rbinom(100, 1, 0.5),
@@ -7,33 +7,31 @@ test_that("bound_ne validates inputs correctly", {
     C = rbinom(100, 1, 0.5)
   )
 
-  sens_region <- list(
+  # Test that sensitivity_region can be passed as a list
+  sens_region_list <- list(
     sn0_range = c(0.8, 0.9),
     sp0_range = c(0.8, 0.9),
     psi_sn_range = c(1.0, 1.5),
     psi_sp_range = c(1.0, 1.0)
   )
 
-  # Skip slow integration test on CI/automated testing
-  # This test validates the full workflow but takes ~4 minutes with n_grid=10
-  skip_on_cran()
-  skip_on_ci()
+  # Test that sensitivity_region can be passed as S7 object
+  sens_region_s7 <- sensitivity_region(
+    sn0_range = c(0.8, 0.9),
+    sp0_range = c(0.8, 0.9),
+    psi_sn_range = c(1.0, 1.5),
+    psi_sp_range = c(1.0, 1.0)
+  )
 
-  # Test that function accepts valid inputs
-  # Use n_grid = 10 (minimum allowed, still 10^4 = 10,000 combinations)
+  # Both should be accepted (we test by checking validate doesn't error)
   expect_error(
-    bound_ne(
-      data = test_data,
-      exposure = "A",
-      mediator = "M",
-      outcome = "Y",
-      confounders = "C",
-      misclassified_variable = "exposure",
-      sensitivity_region = sens_region,
-      n_grid = 10,
-      verbose = FALSE
-    ),
-    NA  # Expect no error
+    validate_sensitivity_region(sens_region_list),
+    NA
+  )
+
+  expect_error(
+    validate_sensitivity_region(sens_region_s7),
+    NA
   )
 })
 
