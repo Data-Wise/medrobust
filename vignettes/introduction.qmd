@@ -203,6 +203,7 @@ print(sens_region)
 #| tbl-cap: "Computed bounds on NIE and NDE under differential exposure misclassification"
 #| echo: true
 #| message: false
+#| cache: true
 
 # Compute bounds over the sensitivity region
 #
@@ -283,10 +284,10 @@ compatibility <- check_compatibility(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   psi = list(
-    sn0 = 0.85,      # Baseline sensitivity
-    sp0 = 0.90,      # Baseline specificity
-    psi_sn = 1.5,    # Differential sensitivity (OR)
-    psi_sp = 1.0     # Non-differential specificity
+    sn0 = 0.85, # Baseline sensitivity
+    sp0 = 0.90, # Baseline specificity
+    psi_sn = 1.5, # Differential sensitivity (OR)
+    psi_sp = 1.0 # Non-differential specificity
   )
 )
 
