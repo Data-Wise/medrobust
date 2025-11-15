@@ -24,6 +24,7 @@ compute_bootstrap_ci <- function(data,
                                  parallel,
                                  n_cores,
                                  verbose,
+                                 grid_method = "lhs",
                                  bootstrap_method = "percentile") {
 
   n <- nrow(data)
@@ -59,6 +60,7 @@ compute_bootstrap_ci <- function(data,
         sensitivity_region = sensitivity_region,
         n_grid = n_grid,
         effect_scale = effect_scale,
+        grid_method = grid_method,  # Use same method as main analysis
         bootstrap = FALSE,  # Don't bootstrap the bootstrap
         parallel = FALSE,   # Avoid nested parallelization
         verbose = FALSE     # Suppress output
@@ -260,6 +262,7 @@ compute_bca_ci <- function(boot_estimates,
     sensitivity_region = sensitivity_region,
     n_grid = n_grid,
     effect_scale = effect_scale,
+    grid_method = grid_method,
     bootstrap = FALSE,
     verbose = FALSE
   )
@@ -312,6 +315,7 @@ compute_bca_ci <- function(boot_estimates,
         sensitivity_region = sensitivity_region,
         n_grid = max(20, floor(n_grid/2)),  # Use coarser grid for speed
         effect_scale = effect_scale,
+        grid_method = grid_method,
         bootstrap = FALSE,
         verbose = FALSE
       )

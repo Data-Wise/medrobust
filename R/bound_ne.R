@@ -249,7 +249,8 @@ bound_ne <- function(data,
       confidence_level = confidence_level,
       parallel = parallel,
       n_cores = n_cores,
-      verbose = verbose
+      verbose = verbose,
+      grid_method = grid_method
     )
     bounds_result$bootstrap_results <- bootstrap_results
   }
