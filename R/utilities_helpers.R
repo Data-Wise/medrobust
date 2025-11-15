@@ -165,14 +165,23 @@ get_default_sensitivity_region <- function() {
 #' @keywords internal
 create_parameter_grid <- function(sens_region, n_grid) {
 
-  sn0_seq <- seq(sens_region@sn0_range[1], sens_region@sn0_range[2],
-                 length.out = n_grid)
-  sp0_seq <- seq(sens_region@sp0_range[1], sens_region@sp0_range[2],
-                 length.out = n_grid)
-  psi_sn_seq <- seq(sens_region@psi_sn_range[1], sens_region@psi_sn_range[2],
-                    length.out = n_grid)
-  psi_sp_seq <- seq(sens_region@psi_sp_range[1], sens_region@psi_sp_range[2],
-                    length.out = n_grid)
+  # Handle both S7 objects and lists
+  if (inherits(sens_region, "S7_object")) {
+    sn0_range <- sens_region@sn0_range
+    sp0_range <- sens_region@sp0_range
+    psi_sn_range <- sens_region@psi_sn_range
+    psi_sp_range <- sens_region@psi_sp_range
+  } else {
+    sn0_range <- sens_region$sn0_range
+    sp0_range <- sens_region$sp0_range
+    psi_sn_range <- sens_region$psi_sn_range
+    psi_sp_range <- sens_region$psi_sp_range
+  }
+
+  sn0_seq <- seq(sn0_range[1], sn0_range[2], length.out = n_grid)
+  sp0_seq <- seq(sp0_range[1], sp0_range[2], length.out = n_grid)
+  psi_sn_seq <- seq(psi_sn_range[1], psi_sn_range[2], length.out = n_grid)
+  psi_sp_seq <- seq(psi_sp_range[1], psi_sp_range[2], length.out = n_grid)
 
   grid <- expand.grid(
     sn0 = sn0_seq,

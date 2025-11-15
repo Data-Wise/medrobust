@@ -22,7 +22,9 @@ bound_ne(
   cache = FALSE,
   cache_dir = NULL,
   verbose = TRUE,
-  stratify_by = NULL
+  stratify_by = NULL,
+  use_adaptive_grid = TRUE,
+  grid_method = c("lhs", "auto", "regular", "adaptive", "sobol", "binary")
 )
 }
 \arguments{
@@ -67,6 +69,27 @@ detectCores() - 1. Default is NULL.}
 \item{verbose}{Logical. Whether to print progress messages. Default is TRUE.}
 
 \item{stratify_by}{Character vector. Additional variables to stratify by (advanced use).}
+
+\item{use_adaptive_grid}{Logical. Whether to use adaptive grid refinement for large grids
+(n_grid >= 20). This dramatically reduces computation time by focusing on compatible
+regions. Default is TRUE.}
+
+\item{grid_method}{Character string specifying grid search algorithm:
+\itemize{
+  \item \code{"lhs"} (default): Latin Hypercube Sampling - space-filling design
+    that reduces evaluations by 99\% while maintaining broad coverage. Best for
+    most applications (McKay et al., 1979).
+  \item \code{"auto"}: Automatically selects best method based on a 16-point probe
+    of the parameter space.
+  \item \code{"regular"}: Exhaustive regular grid (n_grid^4 evaluations). Use for
+    exact bounds when computational budget allows.
+  \item \code{"sobol"}: Sobol low-discrepancy sequences (Sobol, 1967). Similar to
+    LHS but better for high-dimensional problems.
+  \item \code{"adaptive"}: Two-stage coarse-to-fine refinement. Effective when
+    falsification rate is high.
+  \item \code{"binary"}: Binary search on parameter boundaries. Efficient when
+    compatibility is monotonic in parameters.
+}}
 }
 \value{
 An object of class \code{medrobust_bounds} containing:
@@ -143,6 +166,14 @@ sensitivity_plot(bounds, param = "psi_sn")
 \references{
 [Author] (2025). Partial Identification of Causal Mediation Effects Under
 Differential Misclassification. \emph{Biostatistics}.
+
+McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three
+methods for selecting values of input variables in the analysis of output from
+a computer code. \emph{Technometrics}, 21(2), 239-245.
+
+Sobol', I. M. (1967). On the distribution of points in a cube and the approximate
+evaluation of integrals. \emph{USSR Computational Mathematics and Mathematical
+Physics}, 7(4), 86-112.
 }
 \seealso{
 \code{\link{check_compatibility}}, \code{\link{sensitivity_plot}},

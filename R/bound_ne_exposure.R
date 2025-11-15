@@ -20,7 +20,9 @@ bound_ne_exposure <- function(data,
                               n_cores,
                               cache,
                               cache_dir,
-                              verbose) {
+                              verbose,
+                              use_adaptive_grid = TRUE,
+                              grid_method = "auto") {
 
   # Extract variable names
   A_star_name <- exposure
@@ -28,53 +30,16 @@ bound_ne_exposure <- function(data,
   Y_name <- outcome
   C_names <- confounders
 
-  # Create parameter grid
-  if (verbose) cat("Creating parameter grid...\n")
-  param_grid <- create_parameter_grid(sensitivity_region, n_grid)
-  n_total <- nrow(param_grid)
+  # Pre-compute observed probabilities (OPTIMIZATION 1)
+  if (verbose) cat("Pre-computing observed probabilities...\n")
+  precomputed <- precompute_observed_probs(data, A_star_name, M_name, Y_name,
+                                           C_names, "exposure")
 
   # Compute naive estimates
   naive_estimates <- compute_naive_effects(data, A_star_name, M_name,
                                            Y_name, C_names, effect_scale)
 
-  # Initialize storage
-  compatible_params <- list()
-  nie_values <- numeric(0)
-  nde_values <- numeric(0)
-
-  # Setup parallel processing
-  if (parallel) {
-    if (is.null(n_cores)) {
-      n_cores <- parallel::detectCores() - 1
-    }
-    if (verbose) cat("Using", n_cores, "cores for parallel processing\n")
-
-    cl <- parallel::makeCluster(n_cores)
-    on.exit(parallel::stopCluster(cl))
-
-    # Export data and parameters to workers
-    parallel::clusterExport(cl, c("data", "A_star_name", "M_name", "Y_name",
-                                   "C_names", "effect_scale"),
-                           envir = environment())
-
-    # Export required utility functions to workers
-    parallel::clusterExport(cl, c(
-      "odds_to_prob", "prob_to_odds", "compute_effects_from_joint_probs"
-    ), envir = asNamespace("medrobust"))
-
-    # Load required packages on workers
-    parallel::clusterEvalQ(cl, {
-      library(dplyr)
-      library(rlang)
-    })
-  }
-
-  # Progress bar
-  if (verbose) {
-    pb <- txtProgressBar(min = 0, max = n_total, style = 3)
-  }
-
-  # Main evaluation function
+  # Main evaluation function (OPTIMIZED with early termination and vectorization)
   evaluate_param_set <- function(i, param_row) {
     # Extract parameters
     sn0 <- param_row$sn0
@@ -86,151 +51,236 @@ bound_ne_exposure <- function(data,
     sn1 <- odds_to_prob(psi_sn * prob_to_odds(sn0))
     sp1 <- odds_to_prob(psi_sp * prob_to_odds(sp0))
 
-    # Validate
-    if (any(c(sn1, sp1) < 0 | c(sn1, sp1) > 1)) {
+    # OPTIMIZATION: Early termination - validity check
+    if (is.na(sn1) || is.na(sp1) || sn1 < 0 || sn1 > 1 || sp1 < 0 || sp1 > 1) {
       return(NULL)
     }
 
-    # Check informativeness
+    # OPTIMIZATION: Early termination - informativeness check
     if ((sn0 + sp0 - 1) <= 0.01 || (sn1 + sp1 - 1) <= 0.01) {
       return(NULL)
     }
 
-    # Get strata
-    if (is.null(C_names) || length(C_names) == 0) {
-      strata <- data.frame(stratum_id = 1)
-      data$stratum_id <- 1
-    } else {
-      data <- data |>
-        dplyr::group_by(across(all_of(C_names))) |>
-        dplyr::mutate(stratum_id = cur_group_id()) |>
-        dplyr::ungroup()
-      strata <- data |>
-        dplyr::select(stratum_id, all_of(C_names)) |>
-        dplyr::distinct()
-    }
+    # Use pre-computed strata and probabilities
+    obs_probs <- precomputed$obs_probs
+    strata <- precomputed$strata
+    stratum_sizes <- precomputed$stratum_sizes
 
-    # Initialize storage for implied true joint probabilities
-    P_true_list <- list()
-    compatible <- TRUE
+    # VECTORIZATION: Create all combinations upfront (avoid nested loops)
+    m_vals <- c(0, 1)
+    y_vals <- c(0, 1)
+    combinations <- expand.grid(
+      m = m_vals,
+      y = y_vals,
+      s = strata$stratum_id,
+      KEEP.OUT.ATTRS = FALSE,
+      stringsAsFactors = FALSE
+    )
 
-    # Loop over (M, Y, stratum) combinations
-    for (m in c(0, 1)) {
-      for (y in c(0, 1)) {
-        for (s in strata$stratum_id) {
-          # Get observed data for this (M=m, Y=y, stratum=s) combination
-          data_mys <- data |>
-            dplyr::filter(!!sym(M_name) == m, !!sym(Y_name) == y, stratum_id == s)
+    # Pre-compute sensitivity/specificity vectors
+    combinations$sn_y <- ifelse(combinations$y == 1, sn1, sn0)
+    combinations$sp_y <- ifelse(combinations$y == 1, sp1, sp0)
+    combinations$denom <- combinations$sn_y + combinations$sp_y - 1
 
-          if (nrow(data_mys) < 5) {
-            compatible <- FALSE
-            break
-          }
+    # Vectorized stratum size check
+    size_check <- vapply(seq_len(nrow(combinations)), function(i) {
+      size_row <- stratum_sizes[
+        stratum_sizes[[M_name]] == combinations$m[i] &
+        stratum_sizes[[Y_name]] == combinations$y[i] &
+        stratum_sizes$stratum_id == combinations$s[i], ]
+      nrow(size_row) > 0 && size_row$n[1] >= 5
+    }, logical(1))
 
-          # Compute observed P*(A*=a* | M=m, Y=y, C=c)
-          obs_probs <- data_mys |>
-            dplyr::group_by(!!sym(A_star_name)) |>
-            dplyr::summarise(n = n(), .groups = "drop") |>
-            dplyr::mutate(prob = n / sum(n))
-
-          # Extract P*_1my and P*_0my
-          P_star_1 <- obs_probs$prob[obs_probs[[A_star_name]] == 1]
-          P_star_0 <- obs_probs$prob[obs_probs[[A_star_name]] == 0]
-
-          if (length(P_star_1) == 0) P_star_1 <- 0
-          if (length(P_star_0) == 0) P_star_0 <- 0
-
-          # Select sensitivity/specificity based on Y
-          sn_y <- if (y == 1) sn1 else sn0
-          sp_y <- if (y == 1) sp1 else sp0
-
-          # Check testable implications (Proposition 5.1)
-          # Condition 1: P*_1my / P*_0my >= (1-sp_y) / sp_y
-          if (P_star_0 > 1e-6) {
-            if (P_star_1 / P_star_0 < (1 - sp_y) / sp_y - 1e-6) {
-              compatible <- FALSE
-              break
-            }
-          }
-
-          # Condition 2: P*_0my / P*_1my >= (1-sn_y) / sn_y
-          if (P_star_1 > 1e-6) {
-            if (P_star_0 / P_star_1 < (1 - sn_y) / sn_y - 1e-6) {
-              compatible <- FALSE
-              break
-            }
-          }
-
-          # Solve for true P_1my and P_0my using matrix inversion
-          # P_1my = (sp_y * P*_1my - (1-sp_y) * P*_0my) / (sn_y + sp_y - 1)
-          # P_0my = (sn_y * P*_0my - (1-sn_y) * P*_1my) / (sn_y + sp_y - 1)
-
-          denom <- sn_y + sp_y - 1
-          P_1my <- (sp_y * P_star_1 - (1 - sp_y) * P_star_0) / denom
-          P_0my <- (sn_y * P_star_0 - (1 - sn_y) * P_star_1) / denom
-
-          # Check non-negativity
-          if (P_1my < -1e-6 || P_0my < -1e-6) {
-            compatible <- FALSE
-            break
-          }
-
-          # Ensure non-negative (numerical precision)
-          P_1my <- max(0, P_1my)
-          P_0my <- max(0, P_0my)
-
-          # Store
-          key <- paste0("m", m, "_y", y, "_s", s)
-          P_true_list[[key]] <- c(P_1 = P_1my, P_0 = P_0my,
-                                   stratum_id = s, M = m, Y = y)
-        }
-        if (!compatible) break
-      }
-      if (!compatible) break
-    }
-
-    # If compatible, compute effects
-    if (compatible) {
-      effects <- compute_effects_from_joint_probs(
-        P_true_list = P_true_list,
-        data = data,
-        C_names = C_names,
-        effect_scale = effect_scale
-      )
-
-      return(list(
-        compatible = TRUE,
-        params = param_row,
-        nie = effects$nie,
-        nde = effects$nde,
-        P_true = P_true_list
-      ))
-    } else {
+    # Early termination if any stratum too small
+    if (!all(size_check)) {
       return(NULL)
     }
+
+    # Vectorized probability lookup (fastest approach using direct indexing)
+    keys_1 <- paste0("m", combinations$m, "_y", combinations$y, "_s",
+                     combinations$s, "_a1")
+    keys_0 <- paste0("m", combinations$m, "_y", combinations$y, "_s",
+                     combinations$s, "_a0")
+
+    # Direct lookup with default 0 for missing keys
+    P_star_1_vec <- unlist(obs_probs[keys_1], use.names = FALSE)
+    P_star_1_vec[is.na(P_star_1_vec)] <- 0
+
+    P_star_0_vec <- unlist(obs_probs[keys_0], use.names = FALSE)
+    P_star_0_vec[is.na(P_star_0_vec)] <- 0
+
+    # Vectorized testable implications check
+    test1 <- (P_star_0_vec > 1e-6) &
+             (P_star_1_vec / P_star_0_vec < (1 - combinations$sp_y) / combinations$sp_y - 1e-6)
+    test2 <- (P_star_1_vec > 1e-6) &
+             (P_star_0_vec / P_star_1_vec < (1 - combinations$sn_y) / combinations$sn_y - 1e-6)
+
+    # Early termination if any implication violated
+    if (any(test1) || any(test2)) {
+      return(NULL)
+    }
+
+    # Vectorized solve for true probabilities
+    P_1my_vec <- (combinations$sp_y * P_star_1_vec -
+                  (1 - combinations$sp_y) * P_star_0_vec) / combinations$denom
+    P_0my_vec <- (combinations$sn_y * P_star_0_vec -
+                  (1 - combinations$sn_y) * P_star_1_vec) / combinations$denom
+
+    # Vectorized non-negativity check
+    if (any(P_1my_vec < -1e-6) || any(P_0my_vec < -1e-6)) {
+      return(NULL)
+    }
+
+    # Store results in list format (convert vectors to list)
+    P_true_list <- lapply(seq_len(nrow(combinations)), function(i) {
+      c(P_1 = max(0, P_1my_vec[i]),
+        P_0 = max(0, P_0my_vec[i]),
+        stratum_id = combinations$s[i],
+        M = combinations$m[i],
+        Y = combinations$y[i])
+    })
+    names(P_true_list) <- paste0("m", combinations$m, "_y", combinations$y,
+                                  "_s", combinations$s)
+
+    # If we got here, parameter set is compatible
+    effects <- compute_effects_from_joint_probs(
+      P_true_list = P_true_list,
+      data = precomputed$data,
+      C_names = C_names,
+      effect_scale = effect_scale
+    )
+
+    return(list(
+      compatible = TRUE,
+      params = param_row,
+      nie = effects$nie,
+      nde = effects$nde,
+      P_true = P_true_list
+    ))
   }
 
-  # Execute loop
-  if (parallel) {
-    results <- parallel::parLapply(cl, 1:n_total, function(i) {
-      evaluate_param_set(i, param_grid[i, ])
-    })
-  } else {
-    results <- lapply(1:n_total, function(i) {
-      if (verbose && i %% max(1, floor(n_total/100)) == 0) {
-        setTxtProgressBar(pb, i)
+  # OPTIMIZATION: Choose grid search strategy
+  use_advanced_method <- (grid_method != "regular") &&
+                        ((grid_method == "adaptive" && use_adaptive_grid && n_grid >= 10) ||
+                         grid_method %in% c("auto", "lhs", "sobol", "binary"))
+
+  if (use_advanced_method) {
+    # Use advanced grid search algorithms
+    if (grid_method == "adaptive" || (grid_method == "auto" && use_adaptive_grid && n_grid >= 10)) {
+      # Adaptive grid refinement
+      results <- adaptive_grid_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_param_set,
+        n_grid_fine = n_grid,
+        coarse_factor = min(5, ceiling(n_grid / 3)),
+        verbose = verbose
+      )
+    } else if (grid_method == "lhs") {
+      # Latin Hypercube Sampling
+      target_samples <- ceiling(sqrt(n_grid^4))  # sqrt of full grid
+      results <- latin_hypercube_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_param_set,
+        n_samples = target_samples,
+        verbose = verbose
+      )
+    } else if (grid_method == "sobol") {
+      # Sobol sequence
+      target_samples <- ceiling(sqrt(n_grid^4))
+      results <- sobol_sequence_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_param_set,
+        n_samples = target_samples,
+        verbose = verbose
+      )
+    } else if (grid_method == "binary") {
+      # Binary search on bounds
+      results <- binary_search_bounds(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_param_set,
+        verbose = verbose
+      )
+    } else {  # "auto"
+      # Auto-select best method
+      target_samples <- min(500, ceiling(sqrt(n_grid^4)))
+      results <- auto_grid_search(
+        sensitivity_region = sensitivity_region,
+        evaluate_func = evaluate_param_set,
+        target_samples = target_samples,
+        verbose = verbose
+      )
+
+      # If auto returns NULL (all compatible), fall back to regular grid
+      if (is.null(results)) {
+        use_advanced_method <- FALSE
       }
-      evaluate_param_set(i, param_grid[i, ])
-    })
+    }
+
+    if (use_advanced_method) {
+      n_total_evaluated <- attr(results, "n_evaluated")
+      if (is.null(n_total_evaluated)) n_total_evaluated <- length(results)
+    }
   }
 
-  if (verbose) close(pb)
+  if (!use_advanced_method) {
+    # Standard grid search for small grids
+    if (verbose) {
+      cat("Creating parameter grid...\n")
+      cat("Grid resolution:", n_grid, "points per dimension\n")
+      cat("Total parameter sets:", n_grid^4, "\n")
+    }
 
-  # Extract compatible results
-  results <- Filter(Negate(is.null), results)
+    param_grid <- create_parameter_grid(sensitivity_region, n_grid)
+    n_total <- nrow(param_grid)
 
-  if (length(results) == 0) {
-    stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+    # Setup parallel processing if requested
+    if (parallel) {
+      if (is.null(n_cores)) {
+        n_cores <- parallel::detectCores() - 1
+      }
+      if (verbose) cat("Using", n_cores, "cores for parallel processing\n")
+
+      cl <- parallel::makeCluster(n_cores)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
+
+      # Export to workers
+      parallel::clusterExport(cl, c("precomputed", "A_star_name", "M_name",
+                                     "Y_name", "C_names", "effect_scale"),
+                             envir = environment())
+      parallel::clusterExport(cl, c("odds_to_prob", "prob_to_odds",
+                                     "compute_effects_from_joint_probs"),
+                             envir = asNamespace("medrobust"))
+      parallel::clusterEvalQ(cl, {
+        library(dplyr)
+        library(rlang)
+      })
+
+      results <- parallel::parLapply(cl, 1:n_total, function(i) {
+        evaluate_param_set(i, param_grid[i, ])
+      })
+    } else {
+      # Sequential with progress bar
+      if (verbose) {
+        pb <- txtProgressBar(min = 0, max = n_total, style = 3)
+      }
+
+      results <- lapply(1:n_total, function(i) {
+        if (verbose && i %% max(1, floor(n_total/100)) == 0) {
+          setTxtProgressBar(pb, i)
+        }
+        evaluate_param_set(i, param_grid[i, ])
+      })
+
+      if (verbose) close(pb)
+    }
+
+    # Filter compatible results
+    results <- Filter(Negate(is.null), results)
+    n_total_evaluated <- n_total
+
+    if (length(results) == 0) {
+      stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+    }
   }
 
   # Extract bounds
@@ -249,7 +299,7 @@ bound_ne_exposure <- function(data,
 
   # Falsification
   n_compatible <- length(results)
-  falsified_proportion <- 1 - (n_compatible / n_total)
+  falsified_proportion <- 1 - (n_compatible / n_total_evaluated)
 
   return(list(
     NIE_lower = NIE_lower,
@@ -258,7 +308,7 @@ bound_ne_exposure <- function(data,
     NDE_upper = NDE_upper,
     compatible_sets = compatible_sets,
     n_compatible = n_compatible,
-    n_evaluated = n_total,
+    n_evaluated = n_total_evaluated,
     falsified_proportion = falsified_proportion,
     naive_estimates = naive_estimates
   ))

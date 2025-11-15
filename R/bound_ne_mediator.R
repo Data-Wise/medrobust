@@ -19,7 +19,9 @@ bound_ne_mediator <- function(data,
                               n_cores,
                               cache,
                               cache_dir,
-                              verbose) {
+                              verbose,
+                              use_adaptive_grid = TRUE,
+                              grid_method = "auto") {
 
   # Extract variable names
   A_name <- exposure
