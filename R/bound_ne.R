@@ -22,6 +22,10 @@
 #' @param confidence_level Numeric. Confidence level for bootstrap intervals. Default is 0.95.
 #' @param bootstrap Logical. Whether to compute bootstrap confidence intervals. Default is FALSE.
 #' @param bootstrap_reps Integer. Number of bootstrap replicates if bootstrap=TRUE. Default is 1000.
+#' @param bootstrap_method Character string. Bootstrap CI method: "percentile" (default) or "bca"
+#'   (bias-corrected and accelerated). The percentile method is faster and adequate for most
+#'   applications. BCa provides second-order accurate intervals but requires jackknife estimation,
+#'   which is computationally intensive for large datasets.
 #' @param parallel Logical. Whether to use parallel processing. Default is FALSE.
 #' @param n_cores Integer. Number of cores for parallel processing. If NULL, uses
 #'   detectCores() - 1. Default is NULL.
@@ -142,6 +146,7 @@ bound_ne <- function(data,
                      confidence_level = 0.95,
                      bootstrap = FALSE,
                      bootstrap_reps = 1000,
+                     bootstrap_method = c("percentile", "bca"),
                      parallel = FALSE,
                      n_cores = NULL,
                      cache = FALSE,
@@ -151,13 +156,14 @@ bound_ne <- function(data,
                      use_adaptive_grid = TRUE,
                      grid_method = c("lhs", "auto", "regular", "adaptive", "sobol", "binary")) {
 
-  # Match grid method argument
+  # Match arguments
   grid_method <- match.arg(grid_method)
+  bootstrap_method <- match.arg(bootstrap_method)
 
   # Record start time
   start_time <- Sys.time()
 
-  # Match arguments
+  # Match other arguments
   misclassified_variable <- match.arg(misclassified_variable)
   effect_scale <- match.arg(effect_scale)
 
@@ -250,7 +256,8 @@ bound_ne <- function(data,
       parallel = parallel,
       n_cores = n_cores,
       verbose = verbose,
-      grid_method = grid_method
+      grid_method = grid_method,
+      bootstrap_method = bootstrap_method
     )
     bounds_result$bootstrap_results <- bootstrap_results
   }

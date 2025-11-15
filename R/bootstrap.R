@@ -93,13 +93,18 @@ compute_bootstrap_ci <- function(data,
     parallel::clusterExport(cl,
                            c("data", "exposure", "mediator", "outcome",
                              "confounders", "misclassified_variable",
-                             "sensitivity_region", "n_grid", "effect_scale"),
+                             "sensitivity_region", "n_grid", "effect_scale",
+                             "grid_method"),
                            envir = environment())
 
-    # Load package on workers
+    # Export required functions from namespace
+    parallel::clusterExport(cl, c("bound_ne", "odds_to_prob", "prob_to_odds"),
+                           envir = asNamespace("medrobust"))
+
+    # Load required packages on workers
     parallel::clusterEvalQ(cl, {
-      library(medrobust)
       library(dplyr)
+      library(rlang)
     })
 
     # Run parallel bootstrap
@@ -166,6 +171,7 @@ compute_bootstrap_ci <- function(data,
       sensitivity_region = sensitivity_region,
       n_grid = n_grid,
       effect_scale = effect_scale,
+      grid_method = grid_method,
       verbose = verbose
     )
 
@@ -242,6 +248,7 @@ compute_bca_ci <- function(boot_estimates,
                           sensitivity_region,
                           n_grid,
                           effect_scale,
+                          grid_method = "lhs",
                           verbose) {
 
   alpha <- 1 - confidence_level

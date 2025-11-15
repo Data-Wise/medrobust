@@ -17,6 +17,7 @@ bound_ne(
   confidence_level = 0.95,
   bootstrap = FALSE,
   bootstrap_reps = 1000,
+  bootstrap_method = c("percentile", "bca"),
   parallel = FALSE,
   n_cores = NULL,
   cache = FALSE,
@@ -56,6 +57,11 @@ giving the minimum and maximum values. If NULL, default ranges are used.}
 \item{bootstrap}{Logical. Whether to compute bootstrap confidence intervals. Default is FALSE.}
 
 \item{bootstrap_reps}{Integer. Number of bootstrap replicates if bootstrap=TRUE. Default is 1000.}
+
+\item{bootstrap_method}{Character string. Bootstrap CI method: "percentile" (default) or "bca"
+(bias-corrected and accelerated). The percentile method is faster and adequate for most
+applications. BCa provides second-order accurate intervals but requires jackknife estimation,
+which is computationally intensive for large datasets.}
 
 \item{parallel}{Logical. Whether to use parallel processing. Default is FALSE.}
 

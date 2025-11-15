@@ -16,6 +16,7 @@ compute_bca_ci(
   sensitivity_region,
   n_grid,
   effect_scale,
+  grid_method = "lhs",
   verbose
 )
 }
