@@ -17,17 +17,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
-  dpi = 300,
-  out.width = "100%"
-)
-```
-
 ## Introduction
 
 The `medrobust` package provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with **differential misclassification**. This is particularly important when:
@@ -72,12 +61,18 @@ Instead of point estimation under strong assumptions, `medrobust` uses **partial
 
 ## Installation
 
-```{r eval=FALSE}
+```{r}
+#| label: install-chunk
+#| eval: false
 # Install from GitHub
 devtools::install_github("data-wise/medrobust")
 ```
 
-```{r message=FALSE}
+```{r}
+#| label: load-package
+#| eval: true
+#| echo: true
+#| message: false
 library(medrobust)
 ```
 
@@ -131,16 +126,20 @@ Let's analyze a scenario where the exposure is differentially misclassified.
 ### Step 1: Generate Synthetic Data
 
 ```{r}
+#| label: data-generation
+#| tbl-cap: "Simulated data with differential exposure misclassification"
+#| eval: true
+#| echo: true
+#| message: false
 # Set parameters for data generation
 set.seed(123)
 
 # True causal parameters
 true_params <- list(
-  beta_AM = log(1.5), # Effect of A on M (OR = 1.5)
+  beta_AM = log(1.5),  # Effect of A on M (OR = 1.5)
   theta_AY = log(1.3), # Direct effect of A on Y (OR = 1.3)
   theta_MY = log(1.4), # Effect of M on Y (OR = 1.4)
-  baseline_M = 0.3, # Baseline probability of M
-  baseline_Y = 0.2 # Baseline probability of Y
+  p_A = 0.4            # Marginal probability of A
 )
 
 # Misclassification parameters (differential)
@@ -174,7 +173,7 @@ The simulated data object contains:
 
 ```{r}
 # Check the observed data
-head(sim_data@observed)
+head(sim_data$observed)
 ```
 
 ### Step 2: Define Sensitivity Region
@@ -182,6 +181,12 @@ head(sim_data@observed)
 We specify plausible ranges for the misclassification parameters:
 
 ```{r}
+#| label: tbl-sensitivity-region
+#| tbl-cap: "Defined sensitivity region for exposure misclassification"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Define sensitivity region
 sens_region <- sensitivity_region(
   sn0_range = c(0.70, 0.95), # Sensitivity ranges from 70% to 95%
@@ -196,9 +201,15 @@ print(sens_region)
 ### Step 3: Compute Bounds
 
 ```{r}
+#| label: tbl-compute-bounds
+#| tbl-cap: "Computed bounds on NIE and NDE under differential exposure misclassification"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Compute bounds over the sensitivity region
 bounds <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star", # Misclassified exposure
   mediator = "M",
   outcome = "Y",
@@ -221,6 +232,12 @@ The output shows:
 - **Sensitivity analysis summary**: How many parameter sets are compatible vs. falsified
 
 ```{r}
+#| label: tbl-bounds-summary
+#| tbl-cap: "Detailed summary of bounds and falsification results"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Get more detailed summary
 summary(bounds)
 ```
@@ -228,6 +245,12 @@ summary(bounds)
 ### Step 4: Visualize Results
 
 ```{r}
+#| label: fig-sensitivity-plot
+#| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios
+#| eval: true
+#| echo: true
+#| message: false
+
 # Create sensitivity plot
 sensitivity_plot(bounds)
 ```
@@ -243,9 +266,15 @@ This plot shows:
 We can test whether specific misclassification parameters are compatible with the data:
 
 ```{r}
+#| label: tbl-compatibility-test
+#| tbl-cap: "Compatibility test results for specified misclassification parameters"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Test the true parameters (we know them from simulation)
 compatibility <- check_compatibility(
-  data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -263,10 +292,12 @@ print(compatibility)
 
 For inference, we can compute bootstrap confidence intervals:
 
-```{r eval=FALSE}
+```{r}
+#| label: bootstrap-bounds
+#| eval: false
 # This takes longer, so we use fewer bootstrap replications for the vignette
 bounds_with_ci <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -289,6 +320,12 @@ print(bounds_with_ci)
 Now let's consider mediator misclassification instead:
 
 ```{r}
+#| label: tbl-mediator-misclass
+#| tbl-cap: "Computed bounds on NIE and NDE under differential mediator misclassification"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Generate data with mediator misclassification
 sim_data_med <- simulate_dm_data(
   n = 1000,
@@ -309,7 +346,7 @@ sens_region_med <- sensitivity_region(
 
 # Compute bounds
 bounds_med <- bound_ne(
-  data = sim_data_med@observed,
+  data = sim_data_med$observed,
   exposure = "A",
   mediator = "M_star", # Misclassified mediator
   outcome = "Y",
@@ -328,6 +365,13 @@ print(bounds_med)
 As a special case, we can handle non-differential misclassification by setting `psi_sn = 1.0` and `psi_sp = 1.0`:
 
 ```{r}
+#| label: tbl-nondiff-misclass
+#| tbl-cap: "Computed bounds on NIE and NDE under non-differential exposure
+#| misclassification"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Non-differential misclassification: error doesn't depend on Y
 sens_region_nondiff <- sensitivity_region(
   sn0_range = c(0.80, 0.90),
@@ -337,7 +381,7 @@ sens_region_nondiff <- sensitivity_region(
 )
 
 bounds_nondiff <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -394,6 +438,11 @@ A high falsification rate (e.g., 95%) means the data strongly constrain plausibl
 You can extract various components from the results:
 
 ```{r}
+#| label: extract-results
+#| eval: true
+#| echo: true
+#| message: false
+
 # Convert to data frame
 bounds_df <- as.data.frame(bounds)
 print(bounds_df)
@@ -409,7 +458,9 @@ print(falsified)
 
 ### Comparing Different Scenarios
 
-```{r eval=FALSE}
+```{r}
+#| label: compare-bounds
+#| eval: false
 # Compare bounds under different sensitivity assumptions
 comparison <- compare_bounds(
   bounds_list = list(
@@ -423,6 +474,12 @@ print(comparison)
 ### Falsification Summary
 
 ```{r}
+#| label: tbl-falsification-summary
+#| tbl-cap: "Falsification summary for the sensitivity analysis"
+#| eval: true
+#| echo: true
+#| message: false
+
 # Get detailed falsification summary
 falsif_summary <- falsification_summary(bounds)
 print(falsif_summary)
@@ -453,9 +510,11 @@ print(falsif_summary)
 
 For large datasets or fine grids, enable parallelization:
 
-```{r eval=FALSE}
+```{r}
+#| label: parallel-bounds
+#| eval: false
 bounds_parallel <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -500,7 +559,9 @@ If 90%+ of sensitivity region is falsified:
 
 When participants with disease may recall exposures differently:
 
-```{r eval=FALSE}
+```{r}
+#| label: recall-bias
+#| eval: false
 # Disease may improve recall of past exposure
 sens_region_recall <- sensitivity_region(
   sn0_range = c(0.60, 0.80), # Lower baseline sensitivity
@@ -514,7 +575,9 @@ sens_region_recall <- sensitivity_region(
 
 When participants may underreport stigmatized behaviors:
 
-```{r eval=FALSE}
+```{r}
+#| label: social-desirability-bias
+#| eval: false
 # Underreporting of risk behaviors
 sens_region_social <- sensitivity_region(
   sn0_range = c(0.50, 0.70), # Low sensitivity (underreporting)
@@ -528,7 +591,9 @@ sens_region_social <- sensitivity_region(
 
 When measurement instruments have known error rates:
 
-```{r eval=FALSE}
+```{r}
+#| label: instrument-quality
+#| eval: false
 # Based on validation study
 sens_region_validated <- sensitivity_region(
   sn0_range = c(0.82, 0.88), # Narrow range from validation
