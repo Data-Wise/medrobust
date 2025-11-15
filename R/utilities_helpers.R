@@ -6,6 +6,12 @@
 #' @keywords internal
 #' @noRd
 
+# Check if object is S7 object with specific class
+# Handles namespaced S7 classes (e.g., "medrobust::medrobust_bounds")
+is_s7_class <- function(x, class_name) {
+  inherits(x, "S7_object") && any(grepl(class_name, class(x)))
+}
+
 # Convert probability to odds
 prob_to_odds <- function(p) {
   p / (1 - p)

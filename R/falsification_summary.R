@@ -55,7 +55,7 @@ falsification_summary <- function(bounds_object,
                                   n_bins = 10,
                                   plot = TRUE) {
 
-  if (!inherits(bounds_object, "medrobust_bounds")) {
+  if (!is_s7_class(bounds_object, "medrobust_bounds")) {
     stop("bounds_object must be of class 'medrobust_bounds'")
   }
 
@@ -500,7 +500,7 @@ print.falsification_summary <- function(x, digits = 3, ...) {
 #' @export
 extract_falsified_region <- function(bounds_object) {
 
-  if (!inherits(bounds_object, "medrobust_bounds")) {
+  if (!is_s7_class(bounds_object, "medrobust_bounds")) {
     stop("bounds_object must be of class 'medrobust_bounds'")
   }
 

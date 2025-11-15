@@ -425,7 +425,7 @@ power_analysis <- function(true_nie,
 #' @export
 compare_bounds <- function(bounds_list, labels = NULL) {
 
-  if (!all(sapply(bounds_list, inherits, "medrobust_bounds"))) {
+  if (!all(sapply(bounds_list, is_s7_class, "medrobust_bounds"))) {
     stop("All elements of bounds_list must be medrobust_bounds objects")
   }
 

@@ -160,7 +160,7 @@ solve_implied_probabilities <- function(obs_data, psi, misclassified_variable) {
 #' @export
 extract_bounds <- function(bounds_object, psi_values) {
 
-  if (!inherits(bounds_object, "medrobust_bounds")) {
+  if (!is_s7_class(bounds_object, "medrobust_bounds")) {
     stop("bounds_object must be of class 'medrobust_bounds'")
   }
 
