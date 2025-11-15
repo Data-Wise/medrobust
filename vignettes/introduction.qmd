@@ -66,14 +66,12 @@ Instead of point estimation under strong assumptions, `medrobust` uses **partial
 
 ```{r}
 #| label: install-chunk
-#| eval: false
 # Install from GitHub
 devtools::install_github("data-wise/medrobust")
 ```
 
 ```{r}
 #| label: load-package
-#| eval: false
 #| echo: true
 library(medrobust)
 ```
@@ -130,7 +128,6 @@ Let's analyze a scenario where the exposure is differentially misclassified.
 ```{r}
 #| label: data-generation
 #| tbl-cap: "Simulated data with differential exposure misclassification"
-#| eval: true
 #| echo: true
 #| message: false
 # Set parameters for data generation
@@ -185,7 +182,6 @@ We specify plausible ranges for the misclassification parameters:
 ```{r}
 #| label: tbl-sensitivity-region
 #| tbl-cap: "Defined sensitivity region for exposure misclassification"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -205,7 +201,6 @@ print(sens_region)
 ```{r}
 #| label: tbl-compute-bounds
 #| tbl-cap: "Computed bounds on NIE and NDE under differential exposure misclassification"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -236,7 +231,6 @@ The output shows:
 ```{r}
 #| label: tbl-bounds-summary
 #| tbl-cap: "Detailed summary of bounds and falsification results"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -249,7 +243,6 @@ summary(bounds)
 ```{r}
 #| label: fig-sensitivity-plot
 #| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -270,7 +263,6 @@ We can test whether specific misclassification parameters are compatible with th
 ```{r}
 #| label: tbl-compatibility-test
 #| tbl-cap: "Compatibility test results for specified misclassification parameters"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -296,7 +288,6 @@ For inference, we can compute bootstrap confidence intervals:
 
 ```{r}
 #| label: bootstrap-bounds
-#| eval: false
 # This takes longer, so we use fewer bootstrap replications for the vignette
 bounds_with_ci <- bound_ne(
   data = sim_data$observed,
@@ -324,7 +315,6 @@ Now let's consider mediator misclassification instead:
 ```{r}
 #| label: tbl-mediator-misclass
 #| tbl-cap: "Computed bounds on NIE and NDE under differential mediator misclassification"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -369,7 +359,6 @@ As a special case, we can handle non-differential misclassification by setting `
 ```{r}
 #| label: tbl-nondiff-misclass
 #| tbl-cap: "Computed bounds on NIE and NDE under non-differential exposure misclassification"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -440,7 +429,6 @@ You can extract various components from the results:
 
 ```{r}
 #| label: extract-results
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -461,7 +449,6 @@ print(falsified)
 
 ```{r}
 #| label: compare-bounds
-#| eval: false
 # Compare bounds under different sensitivity assumptions
 comparison <- compare_bounds(
   bounds_list = list(
@@ -477,7 +464,6 @@ print(comparison)
 ```{r}
 #| label: tbl-falsification-summary
 #| tbl-cap: "Falsification summary for the sensitivity analysis"
-#| eval: true
 #| echo: true
 #| message: false
 
@@ -513,7 +499,6 @@ For large datasets or fine grids, enable parallelization:
 
 ```{r}
 #| label: parallel-bounds
-#| eval: false
 bounds_parallel <- bound_ne(
   data = sim_data$observed,
   exposure = "A_star",
@@ -562,7 +547,6 @@ When participants with disease may recall exposures differently:
 
 ```{r}
 #| label: recall-bias
-#| eval: false
 # Disease may improve recall of past exposure
 sens_region_recall <- sensitivity_region(
   sn0_range = c(0.60, 0.80), # Lower baseline sensitivity
@@ -578,7 +562,6 @@ When participants may underreport stigmatized behaviors:
 
 ```{r}
 #| label: social-desirability-bias
-#| eval: false
 # Underreporting of risk behaviors
 sens_region_social <- sensitivity_region(
   sn0_range = c(0.50, 0.70), # Low sensitivity (underreporting)
@@ -594,7 +577,6 @@ When measurement instruments have known error rates:
 
 ```{r}
 #| label: instrument-quality
-#| eval: false
 # Based on validation study
 sens_region_validated <- sensitivity_region(
   sn0_range = c(0.82, 0.88), # Narrow range from validation
