@@ -110,20 +110,20 @@ compute_stratified_joint_distribution <- function(data, exposure, mediator,
 create_sensitivity_grid <- function(sensitivity_region, n_grid) {
 
   # Create sequences for each parameter
-  sn0_seq <- seq(sensitivity_region$sn0_range[1],
-                 sensitivity_region$sn0_range[2],
+  sn0_seq <- seq(sensitivity_region@sn0_range[1],
+                 sensitivity_region@sn0_range[2],
                  length.out = n_grid)
 
-  sp0_seq <- seq(sensitivity_region$sp0_range[1],
-                 sensitivity_region$sp0_range[2],
+  sp0_seq <- seq(sensitivity_region@sp0_range[1],
+                 sensitivity_region@sp0_range[2],
                  length.out = n_grid)
 
-  psi_sn_seq <- seq(sensitivity_region$psi_sn_range[1],
-                    sensitivity_region$psi_sn_range[2],
+  psi_sn_seq <- seq(sensitivity_region@psi_sn_range[1],
+                    sensitivity_region@psi_sn_range[2],
                     length.out = n_grid)
 
-  psi_sp_seq <- seq(sensitivity_region$psi_sp_range[1],
-                    sensitivity_region$psi_sp_range[2],
+  psi_sp_seq <- seq(sensitivity_region@psi_sp_range[1],
+                    sensitivity_region@psi_sp_range[2],
                     length.out = n_grid)
 
   # Create full grid

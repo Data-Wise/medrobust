@@ -86,14 +86,34 @@ validate_inputs <- function(data, exposure, mediator, outcome, confounders,
 #' Validate Sensitivity Region
 #' @keywords internal
 validate_sensitivity_region <- function(sens_region) {
+  # If it's a list, convert to S7 sensitivity_region object
+  if (is.list(sens_region) && !inherits(sens_region, "S7_object")) {
+    # Check that it has the required elements
+    required_props <- c("sn0_range", "sp0_range", "psi_sn_range", "psi_sp_range")
+    missing_props <- setdiff(required_props, names(sens_region))
+
+    if (length(missing_props) > 0) {
+      stop("sensitivity_region must contain: ",
+           paste(missing_props, collapse = ", "))
+    }
+
+    # Convert to S7 object (which will validate via property validators)
+    sens_region <- sensitivity_region(
+      sn0_range = sens_region$sn0_range,
+      sp0_range = sens_region$sp0_range,
+      psi_sn_range = sens_region$psi_sn_range,
+      psi_sp_range = sens_region$psi_sp_range
+    )
+  }
+
   # Check if it's an S7 object and has sensitivity_region in its class
   if (!inherits(sens_region, "S7_object") ||
       !any(grepl("sensitivity_region", class(sens_region)))) {
-    stop("Input must be a sensitivity_region object.")
+    stop("Input must be a sensitivity_region object or a named list with required fields.")
   }
 
   required_props <- c("sn0_range", "sp0_range", "psi_sn_range", "psi_sp_range")
-  
+
   # Use S7-aware property name accessor
   prop_names <- S7::prop_names(sens_region)
   missing_props <- setdiff(required_props, prop_names)
@@ -139,13 +159,13 @@ get_default_sensitivity_region <- function() {
 #' @keywords internal
 create_parameter_grid <- function(sens_region, n_grid) {
 
-  sn0_seq <- seq(sens_region$sn0_range[1], sens_region$sn0_range[2],
+  sn0_seq <- seq(sens_region@sn0_range[1], sens_region@sn0_range[2],
                  length.out = n_grid)
-  sp0_seq <- seq(sens_region$sp0_range[1], sens_region$sp0_range[2],
+  sp0_seq <- seq(sens_region@sp0_range[1], sens_region@sp0_range[2],
                  length.out = n_grid)
-  psi_sn_seq <- seq(sens_region$psi_sn_range[1], sens_region$psi_sn_range[2],
+  psi_sn_seq <- seq(sens_region@psi_sn_range[1], sens_region@psi_sn_range[2],
                     length.out = n_grid)
-  psi_sp_seq <- seq(sens_region$psi_sp_range[1], sens_region$psi_sp_range[2],
+  psi_sp_seq <- seq(sens_region@psi_sp_range[1], sens_region@psi_sp_range[2],
                     length.out = n_grid)
 
   grid <- expand.grid(

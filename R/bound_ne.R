@@ -223,7 +223,8 @@ bound_ne <- function(data,
   computation_time <- difftime(end_time, start_time, units = "secs")
 
   # Convert sensitivity_region to S7 class if needed
-  if (!inherits(sensitivity_region, "sensitivity_region")) {
+  if (!inherits(sensitivity_region, "S7_object") ||
+      !any(grepl("sensitivity_region", class(sensitivity_region)))) {
     sens_region_s7 <- as_sensitivity_region(sensitivity_region)
   } else {
     sens_region_s7 <- sensitivity_region
