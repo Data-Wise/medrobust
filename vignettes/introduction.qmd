@@ -66,13 +66,13 @@ Instead of point estimation under strong assumptions, `medrobust` uses **partial
 
 ```{r}
 #| label: install-chunk
+#| eval: false
 # Install from GitHub
 devtools::install_github("data-wise/medrobust")
 ```
 
 ```{r}
 #| label: load-package
-#| echo: true
 library(medrobust)
 ```
 
@@ -135,10 +135,10 @@ set.seed(123)
 
 # True causal parameters
 true_params <- list(
-  beta_AM = log(1.5),  # Effect of A on M (OR = 1.5)
+  beta_AM = log(1.5), # Effect of A on M (OR = 1.5)
   theta_AY = log(1.3), # Direct effect of A on Y (OR = 1.3)
   theta_MY = log(1.4), # Effect of M on Y (OR = 1.4)
-  p_A = 0.4            # Marginal probability of A
+  p_A = 0.4 # Marginal probability of A
 )
 
 # Misclassification parameters (differential)

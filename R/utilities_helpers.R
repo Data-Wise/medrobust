@@ -86,44 +86,37 @@ validate_inputs <- function(data, exposure, mediator, outcome, confounders,
 #' Validate Sensitivity Region
 #' @keywords internal
 validate_sensitivity_region <- function(sens_region) {
-
-  required_elements <- c("sn0_range", "sp0_range", "psi_sn_range", "psi_sp_range")
-  missing_elements <- setdiff(required_elements, names(sens_region))
-
-  if (length(missing_elements) > 0) {
-    stop("sensitivity_region must contain: ",
-         paste(required_elements, collapse = ", "))
+  # Check if it's an S7 object and has sensitivity_region in its class
+  if (!inherits(sens_region, "S7_object") ||
+      !any(grepl("sensitivity_region", class(sens_region)))) {
+    stop("Input must be a sensitivity_region object.")
   }
 
-  # Validate each range
-  for (elem in required_elements) {
-    range_vals <- sens_region[[elem]]
+  required_props <- c("sn0_range", "sp0_range", "psi_sn_range", "psi_sp_range")
+  
+  # Use S7-aware property name accessor
+  prop_names <- S7::prop_names(sens_region)
+  missing_props <- setdiff(required_props, prop_names)
 
-    if (!is.numeric(range_vals) || length(range_vals) != 2) {
-      stop("'", elem, "' must be a numeric vector of length 2")
-    }
+  if (length(missing_props) > 0) {
+    stop("sensitivity_region must contain properties: ",
+         paste(missing_props, collapse = ", "))
+  }
 
-    if (range_vals[1] > range_vals[2]) {
-      stop("'", elem, "' must have min <= max")
-    }
+  # The S7 class validators handle type, length, and range checks.
+  # We can add warnings for potentially problematic (but valid) values.
+  for (prop in required_props) {
+    range_vals <- S7::prop(sens_region, prop)
 
-    # Check bounds for probabilities
-    if (elem %in% c("sn0_range", "sp0_range")) {
-      if (any(range_vals < 0 | range_vals > 1)) {
-        stop("'", elem, "' must be in [0, 1]")
-      }
+    if (prop %in% c("sn0_range", "sp0_range")) {
       if (any(range_vals < 0.5)) {
-        warning("'", elem, "' includes values < 0.5 (worse than random guessing)")
+        warning("'", prop, "' includes values < 0.5 (worse than random guessing)", call. = FALSE)
       }
     }
 
-    # Check bounds for psi parameters
-    if (elem %in% c("psi_sn_range", "psi_sp_range")) {
-      if (any(range_vals <= 0)) {
-        stop("'", elem, "' must be positive (odds ratio)")
-      }
-      if (range_vals[2] > 10) {
-        warning("'", elem, "' includes very large odds ratios (>10)")
+    if (prop %in% c("psi_sn_range", "psi_sp_range")) {
+      if (any(range_vals > 10)) {
+        warning("'", prop, "' includes very large odds ratios (>10)", call. = FALSE)
       }
     }
   }
