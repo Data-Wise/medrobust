@@ -50,7 +50,7 @@ Suggests:
     gridExtra,
     scales
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 URL: https://github.com/data-wise/medrobust
 BugReports: https://github.com/data-wise/medrobust/issues
 Keywords: causal-inference, mediation-analysis, measurement-error,
