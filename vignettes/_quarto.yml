@@ -1,0 +1,18 @@
+project:
+  type: website
+  output-dir: ../inst/doc
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    theme: cosmo
+    highlight-style: github
+    embed-resources: true
+    self-contained: true
+
+execute:
+  freeze: auto
+  cache: false
