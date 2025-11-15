@@ -146,7 +146,7 @@ plot_bounds_line <- function(bounds_object, param, effect, show_naive, show_null
   }
 
   if (show_null) {
-    null_value <- ifelse(bounds_object$effect_scale == "RD", 0, 1)
+    null_value <- ifelse(bounds_object@effect_scale == "RD", 0, 1)
     p <- p + ggplot2::geom_hline(yintercept = null_value, linetype = "dotted")
   }
 
@@ -263,7 +263,7 @@ falsification_summary <- function(bounds_object,
   }
 
   result <- list(
-    overall_falsification = bounds_object$falsified_proportion
+    overall_falsification = bounds_object@falsified_proportion
   )
 
   if (by_parameter) {

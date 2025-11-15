@@ -221,10 +221,10 @@ bounds <- bound_ne(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
-  n_grid = 10,         # Grid resolution (use 50+ for production)
+  n_grid = 10, # Grid resolution (use 50+ for production)
   effect_scale = "OR",
-  parallel = TRUE,     # Enable parallel processing
-  n_cores = 4,         # Use 4 cores (adjust based on your system)
+  parallel = TRUE, # Enable parallel processing
+  n_cores = 4, # Use 4 cores (adjust based on your system)
   verbose = FALSE
 )
 
@@ -241,7 +241,6 @@ The output shows:
 ```{r}
 #| label: tbl-bounds-summary
 #| tbl-cap: "Detailed summary of bounds and falsification results"
-#| echo: true
 #| message: false
 
 # Get more detailed summary
@@ -253,7 +252,6 @@ summary(bounds)
 ```{r}
 #| label: fig-sensitivity-plot
 #| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios"
-#| echo: true
 #| message: false
 
 # Create sensitivity plot
@@ -273,7 +271,6 @@ We can test whether specific misclassification parameters are compatible with th
 ```{r}
 #| label: tbl-compatibility-test
 #| tbl-cap: "Compatibility test results for specified misclassification parameters"
-#| echo: true
 #| message: false
 
 # Test the true parameters (we know them from simulation)
@@ -624,13 +621,13 @@ Enable parallel processing to dramatically reduce computation time:
 ```{r}
 # Detect available cores
 library(parallel)
-n_cores <- detectCores() - 1  # Leave one core free
+n_cores <- detectCores() - 1 # Leave one core free
 
 # Enable parallelization
 bounds <- bound_ne(
   ...,
   parallel = TRUE,
-  n_cores = n_cores  # Use all available cores
+  n_cores = n_cores # Use all available cores
 )
 ```
 
@@ -645,7 +642,7 @@ For repeated analyses with the same data:
 bounds <- bound_ne(
   ...,
   cache = TRUE,
-  cache_dir = "cache/"  # Optional: specify cache location
+  cache_dir = "cache/" # Optional: specify cache location
 )
 ```
 

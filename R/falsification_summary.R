@@ -507,12 +507,12 @@ extract_falsified_region <- function(bounds_object) {
   # Get all evaluated parameter sets
   # This requires recreating the full grid
   param_grid <- create_parameter_grid(
-    bounds_object$sensitivity_region,
-    n_grid = round(bounds_object$n_evaluated^(1/4))  # Approximate
+    bounds_object@sensitivity_region,
+    n_grid = round(bounds_object@n_evaluated^(1/4))  # Approximate
   )
 
   # Get compatible sets
-  compat <- bounds_object$compatible_sets[, c("sn0", "sp0", "psi_sn", "psi_sp")]
+  compat <- bounds_object@compatible_sets[, c("sn0", "sp0", "psi_sn", "psi_sp")]
 
   # Find falsified sets (those in grid but not in compatible)
   falsified <- dplyr::anti_join(param_grid, compat,
