@@ -57,7 +57,10 @@ bound_ne_mediator <- function(data,
                            envir = environment())
 
     # Load required packages on each worker
-    parallel::clusterEvalQ(cl, library(dplyr))
+    parallel::clusterEvalQ(cl, {
+      library(dplyr)
+      library(medrobust)
+    })
   }
 
   # Progress bar

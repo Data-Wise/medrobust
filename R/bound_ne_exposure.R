@@ -52,10 +52,16 @@ bound_ne_exposure <- function(data,
     cl <- parallel::makeCluster(n_cores)
     on.exit(parallel::stopCluster(cl))
 
+    # Export data and parameters to workers
     parallel::clusterExport(cl, c("data", "A_star_name", "M_name", "Y_name",
                                    "C_names", "effect_scale"),
                            envir = environment())
-    parallel::clusterEvalQ(cl, library(dplyr))
+
+    # Load required packages on workers
+    parallel::clusterEvalQ(cl, {
+      library(dplyr)
+      library(medrobust)
+    })
   }
 
   # Progress bar
