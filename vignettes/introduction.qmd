@@ -216,8 +216,10 @@ print(sens_region)
 # - For production analyses, use n_grid = 50 or higher for better resolution
 #
 # For CRAN vignette, we disable parallel processing
+# To enable parallel processing (recommended):
 bounds <- bound_ne(
   data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star", # Misclassified exposure
   mediator = "M",
   outcome = "Y",
@@ -280,6 +282,7 @@ We can test whether specific misclassification parameters are compatible with th
 # psi must contain all four parameters: sn0, sp0, psi_sn, psi_sp
 compatibility <- check_compatibility(
   data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -309,6 +312,7 @@ For inference, we can compute bootstrap confidence intervals:
 # This takes longer, so we use fewer bootstrap replications for the vignette
 bounds_with_ci <- bound_ne(
   data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -319,6 +323,8 @@ bounds_with_ci <- bound_ne(
   bootstrap = TRUE,
   bootstrap_reps = 100, # Use 1000+ for production
   parallel = FALSE, # Set to FALSE for CRAN vignette check
+  parallel = TRUE,
+  n_cores = n_cores,
   confidence_level = 0.95,
   verbose = TRUE,
   grid_method = "lhs" # (default) Latin Hypercube Sampling for efficiency
@@ -358,6 +364,7 @@ sens_region_med <- sensitivity_region(
 # Compute bounds
 bounds_med <- bound_ne(
   data = sim_data_med@observed,
+  data = sim_data_med$observed,
   exposure = "A",
   mediator = "M_star", # Misclassified mediator
   outcome = "Y",
@@ -393,6 +400,7 @@ sens_region_nondiff <- sensitivity_region(
 
 bounds_nondiff <- bound_ne(
   data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -525,6 +533,7 @@ For large datasets or fine grids, enable parallelization:
 #| eval: false
 bounds_parallel <- bound_ne(
   data = sim_data@observed,
+  data = sim_data$observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
