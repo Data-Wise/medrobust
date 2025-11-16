@@ -214,8 +214,6 @@ method(plot, medrobust_bounds) <- function(x, ...) {
       x@naive_estimates$NIE,
       x@naive_estimates$NDE
     )
-  } else {
-    bounds_data$naive <- NA
   }
 
   # Add bootstrap CIs if available

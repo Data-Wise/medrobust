@@ -118,8 +118,10 @@ The typical analysis follows these steps:
 2. **Define sensitivity region** (plausible range of misclassification parameters)
 3. **Compute bounds** for NDE and NIE
 4. **Examine compatibility** with hypothesized parameters
-5. **Visualize results**
+5. **Visualize results** using plot() and sensitivity_plot()
 6. **Perform inference** via bootstrap
+7. **Use generic methods** (summary, print, as.data.frame, as.list)
+8. **Power analysis** (optional: plan future studies)
 
 ## Example 1: Exposure Misclassification
 
@@ -163,9 +165,12 @@ sim_data <- simulate_dm_data(
 
 # View structure
 print(sim_data)
+
+# Check the class
+cat("\nClass of sim_data:", class(sim_data), "\n")
 ```
 
-The simulated data object contains:
+The simulated data object is an S7 object that contains:
 
 - `observed`: The data we actually observe (with misclassified exposure)
 - `truth`: The true underlying data (for validation purposes)
@@ -173,7 +178,7 @@ The simulated data object contains:
 - `generation_params`: Parameters used to generate the data
 
 ```{r}
-# Check the observed data
+# Access the observed data using @ for S7 properties
 head(sim_data@observed)
 ```
 
@@ -253,19 +258,22 @@ summary(bounds)
 ### Step 4: Visualize Results
 
 ```{r}
-#| label: fig-sensitivity-plot
-#| fig-cap: "Sensitivity plot showing bounds on NIE and NDE across misclassification scenarios"
+#| label: fig-bounds-plot
+#| fig-cap: "Partial identification bounds for NIE and NDE"
+#| fig-width: 7
+#| fig-height: 5
 #| message: false
 
-# Create sensitivity plot
-sensitivity_plot(bounds)
+# Use the plot() method to visualize bounds
+plot(bounds)
 ```
 
 This plot shows:
 
-- How the bounds on NIE and NDE vary across different misclassification scenarios
-- Which parameter combinations are compatible (green) vs. falsified (red)
-- The overall sensitivity of conclusions to misclassification assumptions
+- **Error bars**: The range of bounds for NIE and NDE
+- **Points**: Lower and upper bounds for each effect
+- **Dashed red line**: Null hypothesis value (OR = 1)
+- **Subtitle**: Number of compatible vs. evaluated parameter sets
 
 ### Step 5: Test Specific Hypotheses
 
@@ -597,24 +605,24 @@ A high falsification rate (e.g., 95%) means the data strongly constrain plausibl
 
 ### Extracting Results
 
-You can extract various components from the results:
+You can extract various components from the results using built-in methods:
 
 ```{r}
 #| label: extract-results
 #| eval: false
 #| message: false
 
-# Convert to data frame
+# Convert to data frame for custom analysis
 bounds_df <- as.data.frame(bounds)
 print(bounds_df)
 
-# Extract compatible parameter sets
-compatible_sets <- extract_bounds(bounds)
-print(head(compatible_sets))
+# Convert to list for programmatic access
+bounds_list <- as.list(bounds)
+names(bounds_list)
 
-# Extract falsified region
-falsified <- extract_falsified_region(bounds)
-print(falsified)
+# Access compatible parameter sets directly
+compatible_sets <- bounds@compatible_sets
+print(head(compatible_sets))
 ```
 
 ### Comparing Different Scenarios
