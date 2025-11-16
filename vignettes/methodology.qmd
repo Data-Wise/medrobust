@@ -8,7 +8,7 @@ format:
     toc-depth: 2
     theme: cosmo
 execute:
-  eval: false
+  eval: true
   echo: true
 vignette: >
   %\VignetteIndexEntry{Methodology}
