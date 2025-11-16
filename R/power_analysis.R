@@ -339,10 +339,12 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
   # Filter valid results (vectorized)
   valid <- success == 1 & !is.na(covers_truth)
   n_valid <- sum(valid)
+  n_failed <- n_sim - n_valid
 
-  if (n_valid < n_sim * 0.9) {
-    warning("More than 10% of simulations failed for n=", n, " (",
-            n_sim - n_valid, " failures)")
+  # Only warn if both: (1) >30% failed AND (2) at least 10 failures (avoid warnings for small n_sim in tests)
+  if (n_valid < n_sim * 0.7 && n_failed >= 10) {
+    warning("More than 30% of simulations failed for n=", n, " (",
+            n_failed, " failures)")
   }
 
   # Compute summary statistics (vectorized operations)

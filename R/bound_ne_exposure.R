@@ -103,11 +103,16 @@ bound_ne_exposure <- function(data,
                      combinations$s, "_a0")
 
     # Direct lookup with default 0 for missing keys
-    P_star_1_vec <- unlist(obs_probs[keys_1], use.names = FALSE)
-    P_star_1_vec[is.na(P_star_1_vec)] <- 0
+    # Use vapply to ensure correct length and handle missing keys
+    P_star_1_vec <- vapply(keys_1, function(k) {
+      val <- obs_probs[[k]]
+      if (is.null(val) || is.na(val)) 0 else val
+    }, numeric(1), USE.NAMES = FALSE)
 
-    P_star_0_vec <- unlist(obs_probs[keys_0], use.names = FALSE)
-    P_star_0_vec[is.na(P_star_0_vec)] <- 0
+    P_star_0_vec <- vapply(keys_0, function(k) {
+      val <- obs_probs[[k]]
+      if (is.null(val) || is.na(val)) 0 else val
+    }, numeric(1), USE.NAMES = FALSE)
 
     # Vectorized testable implications check
     test1 <- (P_star_0_vec > 1e-6) &
