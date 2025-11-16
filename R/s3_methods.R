@@ -201,7 +201,7 @@ summary.medrobust_bounds <- function(object, ...) {
 #'
 #' @return A data frame with one row containing the bounds.
 #'
-#' @keywords internal
+#' @export
 as.data.frame.medrobust_bounds <- function(x, row.names = NULL,
                                           optional = FALSE, ...) {
 
@@ -228,7 +228,7 @@ as.data.frame.medrobust_bounds <- function(x, row.names = NULL,
 #'
 #' @return A list with sn0_range, sp0_range, psi_sn_range, psi_sp_range
 #'
-#' @keywords internal
+#' @export
 as.list.sensitivity_region <- function(x, ...) {
   list(
     sn0_range = x@sn0_range,

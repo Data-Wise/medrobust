@@ -22,4 +22,3 @@ A data frame with one row containing the bounds.
 Extract bounds as a data frame for further analysis or export.
 NOTE: This is a legacy S3 method. The package now uses S7 methods (see s7-methods.R).
 }
-\keyword{internal}
