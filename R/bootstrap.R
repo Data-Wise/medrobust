@@ -273,10 +273,10 @@ compute_bca_ci <- function(boot_estimates,
   )
 
   theta_hat <- c(
-    nie_lower = original_bounds$NIE_lower,
-    nie_upper = original_bounds$NIE_upper,
-    nde_lower = original_bounds$NDE_lower,
-    nde_upper = original_bounds$NDE_upper
+    nie_lower = original_bounds@NIE_lower,
+    nie_upper = original_bounds@NIE_upper,
+    nde_lower = original_bounds@NDE_lower,
+    nde_upper = original_bounds@NDE_upper
   )
 
   # Step 2: Compute bias correction (z0)
@@ -326,10 +326,10 @@ compute_bca_ci <- function(boot_estimates,
       )
 
       jack_estimates[i, ] <- c(
-        jack_bounds$NIE_lower,
-        jack_bounds$NIE_upper,
-        jack_bounds$NDE_lower,
-        jack_bounds$NDE_upper
+        jack_bounds@NIE_lower,
+        jack_bounds@NIE_upper,
+        jack_bounds@NDE_lower,
+        jack_bounds@NDE_upper
       )
     }, error = function(e) {
       # Leave as NA if iteration fails
@@ -491,15 +491,15 @@ plot_bootstrap_distribution <- function(bootstrap_results,
     boot_lower <- bootstrap_results$boot_nie_lower
     boot_upper <- bootstrap_results$boot_nie_upper
     if (!is.null(original_bounds)) {
-      orig_lower <- original_bounds$NIE_lower
-      orig_upper <- original_bounds$NIE_upper
+      orig_lower <- original_bounds@NIE_lower
+      orig_upper <- original_bounds@NIE_upper
     }
   } else {
     boot_lower <- bootstrap_results$boot_nde_lower
     boot_upper <- bootstrap_results$boot_nde_upper
     if (!is.null(original_bounds)) {
-      orig_lower <- original_bounds$NDE_lower
-      orig_upper <- original_bounds$NDE_upper
+      orig_lower <- original_bounds@NDE_lower
+      orig_upper <- original_bounds@NDE_upper
     }
   }
 

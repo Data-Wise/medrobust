@@ -439,11 +439,11 @@ compare_bounds <- function(bounds_list, labels = NULL) {
   # Extract bounds
   comparison <- data.frame(
     analysis = labels,
-    NIE_lower = sapply(bounds_list, function(x) x$NIE_lower),
-    NIE_upper = sapply(bounds_list, function(x) x$NIE_upper),
-    NDE_lower = sapply(bounds_list, function(x) x$NDE_lower),
-    NDE_upper = sapply(bounds_list, function(x) x$NDE_upper),
-    falsified_prop = sapply(bounds_list, function(x) x$falsified_proportion)
+    NIE_lower = sapply(bounds_list, function(x) x@NIE_lower),
+    NIE_upper = sapply(bounds_list, function(x) x@NIE_upper),
+    NDE_lower = sapply(bounds_list, function(x) x@NDE_lower),
+    NDE_upper = sapply(bounds_list, function(x) x@NDE_upper),
+    falsified_prop = sapply(bounds_list, function(x) x@falsified_proportion)
   )
 
   return(comparison)
