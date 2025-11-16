@@ -206,14 +206,14 @@ as.data.frame.medrobust_bounds <- function(x, row.names = NULL,
                                           optional = FALSE, ...) {
 
   df <- data.frame(
-    misclassified_variable = x$misclassified_variable,
-    effect_scale = x$effect_scale,
-    n = x$data_summary$n,
-    NIE_lower = x$NIE_lower,
-    NIE_upper = x$NIE_upper,
-    NDE_lower = x$NDE_lower,
-    NDE_upper = x$NDE_upper,
-    falsified_proportion = x$falsified_proportion,
+    misclassified_variable = x@misclassified_variable,
+    effect_scale = x@effect_scale,
+    n = x@data_summary$n,
+    NIE_lower = x@NIE_lower,
+    NIE_upper = x@NIE_upper,
+    NDE_lower = x@NDE_lower,
+    NDE_upper = x@NDE_upper,
+    falsified_proportion = x@falsified_proportion,
     stringsAsFactors = FALSE
   )
 
