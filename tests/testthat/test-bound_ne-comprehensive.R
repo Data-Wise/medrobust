@@ -40,7 +40,7 @@ test_that("bound_ne works for exposure misclassification with regular grid", {
     n_grid = 10,  # Minimum allowed grid size (10^4 = 10,000 evaluations)
     grid_method = "regular",
     parallel = TRUE,
-    n_cores = max(1, parallel::detectCores() - 2),
+    n_cores = 2,  # Use max 2 cores for testing to avoid parallel::makeCluster limits
     verbose = FALSE
   )
 
@@ -99,7 +99,7 @@ test_that("bound_ne works for mediator misclassification with regular grid", {
     n_grid = 10,  # Minimum allowed grid size (10^4 = 10,000 evaluations)
     grid_method = "regular",
     parallel = TRUE,
-    n_cores = max(1, parallel::detectCores() - 2),
+    n_cores = 2,  # Use max 2 cores for testing to avoid parallel::makeCluster limits
     verbose = FALSE
   )
 
