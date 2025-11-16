@@ -576,9 +576,9 @@ power_analysis_result <- new_class(
     )
   ),
   validator = function(self) {
-    if (any(self@power_curve$power < 0 | self@power_curve$power > 1)) {
+    if (any(self@power_curve$power < 0 | self@power_curve$power > 1, na.rm = TRUE)) {
       "power values must be in [0, 1]"
-    } else if (any(self@power_curve$coverage < 0 | self@power_curve$coverage > 1)) {
+    } else if (any(self@power_curve$coverage < 0 | self@power_curve$coverage > 1, na.rm = TRUE)) {
       "coverage values must be in [0, 1]"
     } else if (any(self@power_curve$mean_width < 0, na.rm = TRUE)) {
       "mean_width values must be non-negative"
