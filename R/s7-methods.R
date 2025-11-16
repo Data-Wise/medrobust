@@ -211,8 +211,8 @@ method(plot, medrobust_bounds) <- function(x, ...) {
   # Add naive estimates if available
   if (!is.null(x@naive_estimates)) {
     bounds_data$naive <- c(
-      x@naive_estimates$NIE,
-      x@naive_estimates$NDE
+      x@naive_estimates$nie,
+      x@naive_estimates$nde
     )
   }
 
