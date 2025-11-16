@@ -111,43 +111,113 @@ sensitivity_plot <- function(bounds_object,
 #' @noRd
 plot_bounds_line <- function(bounds_object, param, effect, show_naive, show_null) {
 
-  # TODO: Extract bounds as function of param from compatible_sets
-  # For now, create dummy plot structure
+  # Extract compatible sets data
+  if (is.null(bounds_object@compatible_sets) || nrow(bounds_object@compatible_sets) == 0) {
+    stop("No compatible parameter sets found in bounds_object. Cannot create sensitivity plot.")
+  }
 
+  compat_data <- bounds_object@compatible_sets
+
+  # Check if the requested parameter exists in compatible_sets
+  if (!param %in% names(compat_data)) {
+    stop("Parameter '", param, "' not found in compatible_sets. ",
+         "Available parameters: ", paste(names(compat_data), collapse = ", "))
+  }
+
+  # Aggregate bounds across other parameters for each value of the focal parameter
+  # Group by the focal parameter and compute min/max bounds
+  param_values <- sort(unique(compat_data[[param]]))
+
+  # Initialize result data frame
   plot_data <- data.frame(
-    param_value = seq(1.0, 2.0, length.out = 50),
-    nie_lower = 1.1 + seq(0, 0.1, length.out = 50),
-    nie_upper = 1.4 + seq(0, 0.1, length.out = 50),
-    nde_lower = 1.0 + seq(0, 0.08, length.out = 50),
-    nde_upper = 1.3 + seq(0, 0.08, length.out = 50)
+    param_value = numeric(),
+    nie_lower = numeric(),
+    nie_upper = numeric(),
+    nde_lower = numeric(),
+    nde_upper = numeric()
   )
 
+  # For each unique value of the parameter, get the range of bounds
+  for (pval in param_values) {
+    subset_data <- compat_data[compat_data[[param]] == pval, ]
+
+    if (nrow(subset_data) > 0) {
+      # The compatible_sets contains NIE and NDE point estimates
+      # We compute the range (min/max) across all compatible sets for this parameter value
+      nie_vals <- subset_data$NIE[!is.na(subset_data$NIE)]
+      nde_vals <- subset_data$NDE[!is.na(subset_data$NDE)]
+
+      # Only add to plot data if we have valid values
+      if (length(nie_vals) > 0 && length(nde_vals) > 0) {
+        plot_data <- rbind(plot_data, data.frame(
+          param_value = pval,
+          nie_lower = min(nie_vals),
+          nie_upper = max(nie_vals),
+          nde_lower = min(nde_vals),
+          nde_upper = max(nde_vals)
+        ))
+      }
+    }
+  }
+
+  # Create parameter label
+  param_label <- switch(param,
+    "sn0" = "Sensitivity (Y=0)",
+    "sp0" = "Specificity (Y=0)",
+    "psi_sn" = "Sensitivity Odds Ratio",
+    "psi_sp" = "Specificity Odds Ratio",
+    param
+  )
+
+  # Create base plot
   p <- ggplot2::ggplot(plot_data, ggplot2::aes(x = param_value)) +
     ggplot2::labs(
-      x = param,
-      y = "Effect Estimate",
-      title = "Partial Identification Bounds"
+      x = param_label,
+      y = paste("Effect (", bounds_object@effect_scale, ")", sep = ""),
+      title = "Sensitivity Analysis: Bounds vs. Misclassification Parameter"
     )
 
+  # Add NIE bounds if requested
   if (effect %in% c("NIE", "both")) {
     p <- p +
       ggplot2::geom_ribbon(ggplot2::aes(ymin = nie_lower, ymax = nie_upper),
-                          alpha = 0.3, fill = "blue") +
-      ggplot2::geom_line(ggplot2::aes(y = nie_lower), color = "blue", linetype = "dashed") +
-      ggplot2::geom_line(ggplot2::aes(y = nie_upper), color = "blue", linetype = "dashed")
+                          alpha = 0.3, fill = "steelblue") +
+      ggplot2::geom_line(ggplot2::aes(y = nie_lower), color = "steelblue",
+                        linewidth = 1, linetype = "dashed") +
+      ggplot2::geom_line(ggplot2::aes(y = nie_upper), color = "steelblue",
+                        linewidth = 1, linetype = "dashed")
   }
 
+  # Add NDE bounds if requested
   if (effect %in% c("NDE", "both")) {
     p <- p +
       ggplot2::geom_ribbon(ggplot2::aes(ymin = nde_lower, ymax = nde_upper),
-                          alpha = 0.3, fill = "red") +
-      ggplot2::geom_line(ggplot2::aes(y = nde_lower), color = "red", linetype = "dashed") +
-      ggplot2::geom_line(ggplot2::aes(y = nde_upper), color = "red", linetype = "dashed")
+                          alpha = 0.3, fill = "coral") +
+      ggplot2::geom_line(ggplot2::aes(y = nde_lower), color = "coral",
+                        linewidth = 1, linetype = "dashed") +
+      ggplot2::geom_line(ggplot2::aes(y = nde_upper), color = "coral",
+                        linewidth = 1, linetype = "dashed")
   }
 
+  # Add null hypothesis line if requested
   if (show_null) {
     null_value <- ifelse(bounds_object@effect_scale == "RD", 0, 1)
-    p <- p + ggplot2::geom_hline(yintercept = null_value, linetype = "dotted")
+    p <- p + ggplot2::geom_hline(yintercept = null_value,
+                                 linetype = "dotted", color = "red", alpha = 0.7)
+  }
+
+  # Add naive estimates if available and requested
+  if (show_naive && !is.null(bounds_object@naive_estimates)) {
+    if (effect %in% c("NIE", "both")) {
+      p <- p + ggplot2::geom_hline(yintercept = bounds_object@naive_estimates$NIE,
+                                   linetype = "solid", color = "steelblue",
+                                   alpha = 0.5, linewidth = 0.5)
+    }
+    if (effect %in% c("NDE", "both")) {
+      p <- p + ggplot2::geom_hline(yintercept = bounds_object@naive_estimates$NDE,
+                                   linetype = "solid", color = "coral",
+                                   alpha = 0.5, linewidth = 0.5)
+    }
   }
 
   return(p)

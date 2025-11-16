@@ -327,6 +327,157 @@ bounds_with_ci <- bound_ne(
 print(bounds_with_ci)
 ```
 
+### Step 7: Using Generic Methods
+
+The package provides standard S7 generic methods for all result objects:
+
+```{r}
+#| label: generic-methods
+#| message: false
+
+# Summary method provides detailed statistics
+summary(bounds)
+
+# Convert to data frame for further analysis
+bounds_df <- as.data.frame(bounds)
+head(bounds_df)
+
+# Convert to list for programmatic access
+bounds_list <- as.list(bounds)
+names(bounds_list)
+
+# Plot method for visualization
+plot(bounds)
+```
+
+### Step 8: Sensitivity Plots
+
+Create customized sensitivity plots to visualize how bounds vary across different misclassification parameters:
+
+```{r}
+#| label: fig-sensitivity-params
+#| fig-cap: "Bounds vs. sensitivity parameter (psi_sn)"
+#| fig-width: 8
+#| fig-height: 5
+#| message: false
+
+# Plot bounds as a function of sensitivity odds ratio
+sensitivity_plot(bounds,
+                param = "psi_sn",
+                effect = "both",
+                show_naive = TRUE,
+                show_null = TRUE)
+```
+
+```{r}
+#| label: fig-sensitivity-baseline
+#| fig-cap: "Bounds vs. baseline sensitivity (sn0)"
+#| fig-width: 8
+#| fig-height: 5
+#| message: false
+
+# Plot bounds as a function of baseline sensitivity
+sensitivity_plot(bounds,
+                param = "sn0",
+                effect = "NIE",
+                theme = "minimal")
+```
+
+These plots show:
+
+- **Ribbons**: Range of bounds across all compatible parameter sets for each parameter value
+- **Dashed lines**: Upper and lower bounds
+- **Horizontal lines**: Naive estimates (assuming no misclassification) and null values
+- **How bounds vary**: As misclassification parameters change
+
+## Power Analysis
+
+Power analysis helps determine the sample size needed to detect mediation effects despite measurement error.
+
+### Planning a Study
+
+```{r}
+#| label: power-analysis-basic
+#| tbl-cap: "Power analysis results for different sample sizes"
+#| cache: true
+#| message: false
+
+# Conduct power analysis
+power_result <- power_analysis(
+  true_params = list(
+    beta_AM = log(1.5),  # A → M effect
+    theta_AY = log(1.3), # A → Y direct effect
+    theta_MY = log(1.4)  # M → Y effect
+  ),
+  dm_params = list(
+    sn0 = 0.85,
+    sp0 = 0.90,
+    psi_sn = 1.5,
+    psi_sp = 1.0
+  ),
+  sensitivity_region = sens_region,
+  misclass_type = "exposure",
+  sample_sizes = c(500, 1000, 2000),
+  n_sim = 50,  # Use 500+ for production
+  n_grid = 10,
+  parallel = FALSE,
+  verbose = FALSE
+)
+
+# View results
+print(power_result)
+```
+
+### Understanding Power Results
+
+```{r}
+#| label: power-summary
+#| message: false
+
+# Detailed summary
+summary(power_result)
+
+# Convert to data frame for custom analysis
+power_df <- as.data.frame(power_result)
+print(power_df)
+```
+
+### Visualizing Power Curves
+
+```{r}
+#| label: fig-power-curve
+#| fig-cap: "Statistical power as a function of sample size"
+#| fig-width: 8
+#| fig-height: 6
+#| message: false
+
+# Plot power curves
+plot(power_result)
+```
+
+The power plot shows:
+
+- **Power curves**: Probability of detecting effects at different sample sizes
+- **Target power line**: Common threshold at 0.80 (80% power)
+- **Separate curves**: For NIE and NDE effects
+- **Planning insight**: Sample size needed to achieve desired power
+
+### Interpreting Power Analysis Results
+
+The `power_analysis()` function computes:
+
+- **Power**: Probability that confidence intervals exclude the null value
+- **Coverage**: Actual coverage probability of confidence intervals
+- **Bias**: Average difference between estimates and true values
+- **MSE**: Mean squared error of estimates
+
+**Example interpretation:**
+
+If power = 0.85 for NIE at n = 1000:
+- With 1000 participants, you have 85% probability of detecting the mediation effect
+- This assumes the specified effect sizes and misclassification parameters
+- You can be confident the study is adequately powered
+
 ## Example 2: Mediator Misclassification
 
 Now let's consider mediator misclassification instead:

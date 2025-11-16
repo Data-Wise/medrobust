@@ -122,3 +122,57 @@ test_that("medrobust_bounds plot method works", {
   expect_s3_class(p, "ggplot")
   expect_true("gg" %in% class(p))
 })
+
+
+test_that("sensitivity_plot works with different parameters", {
+  skip_on_cran()
+
+  # Create test data
+  set.seed(123)
+  sim_data <- simulate_dm_data(
+    n = 500,
+    true_params = list(beta_AM = 0.4, theta_AY = 0.4, theta_MY = 0.4),
+    dm_params = list(sn0 = 0.85, sp0 = 0.85, psi_sn = 1.5, psi_sp = 1.0),
+    misclass_type = "exposure",
+    confounders = 0
+  )
+
+  bounds <- bound_ne(
+    data = sim_data@observed,
+    exposure = "A_star",
+    mediator = "M",
+    outcome = "Y",
+    confounders = NULL,
+    misclassified_variable = "exposure",
+    sensitivity_region = list(
+      sn0_range = c(0.70, 0.95),
+      sp0_range = c(0.70, 0.95),
+      psi_sn_range = c(1.0, 2.5),
+      psi_sp_range = c(0.8, 1.2)
+    ),
+    n_grid = 10,
+    bootstrap = FALSE,
+    verbose = FALSE
+  )
+
+  skip_if_not_installed("ggplot2")
+
+  # Test with different parameters
+  p1 <- sensitivity_plot(bounds, param = "psi_sn", effect = "both")
+  expect_s3_class(p1, "ggplot")
+
+  p2 <- sensitivity_plot(bounds, param = "sn0", effect = "NIE")
+  expect_s3_class(p2, "ggplot")
+
+  p3 <- sensitivity_plot(bounds, param = "sp0", effect = "NDE")
+  expect_s3_class(p3, "ggplot")
+
+  p4 <- sensitivity_plot(bounds, param = "psi_sp", effect = "both")
+  expect_s3_class(p4, "ggplot")
+
+  # Test error handling for invalid parameter
+  expect_error(
+    sensitivity_plot(bounds, param = "invalid_param"),
+    "not found in compatible_sets"
+  )
+})
