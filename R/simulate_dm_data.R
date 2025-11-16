@@ -305,21 +305,18 @@ apply_differential_misclassification <- function(true_var, outcome,
                                                  sn0, sp0, sn1, sp1) {
 
   n <- length(true_var)
-  obs_var <- numeric(n)
 
-  for (i in 1:n) {
-    y <- outcome[i]
-    true_val <- true_var[i]
+  # Vectorized approach: compute sensitivity and specificity for all observations
+  sn_y <- ifelse(outcome == 1, sn1, sn0)
+  sp_y <- ifelse(outcome == 1, sp1, sp0)
 
-    sn_y <- if (y == 1) sn1 else sn0
-    sp_y <- if (y == 1) sp1 else sp0
+  # Compute probability of observing 1 for each observation
+  # If true_var == 1, prob = sensitivity
+  # If true_var == 0, prob = 1 - specificity
+  prob_obs_1 <- ifelse(true_var == 1, sn_y, 1 - sp_y)
 
-    if (true_val == 1) {
-      obs_var[i] <- rbinom(1, 1, prob = sn_y)
-    } else {
-      obs_var[i] <- rbinom(1, 1, prob = 1 - sp_y)
-    }
-  }
+  # Generate all misclassified values at once (vectorized)
+  obs_var <- rbinom(n, 1, prob = prob_obs_1)
 
   return(obs_var)
 }

@@ -482,7 +482,15 @@ simulated_dm_data <- new_class(
         }
       }
     ),
-    true_effects = new_property(class = class_list, default = NULL),
+    true_effects = new_property(
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !is.list(value)) {
+          "true_effects must be NULL or a list"
+        }
+      }
+    ),
     generation_params = new_property(
       class = class_list,
       validator = function(value) {
@@ -545,7 +553,15 @@ power_analysis_result <- new_class(
         }
       }
     ),
-    target_width = new_property(class = class_numeric, default = NULL),
+    target_width = new_property(
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && (!is.numeric(value) || length(value) != 1)) {
+          "target_width must be NULL or a numeric scalar"
+        }
+      }
+    ),
     recommended_n_power = new_property(class = class_integer, default = NA_integer_),
     recommended_n_width = new_property(class = class_integer, default = NA_integer_),
     simulation_params = new_property(

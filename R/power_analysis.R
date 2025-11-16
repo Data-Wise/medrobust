@@ -117,18 +117,14 @@ power_analysis <- function(true_params,
     cat("True", effect, "=", sprintf("%.3f", true_effect_value), "\n\n")
   }
 
-  # Initialize storage
-  results_list <- list()
-
-  # Loop over sample sizes
-  for (n_idx in seq_along(sample_sizes)) {
+  # Create function to run simulations for one sample size
+  run_one_n <- function(n_idx) {
     n <- sample_sizes[n_idx]
 
     if (verbose) {
       cat("Sample size n =", n, "...\n")
     }
 
-    # Run simulations for this sample size
     sim_results <- run_power_simulations(
       n = n,
       n_sim = n_sim,
@@ -147,7 +143,13 @@ power_analysis <- function(true_params,
       seed = seed + n_idx
     )
 
-    results_list[[n_idx]] <- data.frame(
+    if (verbose) {
+      cat("  Power:", sprintf("%.3f", sim_results$power), "\n")
+      cat("  Coverage:", sprintf("%.3f", sim_results$coverage), "\n")
+      cat("  Median width:", sprintf("%.3f", sim_results$median_width), "\n\n")
+    }
+
+    data.frame(
       n = n,
       power = sim_results$power,
       coverage = sim_results$coverage,
@@ -157,15 +159,12 @@ power_analysis <- function(true_params,
       mean_lower = sim_results$mean_lower,
       mean_upper = sim_results$mean_upper
     )
-
-    if (verbose) {
-      cat("  Power:", sprintf("%.3f", sim_results$power), "\n")
-      cat("  Coverage:", sprintf("%.3f", sim_results$coverage), "\n")
-      cat("  Median width:", sprintf("%.3f", sim_results$median_width), "\n\n")
-    }
   }
 
-  # Combine results
+  # Run all sample sizes (use lapply instead of for loop)
+  results_list <- lapply(seq_along(sample_sizes), run_one_n)
+
+  # Combine results (more efficient than rbind in loop)
   power_curve <- do.call(rbind, results_list)
 
   # Find recommended sample size
@@ -221,13 +220,6 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
                                   null_value, n_grid, parallel, n_cores,
                                   verbose, seed) {
 
-  # Storage
-  covers_truth <- logical(n_sim)
-  rejects_null <- logical(n_sim)
-  widths <- numeric(n_sim)
-  lower_bounds <- numeric(n_sim)
-  upper_bounds <- numeric(n_sim)
-
   # Simulation function
   run_one_sim <- function(sim_idx) {
     # Generate data
@@ -258,6 +250,7 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
     }
 
     # Compute bounds
+    # Note: Disable parallel in bound_ne to avoid nested parallelism issues
     tryCatch({
       bounds <- bound_ne(
         data = sim_data@observed,
@@ -269,6 +262,7 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
         sensitivity_region = sensitivity_region,
         n_grid = n_grid,
         effect_scale = "OR",
+        grid_method = "lhs",  # Use LHS for speed
         bootstrap = FALSE,
         verbose = FALSE
       )
@@ -287,35 +281,31 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
       rejects <- (lower > null_value) || (upper < null_value)
       width <- upper - lower
 
-      return(list(
-        covers = covers,
-        rejects = rejects,
+      c(covers = as.numeric(covers),
+        rejects = as.numeric(rejects),
         width = width,
         lower = lower,
         upper = upper,
-        success = TRUE
-      ))
+        success = 1)
 
     }, error = function(e) {
-      return(list(
-        covers = NA,
-        rejects = NA,
-        width = NA,
-        lower = NA,
-        upper = NA,
-        success = FALSE
-      ))
+      c(covers = NA_real_,
+        rejects = NA_real_,
+        width = NA_real_,
+        lower = NA_real_,
+        upper = NA_real_,
+        success = 0)
     })
   }
 
   # Run simulations (parallel or sequential)
   if (parallel && n_sim >= 10) {
     if (is.null(n_cores)) {
-      n_cores <- parallel::detectCores() - 1
+      n_cores <- max(1, parallel::detectCores() - 1)
     }
 
     cl <- parallel::makeCluster(n_cores)
-    on.exit(parallel::stopCluster(cl))
+    on.exit(parallel::stopCluster(cl), add = TRUE)
 
     # Export objects
     parallel::clusterExport(cl,
@@ -335,41 +325,47 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
     sim_results <- lapply(1:n_sim, run_one_sim)
   }
 
-  # Extract results
-  for (i in 1:n_sim) {
-    if (sim_results[[i]]$success) {
-      covers_truth[i] <- sim_results[[i]]$covers
-      rejects_null[i] <- sim_results[[i]]$rejects
-      widths[i] <- sim_results[[i]]$width
-      lower_bounds[i] <- sim_results[[i]]$lower
-      upper_bounds[i] <- sim_results[[i]]$upper
-    } else {
-      covers_truth[i] <- NA
-      rejects_null[i] <- NA
-      widths[i] <- NA
-      lower_bounds[i] <- NA
-      upper_bounds[i] <- NA
-    }
-  }
+  # Vectorized extraction - convert list to matrix
+  results_matrix <- do.call(rbind, sim_results)
 
-  # Remove failed simulations
-  valid <- !is.na(covers_truth)
+  # Extract columns
+  covers_truth <- results_matrix[, "covers"]
+  rejects_null <- results_matrix[, "rejects"]
+  widths <- results_matrix[, "width"]
+  lower_bounds <- results_matrix[, "lower"]
+  upper_bounds <- results_matrix[, "upper"]
+  success <- results_matrix[, "success"]
+
+  # Filter valid results (vectorized)
+  valid <- success == 1 & !is.na(covers_truth)
   n_valid <- sum(valid)
 
   if (n_valid < n_sim * 0.9) {
-    warning("More than 10% of simulations failed for n=", n)
+    warning("More than 10% of simulations failed for n=", n, " (",
+            n_sim - n_valid, " failures)")
   }
 
-  # Compute summary statistics
-  power <- mean(rejects_null[valid])
-  coverage <- mean(covers_truth[valid])
-  mean_width <- mean(widths[valid])
-  median_width <- median(widths[valid])
-  sd_width <- sd(widths[valid])
-  mean_lower <- mean(lower_bounds[valid])
-  mean_upper <- mean(upper_bounds[valid])
+  # Compute summary statistics (vectorized operations)
+  if (n_valid > 0) {
+    power <- mean(rejects_null[valid])
+    coverage <- mean(covers_truth[valid])
+    mean_width <- mean(widths[valid])
+    median_width <- median(widths[valid])
+    sd_width <- sd(widths[valid])
+    mean_lower <- mean(lower_bounds[valid])
+    mean_upper <- mean(upper_bounds[valid])
+  } else {
+    # All simulations failed
+    power <- NA_real_
+    coverage <- NA_real_
+    mean_width <- NA_real_
+    median_width <- NA_real_
+    sd_width <- NA_real_
+    mean_lower <- NA_real_
+    mean_upper <- NA_real_
+  }
 
-  return(list(
+  list(
     power = power,
     coverage = coverage,
     mean_width = mean_width,
@@ -378,5 +374,5 @@ run_power_simulations <- function(n, n_sim, true_params, dm_params,
     mean_lower = mean_lower,
     mean_upper = mean_upper,
     n_valid = n_valid
-  ))
+  )
 }

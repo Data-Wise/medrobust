@@ -38,20 +38,19 @@ latin_hypercube_search <- function(sensitivity_region, evaluate_func,
     cat("Samples:", n_samples, "\n")
   }
 
-  # Generate LHS design in [0,1]^4
+  # Generate LHS design in [0,1]^4 (vectorized)
   set.seed(42)  # Reproducibility
-  lhs_design <- matrix(0, nrow = n_samples, ncol = 4)
 
-  for (j in 1:4) {
-    # Divide [0,1] into n_samples intervals
-    intervals <- seq(0, 1, length.out = n_samples + 1)
+  # Divide [0,1] into n_samples intervals
+  intervals <- seq(0, 1, length.out = n_samples + 1)
+
+  # Create all 4 columns at once using replicate
+  lhs_design <- replicate(4, {
     # Random sample within each interval
-    lhs_design[, j] <- runif(n_samples,
-                             intervals[1:n_samples],
-                             intervals[2:(n_samples + 1)])
+    col <- runif(n_samples, intervals[1:n_samples], intervals[2:(n_samples + 1)])
     # Random permutation
-    lhs_design[, j] <- lhs_design[sample(n_samples), j]
-  }
+    col[sample(n_samples)]
+  })
 
   # Scale to actual parameter ranges
   param_grid <- data.frame(
@@ -61,16 +60,16 @@ latin_hypercube_search <- function(sensitivity_region, evaluate_func,
     psi_sp = lhs_design[, 4] * diff(psi_sp_range) + psi_sp_range[1]
   )
 
-  # Evaluate samples
-  results <- vector("list", n_samples)
+  # Evaluate samples (using lapply for functional approach)
   if (verbose) pb <- txtProgressBar(min = 0, max = n_samples, style = 3)
 
-  for (i in 1:n_samples) {
-    results[[i]] <- evaluate_func(i, param_grid[i, ])
+  results <- lapply(seq_len(n_samples), function(i) {
+    result <- evaluate_func(i, param_grid[i, ])
     if (verbose && i %% max(1, floor(n_samples/20)) == 0) {
       setTxtProgressBar(pb, i)
     }
-  }
+    result
+  })
 
   if (verbose) {
     close(pb)

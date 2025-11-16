@@ -262,15 +262,9 @@ apply_exposure_misclassification <- function(true_data, dm_params) {
   sp_y <- sp0 * exp(log(psi_sp) * Y)
   sp_y <- pmin(sp_y, 1)  # Bound by 1
 
-  # Generate A*
-  A_star <- rep(NA, n)
-  for (i in 1:n) {
-    if (A[i] == 1) {
-      A_star[i] <- rbinom(1, 1, sn_y[i])
-    } else {
-      A_star[i] <- rbinom(1, 1, 1 - sp_y[i])
-    }
-  }
+  # Generate A* (vectorized)
+  prob_A_star_1 <- ifelse(A == 1, sn_y, 1 - sp_y)
+  A_star <- rbinom(n, 1, prob = prob_A_star_1)
 
   observed <- data.frame(
     A_star = A_star,
@@ -306,15 +300,9 @@ apply_mediator_misclassification <- function(true_data, dm_params) {
   sp_y <- sp0 * exp(log(psi_sp) * Y)
   sp_y <- pmin(sp_y, 1)
 
-  # Generate M*
-  M_star <- rep(NA, n)
-  for (i in 1:n) {
-    if (M[i] == 1) {
-      M_star[i] <- rbinom(1, 1, sn_y[i])
-    } else {
-      M_star[i] <- rbinom(1, 1, 1 - sp_y[i])
-    }
-  }
+  # Generate M* (vectorized)
+  prob_M_star_1 <- ifelse(M == 1, sn_y, 1 - sp_y)
+  M_star <- rbinom(n, 1, prob = prob_M_star_1)
 
   observed <- data.frame(
     A = true_data$A,

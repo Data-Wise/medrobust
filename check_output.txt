@@ -11,52 +11,12 @@
 * checking extension type ... Package
 * this is package ‘medrobust’ version ‘0.1.0.9000’
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ...Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
- [3s/12s] NOTE
+* checking CRAN incoming feasibility ... [4s/13s] NOTE
 Maintainer: ‘Davood Tofighi <dtofighi@gmail.com>’
 
 New submission
 
 Version contains large components (0.1.0.9000)
-
-License components with restrictions and base license permitting such:
-  MIT + file LICENSE
-File 'LICENSE':
-  MIT License
-  
-  Copyright (c) 2025 Davood Tofighi
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  SOFTWARE.
 * checking package namespace information ... OK
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
@@ -65,31 +25,15 @@ File 'LICENSE':
 * checking for hidden files and directories ... OK
 * checking for portable file names ... OK
 * checking for sufficient/correct file permissions ... OK
-* checking whether package ‘medrobust’ can be installed ... WARNING
-Found the following significant warnings:
-  Note: possible error in 'binary_search_bounds(sensitivity_region = sensitivity_region, ': unused argument (n_iterations = n_grid) 
-  Note: possible error in 'auto_grid_search(sensitivity_region = sensitivity_region, ': unused argument (n_grid = n_grid) 
-  Note: possible error in 'simulate_dm_data(n = n, ': unused arguments (return_truth = FALSE, return_params = FALSE) 
-  Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-  Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-  Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-  Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-See ‘/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00install.out’ for details.
-Information on the location(s) of code generating the ‘Note’s can be
-obtained by re-running with environment variable R_KEEP_PKG_SOURCE set
-to ‘yes’.
+* checking whether package ‘medrobust’ can be installed ... OK
 * checking installed package size ... OK
 * checking package directory ... OK
 * checking for future file timestamps ... OK
 * checking ‘build’ directory ... OK
-* checking DESCRIPTION meta-information ... NOTE
-License stub is invalid DCF.
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
-* checking top-level files ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... NOTE
+Non-standard file/directory found at top level:
+  ‘POWER_ANALYSIS_OPTIMIZATIONS.md’
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... OK
@@ -107,255 +51,23 @@ Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... NOTE
-bound_ne_mediator: possible error in
-  binary_search_bounds(sensitivity_region = sensitivity_region,
-  evaluate_func = evaluate_wrapper, n_iterations = n_grid, verbose =
-  verbose): unused argument (n_iterations = n_grid)
-bound_ne_mediator: possible error in
-  auto_grid_search(sensitivity_region = sensitivity_region,
-  evaluate_func = evaluate_wrapper, n_grid = n_grid, verbose =
-  verbose): unused argument (n_grid = n_grid)
-run_power_simulations : run_one_sim: possible error in
-  simulate_dm_data(n = n, true_params = true_params, dm_params =
-  dm_params, misclass_type = misclass_type, confounders = confounders,
-  seed = seed + sim_idx * 1000, return_truth = FALSE, return_params =
-  FALSE): unused arguments (return_truth = FALSE, return_params =
-  FALSE)
-* checking Rd files ... WARNING
-prepare_Rd: ./man/compute_relative_precision.Rd:14: unexpected section header '\value'
-prepare_Rd: ./man/compute_relative_precision.Rd:17: unexpected section header '\description'
-prepare_Rd: ./man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-prepare_Rd: ./man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
-checkRd: (-1) compute_relative_precision.Rd:14-16: Lost braces
-    14 | \value{
-       |       ^
-checkRd: (-1) compute_relative_precision.Rd:17-19: Lost braces
-    17 | \description{
-       |             ^
-checkRd: (-1) compute_relative_precision.Rd:20: Lost braces; missing escapes or markup?
-    20 | \keyword{internal}
-       |         ^
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
 * checking Rd metadata ... OK
 * checking Rd line widths ... OK
-* checking Rd cross-references ...Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
-Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
-'
- OK
+* checking Rd cross-references ... OK
 * checking for missing documentation entries ... OK
-* checking for code/documentation mismatches ... WARNING
-Codoc mismatches from Rd file 'compatibility_test.Rd':
-compatibility_test
-  Code: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
-                 = NULL, n_constraints_total = 0L,
-                 n_constraints_satisfied = 0L, n_constraints_violated =
-                 0L, violated_constraints = structure(list(), names =
-                 character(0), row.names = integer(0), class =
-                 "data.frame"), implied_probabilities = list(),
-                 stratum_details = list(), misclassified_variable =
-                 character(0), reason = NULL)
-  Docs: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
-                 = NULL, n_constraints_total = 0L,
-                 n_constraints_satisfied = 0L, n_constraints_violated =
-                 0L, violated_constraints = structure(list(), names =
-                 character(0), row.names = integer(0), class =
-                 "data.frame"), implied_probabilities = list(),
-                 stratum_details = list(), misclassified_variable =
-                 character(0), reason = NULL)
-  Mismatches in argument default values:
-    Name: 'violated_constraints'
-    Code: structure(list(), names = character(0), row.names = integer(0), class = "data.frame")
-    Docs: structure(list(), names = character(0), row.names = integer(0), 
-          class = "data.frame")
-
-Codoc mismatches from Rd file 'medrobust_bounds.Rd':
-medrobust_bounds
-  Code: function(NIE_lower = integer(0), NIE_upper = integer(0),
-                 NDE_lower = integer(0), NDE_upper = integer(0),
-                 compatible_sets = (function (.data = list(), row.names
-                 = NULL) { if (is.null(row.names)) { list2DF(.data) }
-                 else { out <- list2DF(.data, length(row.names))
-                 attr(out, "row.names") <- row.names out }})(),
-                 n_compatible = integer(0), n_evaluated = integer(0),
-                 falsified_proportion = integer(0), effect_scale =
-                 character(0), misclassified_variable = character(0),
-                 sensitivity_region = sensitivity_region(),
-                 naive_estimates = list(), bootstrap_results = NULL,
-                 data_summary = list(), call = NULL)
-  Docs: function(NIE_lower = integer(0), NIE_upper = integer(0),
-                 NDE_lower = integer(0), NDE_upper = integer(0),
-                 compatible_sets = (function(.data = list(), row.names
-                 = NULL) { if (is.null(row.names)) { list2DF(.data) }
-                 else { out <- list2DF(.data, length(row.names))
-                 attr(out, "row.names") <- row.names out }})(),
-                 n_compatible = integer(0), n_evaluated = integer(0),
-                 falsified_proportion = integer(0), effect_scale =
-                 character(0), misclassified_variable = character(0),
-                 sensitivity_region = sensitivity_region(),
-                 naive_estimates = list(), bootstrap_results = NULL,
-                 data_summary = list(), call = NULL)
-  Mismatches in argument default values:
-    Name: 'compatible_sets'
-    Code: (function (.data = list(), row.names = NULL) 
-      {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-    Docs: (function(.data = list(), row.names = NULL) {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-
-Codoc mismatches from Rd file 'power_analysis_result.Rd':
-power_analysis_result
-  Code: function(power_curve = (function (.data = list(), row.names =
-                 NULL) { if (is.null(row.names)) { list2DF(.data) }
-                 else { out <- list2DF(.data, length(row.names))
-                 attr(out, "row.names") <- row.names out }})(),
-                 true_effect = integer(0), target_power = integer(0),
-                 target_width = integer(0), recommended_n_power =
-                 NA_integer_, recommended_n_width = NA_integer_,
-                 simulation_params = list())
-  Docs: function(power_curve = (function(.data = list(), row.names =
-                 NULL) { if (is.null(row.names)) { list2DF(.data) }
-                 else { out <- list2DF(.data, length(row.names))
-                 attr(out, "row.names") <- row.names out }})(),
-                 true_effect = integer(0), target_power = integer(0),
-                 target_width = integer(0), recommended_n_power =
-                 NA_integer_, recommended_n_width = NA_integer_,
-                 simulation_params = list())
-  Mismatches in argument default values:
-    Name: 'power_curve'
-    Code: (function (.data = list(), row.names = NULL) 
-      {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-    Docs: (function(.data = list(), row.names = NULL) {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-
-Codoc mismatches from Rd file 'simulated_dm_data.Rd':
-simulated_dm_data
-  Code: function(observed = (function (.data = list(), row.names =
-                 NULL) { if (is.null(row.names)) { list2DF(.data) }
-                 else { out <- list2DF(.data, length(row.names))
-                 attr(out, "row.names") <- row.names out }})(), truth =
-                 NULL, true_effects = list(), generation_params =
-                 list(), misclassification_applied = list())
-  Docs: function(observed = (function(.data = list(), row.names = NULL)
-                 { if (is.null(row.names)) { list2DF(.data) } else {
-                 out <- list2DF(.data, length(row.names)) attr(out,
-                 "row.names") <- row.names out }})(), truth = NULL,
-                 true_effects = list(), generation_params = list(),
-                 misclassification_applied = list())
-  Mismatches in argument default values:
-    Name: 'observed'
-    Code: (function (.data = list(), row.names = NULL) 
-      {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-    Docs: (function(.data = list(), row.names = NULL) {
-          if (is.null(row.names)) {
-              list2DF(.data)
-          }
-          else {
-              out <- list2DF(.data, length(row.names))
-              attr(out, "row.names") <- row.names
-              out
-          }
-      })()
-
-* checking Rd \usage sections ... WARNING
-Undocumented arguments in Rd file 'bootstrap_results.Rd'
-  ‘method’ ‘n_reps’ ‘n_failed’ ‘confidence_level’ ‘nie_lower_ci’
-  ‘nie_upper_ci’ ‘nde_lower_ci’ ‘nde_upper_ci’ ‘boot_nie_lower’
-  ‘boot_nie_upper’ ‘boot_nde_lower’ ‘boot_nde_upper’ ‘z0’
-  ‘acceleration’
-
-Undocumented arguments in Rd file 'compatibility_test.Rd'
-  ‘compatible’ ‘psi’ ‘sn1’ ‘sp1’ ‘n_constraints_total’
-  ‘n_constraints_satisfied’ ‘n_constraints_violated’
-  ‘violated_constraints’ ‘implied_probabilities’ ‘stratum_details’
-  ‘misclassified_variable’ ‘reason’
-
-Documented arguments not in \usage in Rd file 'compute_bca_ci.Rd':
-  ‘...’
-
-Undocumented arguments in Rd file 'medrobust_bounds.Rd'
-  ‘NIE_lower’ ‘NIE_upper’ ‘NDE_lower’ ‘NDE_upper’ ‘compatible_sets’
-  ‘n_compatible’ ‘n_evaluated’ ‘falsified_proportion’ ‘effect_scale’
-  ‘misclassified_variable’ ‘sensitivity_region’ ‘naive_estimates’
-  ‘bootstrap_results’ ‘data_summary’ ‘call’
-
-Documented arguments not in \usage in Rd file 'power_analysis.Rd':
-  ‘true_params’ ‘dm_params’ ‘misclass_type’ ‘sample_sizes’
-  ‘target_power’ ‘effect’ ‘n_grid’ ‘confounders’ ‘parallel’ ‘n_cores’
-  ‘verbose’ ‘seed’
-
-Undocumented arguments in Rd file 'power_analysis_result.Rd'
-  ‘power_curve’ ‘true_effect’ ‘target_power’ ‘target_width’
-  ‘recommended_n_power’ ‘recommended_n_width’ ‘simulation_params’
-
-Documented arguments not in \usage in Rd file 'simulate_dm_data.Rd':
-  ‘confounder_params’ ‘effect_modification’ ‘interaction_coef’
-  ‘return_truth’ ‘return_params’
-
-Undocumented arguments in Rd file 'simulated_dm_data.Rd'
-  ‘observed’ ‘truth’ ‘true_effects’ ‘generation_params’
-  ‘misclassification_applied’
-
-Functions with \usage entries need to have the appropriate \alias
-entries, and all their arguments documented.
-The \usage entries must correspond to syntactically valid R code.
-See chapter ‘Writing R documentation files’ in the ‘Writing R
-Extensions’ manual.
-* checking Rd contents ... NOTE
-Rd files without \description:
-  ‘compute_relative_precision.Rd’
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
 * checking for unstated dependencies in examples ... OK
 * checking installed files from ‘inst/doc’ ... OK
 * checking files in ‘vignettes’ ... OK
 * checking examples ... OK
 * checking for unstated dependencies in ‘tests’ ... OK
 * checking tests ...
-  Running ‘testthat.R’ [2s/29s]
- [3s/29s] OK
+  Running ‘testthat.R’ [3s/42s]
+ [4s/42s] OK
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes ... OK
 * checking re-building of vignette outputs ... OK
@@ -364,12 +76,11 @@ Rd files without \description:
 Skipping checking HTML validation: 'tidy' doesn't look like recent enough HTML Tidy.
 Please obtain a recent version of HTML Tidy by downloading a binary
 release or compiling the source code from <https://www.html-tidy.org/>.
-Skipping checking math rendering: package 'V8' unavailable
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
 
-Status: 4 WARNINGs, 5 NOTEs
+Status: 3 NOTEs
 See
   ‘/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00check.log’
 for details.

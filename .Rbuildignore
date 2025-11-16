@@ -40,3 +40,4 @@
 ^test_mediator_speed\.R$
 ^test_optimization\.R$
 ^test_vectorization\.R$
+^VECTORIZATION_IMPROVEMENTS\.md$
