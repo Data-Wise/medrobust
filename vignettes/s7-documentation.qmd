@@ -1,8 +1,23 @@
 ---
 title: "S7 Class Design and Usage in `medrobust`"
 author: "Davood Tofighi, Ph.D."
-format: html
-toc: true
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    theme: cosmo
+    highlight-style: github
+    df-print: paged
+execute:
+  eval: false
+  echo: true
+vignette: >
+  %\VignetteIndexEntry{Getting Started with medrobust}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ## Introduction
