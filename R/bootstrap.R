@@ -141,11 +141,11 @@ compute_bootstrap_ci <- function(data,
             "Results may be unreliable.")
   }
 
-  # Extract bootstrap estimates
-  boot_nie_lower <- boot_matrix[, "nie_lower"]
-  boot_nie_upper <- boot_matrix[, "nie_upper"]
-  boot_nde_lower <- boot_matrix[, "nde_lower"]
-  boot_nde_upper <- boot_matrix[, "nde_upper"]
+  # Extract bootstrap estimates (ensure numeric type)
+  boot_nie_lower <- as.numeric(boot_matrix[, "nie_lower"])
+  boot_nie_upper <- as.numeric(boot_matrix[, "nie_upper"])
+  boot_nde_lower <- as.numeric(boot_matrix[, "nde_lower"])
+  boot_nde_upper <- as.numeric(boot_matrix[, "nde_upper"])
 
   # Compute confidence intervals
   if (bootstrap_method == "percentile") {
