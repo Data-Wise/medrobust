@@ -142,8 +142,13 @@ compute_parameter_falsification <- function(compat, sens_region, n_bins, n_evalu
   param_falsif <- list()
 
   for (param in params) {
-    # Create bins
-    param_range <- sens_region[[paste0(param, "_range")]]
+    # Create bins - access S7 properties with @
+    param_range <- switch(param,
+      sn0 = sens_region@sn0_range,
+      sp0 = sens_region@sp0_range,
+      psi_sn = sens_region@psi_sn_range,
+      psi_sp = sens_region@psi_sp_range
+    )
     breaks <- seq(param_range[1], param_range[2], length.out = n_bins + 1)
     bin_centers <- (breaks[-1] + breaks[-(n_bins + 1)]) / 2
 
@@ -159,8 +164,8 @@ compute_parameter_falsification <- function(compat, sens_region, n_bins, n_evalu
     falsif_rate[falsif_rate > 1] <- 1
 
     param_falsif[[param]] <- data.frame(
-      bin_center = bin_centers,
-      n_compatible = compat_counts,
+      parameter = param,
+      value = bin_centers,
       falsification_rate = falsif_rate
     )
   }
@@ -188,9 +193,19 @@ compute_joint_falsification <- function(compat, sens_region, n_bins, n_evaluated
     param1 <- pair[1]
     param2 <- pair[2]
 
-    # Create 2D bins
-    range1 <- sens_region[[paste0(param1, "_range")]]
-    range2 <- sens_region[[paste0(param2, "_range")]]
+    # Create 2D bins - access S7 properties with @
+    range1 <- switch(param1,
+      sn0 = sens_region@sn0_range,
+      sp0 = sens_region@sp0_range,
+      psi_sn = sens_region@psi_sn_range,
+      psi_sp = sens_region@psi_sp_range
+    )
+    range2 <- switch(param2,
+      sn0 = sens_region@sn0_range,
+      sp0 = sens_region@sp0_range,
+      psi_sn = sens_region@psi_sn_range,
+      psi_sp = sens_region@psi_sp_range
+    )
 
     breaks1 <- seq(range1[1], range1[2], length.out = n_bins + 1)
     breaks2 <- seq(range2[1], range2[2], length.out = n_bins + 1)
@@ -301,10 +316,10 @@ plot_falsification <- function(falsif_summary, bounds_object) {
     param_data$parameter_label <- param_labels[param_data$parameter]
 
     p_params <- ggplot2::ggplot(param_data,
-                                ggplot2::aes(x = bin_center,
+                                ggplot2::aes(x = value,
                                             y = falsification_rate,
                                             color = parameter_label)) +
-      ggplot2::geom_line(size = 1) +
+      ggplot2::geom_line(linewidth = 1) +
       ggplot2::geom_point(size = 2) +
       ggplot2::facet_wrap(~ parameter_label, scales = "free_x", nrow = 2) +
       ggplot2::scale_y_continuous(labels = scales::percent_format()) +
@@ -377,116 +392,8 @@ plot_falsification <- function(falsif_summary, bounds_object) {
 }
 
 
-#' Print Method for falsification_summary
-#'
-#' @param x An object of class \code{falsification_summary}
-#' @param digits Integer. Number of decimal places. Default is 3.
-#' @param ... Additional arguments (currently unused)
-#'
-#' @return Invisibly returns the input object
-#' @export
-print.falsification_summary <- function(x, digits = 3, ...) {
-
-  cat("\n")
-  cat(strrep("=", 70), "\n")
-  cat("FALSIFICATION SUMMARY\n")
-  cat(strrep("=", 70), "\n\n")
-
-  # Overall
-  cat("Overall Falsification:\n")
-  cat("  Total parameter sets evaluated:", x$n_evaluated, "\n")
-  cat("  Compatible sets:", x$n_compatible,
-      sprintf("(%.1f%%)\n", 100 * (1 - x$overall)))
-  cat("  Falsified sets:", x$n_falsified,
-      sprintf("(%.1f%%)\n\n", 100 * x$overall))
-
-  # Interpretation
-  if (x$overall > 0.8) {
-    cat("  → High falsification: Data strongly constrain the parameter space\n")
-    cat("     Bounds are relatively sharp given the sensitivity region.\n\n")
-  } else if (x$overall > 0.5) {
-    cat("  → Moderate falsification: Data provide meaningful constraints\n")
-    cat("     Some regions of parameter space are ruled out.\n\n")
-  } else if (x$overall > 0.2) {
-    cat("  → Low falsification: Weak data constraints\n")
-    cat("     Most of the sensitivity region remains compatible.\n\n")
-  } else {
-    cat("  → Very low falsification: Minimal data constraints\n")
-    cat("     Consider narrowing the sensitivity region or collecting more data.\n\n")
-  }
-
-  # Parameter-specific
-  if (!is.null(x$by_parameter)) {
-    cat(strrep("-", 70), "\n")
-    cat("Parameter-Specific Falsification:\n")
-    cat(strrep("-", 70), "\n\n")
-
-    param_table <- data.frame(
-      Parameter = names(x$by_parameter),
-      Mean_Falsification = sapply(x$by_parameter, function(p) {
-        mean(p$falsification_rate)
-      }),
-      Min_Falsification = sapply(x$by_parameter, function(p) {
-        min(p$falsification_rate)
-      }),
-      Max_Falsification = sapply(x$by_parameter, function(p) {
-        max(p$falsification_rate)
-      })
-    )
-
-    param_table$Mean_Falsification <- sprintf(paste0("%.", digits, "f"),
-                                              param_table$Mean_Falsification)
-    param_table$Min_Falsification <- sprintf(paste0("%.", digits, "f"),
-                                            param_table$Min_Falsification)
-    param_table$Max_Falsification <- sprintf(paste0("%.", digits, "f"),
-                                            param_table$Max_Falsification)
-
-    print(param_table, row.names = FALSE)
-    cat("\n")
-
-    if (!is.null(x$most_constrained)) {
-      cat("Most constrained parameters:",
-          paste(x$most_constrained, collapse = ", "), "\n")
-    }
-    if (!is.null(x$least_constrained)) {
-      cat("Least constrained parameters:",
-          paste(x$least_constrained, collapse = ", "), "\n")
-    }
-    cat("\n")
-  }
-
-  # Recommendations
-  cat(strrep("-", 70), "\n")
-  cat("RECOMMENDATIONS\n")
-  cat(strrep("-", 70), "\n\n")
-
-  if (x$overall < 0.3) {
-    cat("• Bounds are wide primarily due to weak data constraints\n")
-    cat("• Consider:\n")
-    cat("  - Narrowing sensitivity region using external information\n")
-    cat("  - Collecting validation data for a subsample\n")
-    cat("  - Increasing sample size\n")
-  } else if (x$overall > 0.7) {
-    cat("• Data are highly informative about misclassification\n")
-    cat("• Bounds are narrow relative to the sensitivity region\n")
-    cat("• Current sensitivity assumptions appear appropriate\n")
-  } else {
-    cat("• Moderate falsification suggests balance between data and assumptions\n")
-    cat("• Refine sensitivity region if expert knowledge available\n")
-  }
-
-  cat("\n")
-  cat(strrep("=", 70), "\n")
-
-  if (!is.null(x$plot)) {
-    cat("Use x$plot to view falsification visualization\n")
-    cat(strrep("=", 70), "\n")
-  }
-
-  cat("\n")
-
-  invisible(x)
-}
+# Note: S3 print method for falsification_summary has been removed
+# The print method is now defined as an S7 method in R/s7-methods.R
 
 
 #' Extract Compatible Parameter Sets
