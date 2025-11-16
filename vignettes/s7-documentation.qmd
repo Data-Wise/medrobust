@@ -12,7 +12,7 @@ format:
     highlight-style: github
     df-print: paged
 execute:
-  eval: false
+  eval: true
   echo: true
 vignette: >
   %\VignetteIndexEntry{S7 Class Design and Usage in medrobust}

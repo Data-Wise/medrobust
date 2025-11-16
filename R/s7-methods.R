@@ -758,3 +758,184 @@ method(plot, power_analysis_result) <- function(x, ...) {
   
   return(combined)
 }
+
+# =============================================================================
+# Additional conversion methods
+# =============================================================================
+
+#' Convert medrobust_bounds to list
+#' @noRd
+#' @export
+method(as.list, medrobust_bounds) <- function(x, ...) {
+  list(
+    NIE_lower = x@NIE_lower,
+    NIE_upper = x@NIE_upper,
+    NDE_lower = x@NDE_lower,
+    NDE_upper = x@NDE_upper,
+    effect_scale = x@effect_scale,
+    misclassified_variable = x@misclassified_variable,
+    sensitivity_region = as.list(x@sensitivity_region),
+    compatible_sets = x@compatible_sets,
+    n_compatible = x@n_compatible,
+    n_evaluated = x@n_evaluated,
+    naive_estimates = x@naive_estimates
+  )
+}
+
+#' Convert compatibility_test to data.frame
+#' @noRd
+#' @export
+method(as.data.frame, compatibility_test) <- function(x, ...) {
+  base_df <- data.frame(
+    compatible = x@compatible,
+    sn0 = x@psi$sn0,
+    sp0 = x@psi$sp0,
+    psi_sn = x@psi$psi_sn,
+    psi_sp = x@psi$psi_sp
+  )
+  
+  if (!is.null(x@sn1) && !is.null(x@sp1)) {
+    base_df$sn1 <- x@sn1
+    base_df$sp1 <- x@sp1
+  }
+  
+  base_df
+}
+
+#' Convert compatibility_test to list
+#' @noRd
+#' @export
+method(as.list, compatibility_test) <- function(x, ...) {
+  list(
+    compatible = x@compatible,
+    psi = x@psi,
+    sn1 = x@sn1,
+    sp1 = x@sp1,
+    constraints = x@constraints,
+    violated_constraints = x@violated_constraints,
+    misclassified_variable = x@misclassified_variable
+  )
+}
+
+#' Summary method for bootstrap_results
+#' @noRd
+#' @export
+method(summary, bootstrap_results) <- function(object, ...) {
+  print(object)
+  
+  cat("\nBootstrap Diagnostics:\n")
+  cat(sprintf("  Success rate: %.1f%%\n", 
+              100 * (1 - object@n_failed / object@n_reps)))
+  
+  # Compute widths
+  nie_lower_width <- diff(object@nie_lower_ci)
+  nie_upper_width <- diff(object@nie_upper_ci)
+  nde_lower_width <- diff(object@nde_lower_ci)
+  nde_upper_width <- diff(object@nde_upper_ci)
+  
+  cat("\nConfidence Interval Widths:\n")
+  cat(sprintf("  NIE Lower: %.4f\n", nie_lower_width))
+  cat(sprintf("  NIE Upper: %.4f\n", nie_upper_width))
+  cat(sprintf("  NDE Lower: %.4f\n", nde_lower_width))
+  cat(sprintf("  NDE Upper: %.4f\n", nde_upper_width))
+  
+  invisible(object)
+}
+
+#' Convert bootstrap_results to data.frame
+#' @noRd
+#' @export
+method(as.data.frame, bootstrap_results) <- function(x, ...) {
+  data.frame(
+    parameter = c("NIE_lower", "NIE_upper", "NDE_lower", "NDE_upper"),
+    lower_ci = c(x@nie_lower_ci[1], x@nie_upper_ci[1], 
+                 x@nde_lower_ci[1], x@nde_upper_ci[1]),
+    upper_ci = c(x@nie_lower_ci[2], x@nie_upper_ci[2], 
+                 x@nde_lower_ci[2], x@nde_upper_ci[2]),
+    method = x@method,
+    confidence_level = x@confidence_level,
+    n_reps = x@n_reps,
+    n_failed = x@n_failed
+  )
+}
+
+#' Convert bootstrap_results to list
+#' @noRd
+#' @export
+method(as.list, bootstrap_results) <- function(x, ...) {
+  list(
+    method = x@method,
+    n_reps = x@n_reps,
+    n_failed = x@n_failed,
+    confidence_level = x@confidence_level,
+    nie_lower_ci = x@nie_lower_ci,
+    nie_upper_ci = x@nie_upper_ci,
+    nde_lower_ci = x@nde_lower_ci,
+    nde_upper_ci = x@nde_upper_ci
+  )
+}
+
+#' Convert simulated_dm_data to data.frame
+#' @noRd
+#' @export
+method(as.data.frame, simulated_dm_data) <- function(x, ...) {
+  # Return the observed data frame
+  x@observed
+}
+
+#' Convert simulated_dm_data to list
+#' @noRd
+#' @export
+method(as.list, simulated_dm_data) <- function(x, ...) {
+  list(
+    observed = x@observed,
+    truth = x@truth,
+    true_params = x@true_params,
+    dm_params = x@dm_params,
+    misclass_type = x@misclass_type,
+    true_effects = x@true_effects,
+    misclassification_applied = x@misclassification_applied
+  )
+}
+
+#' Summary method for power_analysis_result
+#' @noRd
+#' @export
+method(summary, power_analysis_result) <- function(object, ...) {
+  print(object)
+  
+  cat("\nDetailed Power Curve Statistics:\n")
+  cat(strrep("-", 70), "\n\n")
+  
+  summary_df <- object@power_curve
+  summary_df$power_pct <- paste0(round(100 * summary_df$power, 1), "%")
+  summary_df$coverage_pct <- paste0(round(100 * summary_df$coverage, 1), "%")
+  
+  print(summary_df[, c("n", "power_pct", "coverage_pct", "median_width", 
+                       "mean_lower", "mean_upper")])
+  
+  invisible(object)
+}
+
+#' Convert power_analysis_result to data.frame
+#' @noRd
+#' @export
+method(as.data.frame, power_analysis_result) <- function(x, ...) {
+  # Return the power curve data frame
+  x@power_curve
+}
+
+#' Convert power_analysis_result to list
+#' @noRd
+#' @export
+method(as.list, power_analysis_result) <- function(x, ...) {
+  list(
+    power_curve = x@power_curve,
+    true_effect = x@true_effect,
+    target_power = x@target_power,
+    target_width = x@target_width,
+    recommended_n_power = x@recommended_n_power,
+    recommended_n_width = x@recommended_n_width,
+    simulation_params = x@simulation_params
+  )
+}

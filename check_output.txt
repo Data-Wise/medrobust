@@ -11,7 +11,7 @@
 * checking extension type ... Package
 * this is package ‘medrobust’ version ‘0.1.0.9000’
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ... [4s/13s] NOTE
+* checking CRAN incoming feasibility ... [4s/12s] NOTE
 Maintainer: ‘Davood Tofighi <dtofighi@gmail.com>’
 
 New submission
@@ -31,9 +31,7 @@ Version contains large components (0.1.0.9000)
 * checking for future file timestamps ... OK
 * checking ‘build’ directory ... OK
 * checking DESCRIPTION meta-information ... OK
-* checking top-level files ... NOTE
-Non-standard file/directory found at top level:
-  ‘POWER_ANALYSIS_OPTIMIZATIONS.md’
+* checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... OK
@@ -66,11 +64,11 @@ Non-standard file/directory found at top level:
 * checking examples ... OK
 * checking for unstated dependencies in ‘tests’ ... OK
 * checking tests ...
-  Running ‘testthat.R’ [3s/42s]
- [4s/42s] OK
+  Running ‘testthat.R’ [3s/41s]
+ [3s/41s] OK
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes ... OK
-* checking re-building of vignette outputs ... OK
+* checking re-building of vignette outputs ... [48s/47s] OK
 * checking PDF version of manual ... OK
 * checking HTML version of manual ... NOTE
 Skipping checking HTML validation: 'tidy' doesn't look like recent enough HTML Tidy.
@@ -80,7 +78,7 @@ release or compiling the source code from <https://www.html-tidy.org/>.
 * checking for detritus in the temp directory ... OK
 * DONE
 
-Status: 3 NOTEs
+Status: 2 NOTEs
 See
   ‘/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00check.log’
 for details.

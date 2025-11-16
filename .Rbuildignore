@@ -41,3 +41,4 @@
 ^test_optimization\.R$
 ^test_vectorization\.R$
 ^VECTORIZATION_IMPROVEMENTS\.md$
+^POWER_ANALYSIS_OPTIMIZATIONS\.md$
