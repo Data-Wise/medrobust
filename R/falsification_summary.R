@@ -489,6 +489,25 @@ print.falsification_summary <- function(x, digits = 3, ...) {
 }
 
 
+#' Extract Compatible Parameter Sets
+#'
+#' @description
+#' Extract the compatible parameter sets from a bounds analysis.
+#'
+#' @param bounds_object An object of class \code{medrobust_bounds}
+#'
+#' @return A data frame containing compatible parameter sets
+#' @export
+extract_bounds <- function(bounds_object) {
+
+  if (!is_s7_class(bounds_object, "medrobust_bounds")) {
+    stop("bounds_object must be of class 'medrobust_bounds'")
+  }
+
+  return(bounds_object@compatible_sets)
+}
+
+
 #' Extract Falsified Region
 #'
 #' @description
