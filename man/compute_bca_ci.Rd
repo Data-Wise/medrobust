@@ -25,7 +25,27 @@ compute_bca_ci(
 
 \item{confidence_level}{Confidence level}
 
-\item{...}{Additional arguments passed to bound_ne for jackknife}
+\item{data}{Data frame with observations}
+
+\item{exposure}{Name of exposure variable}
+
+\item{mediator}{Name of mediator variable}
+
+\item{outcome}{Name of outcome variable}
+
+\item{confounders}{Vector of confounder names}
+
+\item{misclassified_variable}{Which variable is misclassified}
+
+\item{sensitivity_region}{Sensitivity region specification}
+
+\item{n_grid}{Grid resolution}
+
+\item{effect_scale}{Effect scale ("OR", "RR", or "RD")}
+
+\item{grid_method}{Grid search method}
+
+\item{verbose}{Logical for verbose output}
 }
 \value{
 List with BCa confidence intervals

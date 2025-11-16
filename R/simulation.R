@@ -97,8 +97,9 @@
 #' )
 #' }
 #'
-#' @export
-simulate_dm_data <- function(n,
+#' @keywords internal
+#' @noRd
+simulate_dm_data_legacy <- function(n,
                             true_params,
                             dm_params,
                             misclass_type = c("exposure", "mediator"),
@@ -128,7 +129,7 @@ simulate_dm_data <- function(n,
   }
 
   # Compute true natural effects from DGP
-  true_effects <- compute_true_effects(true_params)
+  true_effects <- compute_true_effects_legacy(true_params)
 
   # Combine results
   result <- list(
@@ -329,7 +330,7 @@ apply_mediator_misclassification <- function(true_data, dm_params) {
 #'
 #' @keywords internal
 #' @noRd
-compute_true_effects <- function(true_params) {
+compute_true_effects_legacy <- function(true_params) {
 
   # TODO: Analytically compute NDE and NIE from the logistic DGP
   # This requires integration over the confounder distribution
@@ -378,8 +379,9 @@ compute_true_effects <- function(true_params) {
 #' )
 #' }
 #'
-#' @export
-power_analysis <- function(true_nie,
+#' @keywords internal
+#' @noRd
+power_analysis_legacy <- function(true_nie,
                           sensitivity_region,
                           target_width,
                           alpha = 0.05,

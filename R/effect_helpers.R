@@ -199,6 +199,7 @@ format_effect <- function(estimate,
 #'
 #' @return Numeric: ratio of naive CI width to bounds width
 #' @keywords internal
+#' @noRd
 compute_relative_precision <- function(bounds_width, naive_ci_width) {
 
   if (bounds_width <= 0) {

@@ -307,10 +307,10 @@ plot_falsification <- function(falsif_summary, bounds_object) {
     param_data <- do.call(rbind, param_data_list)
 
     param_labels <- c(
-      "sn0" = "Sn₀",
-      "sp0" = "Sp₀",
-      "psi_sn" = "ψ_Sn",
-      "psi_sp" = "ψ_Sp"
+      "sn0" = "Sn0",
+      "sp0" = "Sp0",
+      "psi_sn" = "psi_Sn",
+      "psi_sp" = "psi_Sp"
     )
 
     param_data$parameter_label <- param_labels[param_data$parameter]
@@ -352,8 +352,8 @@ plot_falsification <- function(falsif_summary, bounds_object) {
     heatmap_data$falsification_rate <- as.vector(joint$falsification_rate)
 
     param_labels <- c(
-      "sn0" = "Sn₀", "sp0" = "Sp₀",
-      "psi_sn" = "ψ_Sn", "psi_sp" = "ψ_Sp"
+      "sn0" = "Sn0", "sp0" = "Sp0",
+      "psi_sn" = "psi_Sn", "psi_sp" = "psi_Sp"
     )
 
     p_joint <- ggplot2::ggplot(heatmap_data,

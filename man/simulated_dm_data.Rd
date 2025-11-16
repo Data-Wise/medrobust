@@ -3,27 +3,16 @@
 \name{simulated_dm_data}
 \alias{simulated_dm_data}
 \title{Simulated Data with Differential Misclassification Class}
-\usage{
-simulated_dm_data(
-  observed = (function (.data = list(), row.names = NULL) 
- {
-     if
-    (is.null(row.names)) {
-         list2DF(.data)
-     }
-     else {
-         out <-
-    list2DF(.data, length(row.names))
-         attr(out, "row.names") <- row.names
-      
-      out
-     }
- })(),
-  truth = NULL,
-  true_effects = list(),
-  generation_params = list(),
-  misclassification_applied = list()
-)
+\arguments{
+\item{observed}{Data frame with observed (potentially misclassified) variables}
+
+\item{truth}{Data frame with true (unobserved) values}
+
+\item{true_effects}{List of true causal effects}
+
+\item{generation_params}{List of parameters used to generate the data}
+
+\item{misclassification_applied}{List of misclassification parameters applied}
 }
 \description{
 S7 class for storing simulated data with known differential misclassification,

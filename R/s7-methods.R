@@ -111,10 +111,10 @@ method(summary, medrobust_bounds) <- function(object, ...) {
   cat(sprintf("  Sp0:     [%.3f, %.3f]\n",
               object@sensitivity_region@sp0_range[1],
               object@sensitivity_region@sp0_range[2]))
-  cat(sprintf("  ψ_Sn:    [%.3f, %.3f]\n",
+  cat(sprintf("  psi_Sn:    [%.3f, %.3f]\n",
               object@sensitivity_region@psi_sn_range[1],
               object@sensitivity_region@psi_sn_range[2]))
-  cat(sprintf("  ψ_Sp:    [%.3f, %.3f]\n\n",
+  cat(sprintf("  psi_Sp:    [%.3f, %.3f]\n\n",
               object@sensitivity_region@psi_sp_range[1],
               object@sensitivity_region@psi_sp_range[2]))
 
@@ -207,12 +207,12 @@ method(print, compatibility_test) <- function(x, ...) {
   cat("Tested Parameters:\n")
   cat("  Sn0:", sprintf("%.3f", x@psi$sn0), "\n")
   cat("  Sp0:", sprintf("%.3f", x@psi$sp0), "\n")
-  cat("  ψ_Sn:", sprintf("%.3f", x@psi$psi_sn), "\n")
-  cat("  ψ_Sp:", sprintf("%.3f", x@psi$psi_sp), "\n")
+  cat("  psi_Sn:", sprintf("%.3f", x@psi$psi_sn), "\n")
+  cat("  psi_Sp:", sprintf("%.3f", x@psi$psi_sp), "\n")
 
   if (!is.null(x@sn1) && !is.null(x@sp1)) {
-    cat("  → Sn1:", sprintf("%.3f", x@sn1), "\n")
-    cat("  → Sp1:", sprintf("%.3f", x@sp1), "\n")
+    cat("  -> Sn1:", sprintf("%.3f", x@sn1), "\n")
+    cat("  -> Sp1:", sprintf("%.3f", x@sp1), "\n")
   }
 
   cat("\n")
@@ -220,7 +220,7 @@ method(print, compatibility_test) <- function(x, ...) {
 
   # Result
   if (x@compatible) {
-    cat("RESULT: Compatible ✓\n")
+    cat("RESULT: Compatible [PASS]\n")
     cat(strrep("-", 70), "\n\n")
 
     cat("The specified misclassification parameters are consistent with\n")
@@ -237,7 +237,7 @@ method(print, compatibility_test) <- function(x, ...) {
     }
 
   } else {
-    cat("RESULT: NOT Compatible ✗\n")
+    cat("RESULT: NOT Compatible [FAIL]\n")
     cat(strrep("-", 70), "\n\n")
 
     if (!is.null(x@reason)) {
@@ -341,16 +341,16 @@ method(print, .falsification_summary_class) <- function(x, digits = 3, ...) {
 
   # Interpretation
   if (x@overall > 0.8) {
-    cat("  → High falsification: Data strongly constrain the parameter space\n")
+    cat("  -> High falsification: Data strongly constrain the parameter space\n")
     cat("     Bounds are relatively sharp given the sensitivity region.\n\n")
   } else if (x@overall > 0.5) {
-    cat("  → Moderate falsification: Data provide meaningful constraints\n")
+    cat("  -> Moderate falsification: Data provide meaningful constraints\n")
     cat("     Some regions of parameter space are ruled out.\n\n")
   } else if (x@overall > 0.2) {
-    cat("  → Low falsification: Weak data constraints\n")
+    cat("  -> Low falsification: Weak data constraints\n")
     cat("     Most of the sensitivity region remains compatible.\n\n")
   } else {
-    cat("  → Very low falsification: Minimal data constraints\n")
+    cat("  -> Very low falsification: Minimal data constraints\n")
     cat("     Consider narrowing the sensitivity region or collecting more data.\n\n")
   }
 
@@ -425,12 +425,12 @@ method(summary, .falsification_summary_class) <- function(object, ...) {
 #' @noRd
 #' @export
 method(print, .sensitivity_region_class) <- function(x, ...) {
-  cat("\nSensitivity Region (Θ_ψ):\n")
+  cat("\nSensitivity Region (Theta_psi):\n")
   cat(strrep("-", 40), "\n")
   cat(sprintf("  Sn0:  [%.3f, %.3f]\n", x@sn0_range[1], x@sn0_range[2]))
   cat(sprintf("  Sp0:  [%.3f, %.3f]\n", x@sp0_range[1], x@sp0_range[2]))
-  cat(sprintf("  ψ_Sn: [%.3f, %.3f]\n", x@psi_sn_range[1], x@psi_sn_range[2]))
-  cat(sprintf("  ψ_Sp: [%.3f, %.3f]\n", x@psi_sp_range[1], x@psi_sp_range[2]))
+  cat(sprintf("  psi_Sn: [%.3f, %.3f]\n", x@psi_sn_range[1], x@psi_sn_range[2]))
+  cat(sprintf("  psi_Sp: [%.3f, %.3f]\n", x@psi_sp_range[1], x@psi_sp_range[2]))
   cat(strrep("-", 40), "\n\n")
 
   invisible(x)
@@ -512,8 +512,8 @@ method(print, simulated_dm_data) <- function(x, ...) {
   cat("Specified:\n")
   cat("  Sn0:", sprintf("%.3f", dm$sn0), "\n")
   cat("  Sp0:", sprintf("%.3f", dm$sp0), "\n")
-  cat("  ψ_Sn:", sprintf("%.3f", dm$psi_sn), "\n")
-  cat("  ψ_Sp:", sprintf("%.3f", dm$psi_sp), "\n\n")
+  cat("  psi_Sn:", sprintf("%.3f", dm$psi_sn), "\n")
+  cat("  psi_Sp:", sprintf("%.3f", dm$psi_sp), "\n\n")
   
   if (!is.null(x@misclassification_applied)) {
     emp <- x@misclassification_applied$empirical
@@ -655,7 +655,7 @@ method(print, power_analysis_result) <- function(x, ...) {
   cat(strrep("-", 70), "\n\n")
   
   if (!is.na(x@recommended_n_power)) {
-    cat("To achieve power ≥", x@target_power, ":\n")
+    cat("To achieve power >=", x@target_power, ":\n")
     cat("  Recommended sample size: n =", x@recommended_n_power, "\n\n")
   } else {
     cat("Target power", x@target_power, "not achieved at any tested sample size\n")
@@ -663,7 +663,7 @@ method(print, power_analysis_result) <- function(x, ...) {
   }
   
   if (!is.null(x@target_width) && !is.na(x@recommended_n_width)) {
-    cat("To achieve bound width ≤", x@target_width, ":\n")
+    cat("To achieve bound width <=", x@target_width, ":\n")
     cat("  Recommended sample size: n =", x@recommended_n_width, "\n\n")
   } else if (!is.null(x@target_width)) {
     cat("Target width", x@target_width, "not achieved at any tested sample size\n")
@@ -719,7 +719,7 @@ method(plot, power_analysis_result) <- function(x, ...) {
                         alpha = 0.2, fill = "coral") +
     ggplot2::labs(
       title = "Bound Width",
-      subtitle = "Median ± SD across simulations",
+      subtitle = "Median +/- SD across simulations",
       x = "Sample Size",
       y = paste("Bound Width (", x@simulation_params$effect, ")")
     ) +

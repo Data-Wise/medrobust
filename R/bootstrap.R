@@ -231,7 +231,17 @@ compute_bootstrap_ci <- function(data,
 #'
 #' @param boot_estimates Matrix of bootstrap estimates
 #' @param confidence_level Confidence level
-#' @param ... Additional arguments passed to bound_ne for jackknife
+#' @param data Data frame with observations
+#' @param exposure Name of exposure variable
+#' @param mediator Name of mediator variable
+#' @param outcome Name of outcome variable
+#' @param confounders Vector of confounder names
+#' @param misclassified_variable Which variable is misclassified
+#' @param sensitivity_region Sensitivity region specification
+#' @param n_grid Grid resolution
+#' @param effect_scale Effect scale ("OR", "RR", or "RD")
+#' @param grid_method Grid search method
+#' @param verbose Logical for verbose output
 #'
 #' @return List with BCa confidence intervals
 #' @keywords internal

@@ -113,6 +113,21 @@ sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range)
 #' @description
 #' Stores bootstrap inference results for partial identification bounds.
 #'
+#' @param method Character: "percentile" or "bca"
+#' @param n_reps Number of bootstrap replications
+#' @param n_failed Number of failed bootstrap samples
+#' @param confidence_level Confidence level (e.g., 0.95)
+#' @param nie_lower_ci Confidence interval for NIE lower bound
+#' @param nie_upper_ci Confidence interval for NIE upper bound
+#' @param nde_lower_ci Confidence interval for NDE lower bound
+#' @param nde_upper_ci Confidence interval for NDE upper bound
+#' @param boot_nie_lower Bootstrap samples for NIE lower bound
+#' @param boot_nie_upper Bootstrap samples for NIE upper bound
+#' @param boot_nde_lower Bootstrap samples for NDE lower bound
+#' @param boot_nde_upper Bootstrap samples for NDE upper bound
+#' @param z0 BCa bias-correction parameter
+#' @param acceleration BCa acceleration parameter
+#'
 #' @export
 bootstrap_results <- new_class(
   name = "bootstrap_results",
@@ -165,6 +180,23 @@ bootstrap_results <- new_class(
 #' S7 class for storing partial identification bounds for natural direct
 #' and indirect effects under differential misclassification.
 #'
+#' @param NIE_lower Lower bound for Natural Indirect Effect
+#' @param NIE_upper Upper bound for Natural Indirect Effect
+#' @param NDE_lower Lower bound for Natural Direct Effect
+#' @param NDE_upper Upper bound for Natural Direct Effect
+#' @param compatible_sets Data frame of parameter sets compatible with data
+#' @param n_compatible Number of compatible parameter sets
+#' @param n_evaluated Total number of parameter sets evaluated
+#' @param falsified_proportion Proportion of parameter space falsified
+#' @param effect_scale Character: "OR", "RR", or "RD"
+#' @param misclassified_variable Character: "exposure" or "mediator"
+#' @param sensitivity_region Sensitivity region specification
+#' @param naive_estimates List of naive effect estimates
+#' @param bootstrap_results Bootstrap inference results (if computed)
+#' @param data_summary Summary statistics from the data
+#' @param call The function call that created this object
+#'
+#' @usage NULL
 #' @export
 medrobust_bounds <- new_class(
   name = "medrobust_bounds",
@@ -269,6 +301,20 @@ medrobust_bounds <- new_class(
 #' S7 class for storing results of compatibility tests for specific
 #' misclassification parameter values.
 #'
+#' @param compatible Logical indicating if parameters are compatible with data
+#' @param psi List of misclassification parameters tested
+#' @param sn1 Sensitivity when Y=1 (implied from psi)
+#' @param sp1 Specificity when Y=1 (implied from psi)
+#' @param n_constraints_total Total number of testable constraints
+#' @param n_constraints_satisfied Number of constraints satisfied
+#' @param n_constraints_violated Number of constraints violated
+#' @param violated_constraints Data frame with details of violated constraints
+#' @param implied_probabilities List of implied probability distributions
+#' @param stratum_details List with stratum-specific details
+#' @param misclassified_variable Character: "exposure" or "mediator"
+#' @param reason Character describing reason for incompatibility (if any)
+#'
+#' @usage NULL
 #' @export
 compatibility_test <- new_class(
   name = "compatibility_test",
@@ -414,6 +460,13 @@ new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_fals
 #' S7 class for storing simulated data with known differential misclassification,
 #' used for power analysis and methods validation.
 #'
+#' @param observed Data frame with observed (potentially misclassified) variables
+#' @param truth Data frame with true (unobserved) values
+#' @param true_effects List of true causal effects
+#' @param generation_params List of parameters used to generate the data
+#' @param misclassification_applied List of misclassification parameters applied
+#'
+#' @usage NULL
 #' @export
 simulated_dm_data <- new_class(
   name = "simulated_dm_data",
@@ -459,6 +512,15 @@ simulated_dm_data <- new_class(
 #' @description
 #' S7 class for storing power analysis results for partial identification bounds.
 #'
+#' @param power_curve Data frame with power and width by sample size
+#' @param true_effect True effect value used in simulations
+#' @param target_power Target power level for sample size recommendations
+#' @param target_width Target bound width for sample size recommendations
+#' @param recommended_n_power Recommended sample size to achieve target power
+#' @param recommended_n_width Recommended sample size to achieve target width
+#' @param simulation_params List of simulation parameters used
+#'
+#' @usage NULL
 #' @export
 power_analysis_result <- new_class(
   name = "power_analysis_result",

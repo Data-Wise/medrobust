@@ -22,7 +22,7 @@ compute_effects_from_params(solved_params, data, C_names, effect_scale = "OR")
 List with elements nie and nde
 }
 \description{
-Given solved causal parameters {pi_a, gamma_a0, gamma_a1} for each exposure
+Given solved causal parameters (pi_a, gamma_a0, gamma_a1) for each exposure
 level and covariate stratum, compute NDE and NIE using g-computation.
 }
 \keyword{internal}

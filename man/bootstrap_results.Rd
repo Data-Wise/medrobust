@@ -21,6 +21,35 @@ bootstrap_results(
   acceleration = NULL
 )
 }
+\arguments{
+\item{method}{Character: "percentile" or "bca"}
+
+\item{n_reps}{Number of bootstrap replications}
+
+\item{n_failed}{Number of failed bootstrap samples}
+
+\item{confidence_level}{Confidence level (e.g., 0.95)}
+
+\item{nie_lower_ci}{Confidence interval for NIE lower bound}
+
+\item{nie_upper_ci}{Confidence interval for NIE upper bound}
+
+\item{nde_lower_ci}{Confidence interval for NDE lower bound}
+
+\item{nde_upper_ci}{Confidence interval for NDE upper bound}
+
+\item{boot_nie_lower}{Bootstrap samples for NIE lower bound}
+
+\item{boot_nie_upper}{Bootstrap samples for NIE upper bound}
+
+\item{boot_nde_lower}{Bootstrap samples for NDE lower bound}
+
+\item{boot_nde_upper}{Bootstrap samples for NDE upper bound}
+
+\item{z0}{BCa bias-correction parameter}
+
+\item{acceleration}{BCa acceleration parameter}
+}
 \description{
 Stores bootstrap inference results for partial identification bounds.
 }

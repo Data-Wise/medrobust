@@ -3,37 +3,36 @@
 \name{medrobust_bounds}
 \alias{medrobust_bounds}
 \title{Medrobust Bounds Class}
-\usage{
-medrobust_bounds(
-  NIE_lower = integer(0),
-  NIE_upper = integer(0),
-  NDE_lower = integer(0),
-  NDE_upper = integer(0),
-  compatible_sets = (function (.data = list(), row.names = NULL) 
- {
-     if
-    (is.null(row.names)) {
-         list2DF(.data)
-     }
-     else {
-         out <-
-    list2DF(.data, length(row.names))
-         attr(out, "row.names") <- row.names
-      
-      out
-     }
- })(),
-  n_compatible = integer(0),
-  n_evaluated = integer(0),
-  falsified_proportion = integer(0),
-  effect_scale = character(0),
-  misclassified_variable = character(0),
-  sensitivity_region = sensitivity_region(),
-  naive_estimates = list(),
-  bootstrap_results = NULL,
-  data_summary = list(),
-  call = NULL
-)
+\arguments{
+\item{NIE_lower}{Lower bound for Natural Indirect Effect}
+
+\item{NIE_upper}{Upper bound for Natural Indirect Effect}
+
+\item{NDE_lower}{Lower bound for Natural Direct Effect}
+
+\item{NDE_upper}{Upper bound for Natural Direct Effect}
+
+\item{compatible_sets}{Data frame of parameter sets compatible with data}
+
+\item{n_compatible}{Number of compatible parameter sets}
+
+\item{n_evaluated}{Total number of parameter sets evaluated}
+
+\item{falsified_proportion}{Proportion of parameter space falsified}
+
+\item{effect_scale}{Character: "OR", "RR", or "RD"}
+
+\item{misclassified_variable}{Character: "exposure" or "mediator"}
+
+\item{sensitivity_region}{Sensitivity region specification}
+
+\item{naive_estimates}{List of naive effect estimates}
+
+\item{bootstrap_results}{Bootstrap inference results (if computed)}
+
+\item{data_summary}{Summary statistics from the data}
+
+\item{call}{The function call that created this object}
 }
 \description{
 S7 class for storing partial identification bounds for natural direct

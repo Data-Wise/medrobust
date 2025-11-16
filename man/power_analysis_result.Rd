@@ -3,29 +3,20 @@
 \name{power_analysis_result}
 \alias{power_analysis_result}
 \title{Power Analysis Result Class}
-\usage{
-power_analysis_result(
-  power_curve = (function (.data = list(), row.names = NULL) 
- {
-     if
-    (is.null(row.names)) {
-         list2DF(.data)
-     }
-     else {
-         out <-
-    list2DF(.data, length(row.names))
-         attr(out, "row.names") <- row.names
-      
-      out
-     }
- })(),
-  true_effect = integer(0),
-  target_power = integer(0),
-  target_width = integer(0),
-  recommended_n_power = NA_integer_,
-  recommended_n_width = NA_integer_,
-  simulation_params = list()
-)
+\arguments{
+\item{power_curve}{Data frame with power and width by sample size}
+
+\item{true_effect}{True effect value used in simulations}
+
+\item{target_power}{Target power level for sample size recommendations}
+
+\item{target_width}{Target bound width for sample size recommendations}
+
+\item{recommended_n_power}{Recommended sample size to achieve target power}
+
+\item{recommended_n_width}{Recommended sample size to achieve target width}
+
+\item{simulation_params}{List of simulation parameters used}
 }
 \description{
 S7 class for storing power analysis results for partial identification bounds.

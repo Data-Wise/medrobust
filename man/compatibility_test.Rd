@@ -3,22 +3,30 @@
 \name{compatibility_test}
 \alias{compatibility_test}
 \title{Compatibility Test Class}
-\usage{
-compatibility_test(
-  compatible = logical(0),
-  psi = list(),
-  sn1 = NULL,
-  sp1 = NULL,
-  n_constraints_total = 0L,
-  n_constraints_satisfied = 0L,
-  n_constraints_violated = 0L,
-  violated_constraints = structure(list(), names = character(0), row.names = integer(0),
-    class = "data.frame"),
-  implied_probabilities = list(),
-  stratum_details = list(),
-  misclassified_variable = character(0),
-  reason = NULL
-)
+\arguments{
+\item{compatible}{Logical indicating if parameters are compatible with data}
+
+\item{psi}{List of misclassification parameters tested}
+
+\item{sn1}{Sensitivity when Y=1 (implied from psi)}
+
+\item{sp1}{Specificity when Y=1 (implied from psi)}
+
+\item{n_constraints_total}{Total number of testable constraints}
+
+\item{n_constraints_satisfied}{Number of constraints satisfied}
+
+\item{n_constraints_violated}{Number of constraints violated}
+
+\item{violated_constraints}{Data frame with details of violated constraints}
+
+\item{implied_probabilities}{List of implied probability distributions}
+
+\item{stratum_details}{List with stratum-specific details}
+
+\item{misclassified_variable}{Character: "exposure" or "mediator"}
+
+\item{reason}{Character describing reason for incompatibility (if any)}
 }
 \description{
 S7 class for storing results of compatibility tests for specific

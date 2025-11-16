@@ -26,7 +26,7 @@ Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/
 Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
 Warning: /Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
 '
- [3s/12s] NOTE
+ [3s/11s] NOTE
 Maintainer: ‘Davood Tofighi <dtofighi@gmail.com>’
 
 New submission
@@ -354,8 +354,8 @@ Rd files without \description:
 * checking examples ... OK
 * checking for unstated dependencies in ‘tests’ ... OK
 * checking tests ...
-  Running ‘testthat.R’ [2s/29s]
- [3s/29s] OK
+  Running ‘testthat.R’ [3s/31s]
+ [3s/32s] OK
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes ... OK
 * checking re-building of vignette outputs ... OK

@@ -15,7 +15,7 @@ execute:
   eval: false
   echo: true
 vignette: >
-  %\VignetteIndexEntry{Getting Started with medrobust}
+  %\VignetteIndexEntry{S7 Class Design and Usage in medrobust}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---

@@ -144,7 +144,7 @@ check_compatibility <- function(data,
       implied_probabilities = NULL,
       stratum_details = NULL,
       misclassified_variable = misclassified_variable,
-      reason = "Non-informative misclassification (Sn + Sp ≤ 1)"
+      reason = "Non-informative misclassification (Sn + Sp <= 1)"
     ))
   }
 
@@ -656,12 +656,12 @@ print.compatibility_test <- function(x, ...) {
   cat("Tested Parameters:\n")
   cat("  Sn0:", sprintf("%.3f", x$psi$sn0), "\n")
   cat("  Sp0:", sprintf("%.3f", x$psi$sp0), "\n")
-  cat("  ψ_Sn:", sprintf("%.3f", x$psi$psi_sn), "\n")
-  cat("  ψ_Sp:", sprintf("%.3f", x$psi$psi_sp), "\n")
+  cat("  psi_Sn:", sprintf("%.3f", x$psi$psi_sn), "\n")
+  cat("  psi_Sp:", sprintf("%.3f", x$psi$psi_sp), "\n")
 
   if (!is.null(x$sn1) && !is.null(x$sp1)) {
-    cat("  → Sn1:", sprintf("%.3f", x$sn1), "\n")
-    cat("  → Sp1:", sprintf("%.3f", x$sp1), "\n")
+    cat("  -> Sn1:", sprintf("%.3f", x$sn1), "\n")
+    cat("  -> Sp1:", sprintf("%.3f", x$sp1), "\n")
   }
 
   cat("\n")
@@ -669,7 +669,7 @@ print.compatibility_test <- function(x, ...) {
 
   # Result
   if (x$compatible) {
-    cat("RESULT: COMPATIBLE ✓\n")
+    cat("RESULT: COMPATIBLE [PASS]\n")
     cat(strrep("-", 70), "\n\n")
 
     cat("The specified misclassification parameters are consistent with\n")
@@ -686,7 +686,7 @@ print.compatibility_test <- function(x, ...) {
     }
 
   } else {
-    cat("RESULT: INCOMPATIBLE ✗\n")
+    cat("RESULT: INCOMPATIBLE [FAIL]\n")
     cat(strrep("-", 70), "\n\n")
 
     if (!is.null(x$reason)) {

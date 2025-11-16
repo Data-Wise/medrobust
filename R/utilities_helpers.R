@@ -252,7 +252,7 @@ check_data_quality <- function(data, exposure, mediator, outcome, verbose) {
   tab_emy <- table(data[[exposure]], data[[mediator]], data[[outcome]])
   sparse_cells <- sum(tab_emy < 5)
   if (sparse_cells > 0 && verbose) {
-    warning("Found ", sparse_cells, " sparse cells (n<5) in E×M×Y table. ",
+    warning("Found ", sparse_cells, " sparse cells (n<5) in ExMxY table. ",
             "Results may be unstable.")
   }
 
@@ -332,7 +332,7 @@ compute_naive_effects <- function(data, exposure, mediator, outcome,
 #' Compute Effects from Solved Parameters (Mediator Misclassification)
 #'
 #' @description
-#' Given solved causal parameters {pi_a, gamma_a0, gamma_a1} for each exposure
+#' Given solved causal parameters (pi_a, gamma_a0, gamma_a1) for each exposure
 #' level and covariate stratum, compute NDE and NIE using g-computation.
 #'
 #' @param solved_params List of solved parameters from mediator misclassification
@@ -687,7 +687,7 @@ convert_effect_scale <- function(effect,
 
   # OR to RR
   if (from_scale == "OR" && to_scale == "RR") {
-    # RR ≈ OR / (1 - p0 + p0 * OR)
+    # RR ~= OR / (1 - p0 + p0 * OR)
     # where p0 is baseline risk
     rr <- effect / (1 - baseline_risk + baseline_risk * effect)
     return(rr)
@@ -695,7 +695,7 @@ convert_effect_scale <- function(effect,
 
   # RR to OR
   if (from_scale == "RR" && to_scale == "OR") {
-    # OR ≈ RR * (1 - p0) / (1 - RR * p0)
+    # OR ~= RR * (1 - p0) / (1 - RR * p0)
     or <- effect * (1 - baseline_risk) / (1 - effect * baseline_risk + 1e-10)
     return(or)
   }

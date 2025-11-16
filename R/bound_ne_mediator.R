@@ -238,15 +238,16 @@ bound_ne_mediator <- function(data,
       results <- binary_search_bounds(
         sensitivity_region = sensitivity_region,
         evaluate_func = evaluate_wrapper,
-        n_iterations = n_grid,
         verbose = verbose
       )
     } else if (grid_method == "auto") {
       # Auto-selection based on problem characteristics
+      # Convert n_grid to target_samples (n_grid^2 for 4D space)
+      target_samples <- min(n_grid^2, 10000)
       results <- auto_grid_search(
         sensitivity_region = sensitivity_region,
         evaluate_func = evaluate_wrapper,
-        n_grid = n_grid,
+        target_samples = target_samples,
         verbose = verbose
       )
     } else if (grid_method == "adaptive") {
