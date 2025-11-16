@@ -1,0 +1,1203 @@
+══ Documenting ═════════════════════════════════════════════════════════════════
+ℹ Updating medrobust documentation
+ℹ Loading medrobust
+
+══ Building ════════════════════════════════════════════════════════════════════
+Setting env vars:
+• CFLAGS    : -Wall -pedantic
+• CXXFLAGS  : -Wall -pedantic
+• CXX11FLAGS: -Wall -pedantic
+• CXX14FLAGS: -Wall -pedantic
+• CXX17FLAGS: -Wall -pedantic
+• CXX20FLAGS: -Wall -pedantic
+── R CMD build ─────────────────────────────────────────────────────────────────
+* checking for file ‘/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/DESCRIPTION’ ... OK
+* preparing ‘medrobust’:
+* checking DESCRIPTION meta-information ... OK
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+'
+* installing the package to build vignettes
+* creating vignettes ... OK
+Warning in person1(given = given[[i]], family = family[[i]], middle = middle[[i]],  :
+  Invalid ORCID iD: ‘0000-0000-0000-0000’.
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+Removed empty directory ‘medrobust/tests/testthat/_snaps’
+Omitted ‘LazyData’ from DESCRIPTION
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpES8lmr/Rbuild3e746db0e387/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+'
+  NB: this package now depends on R (>= 4.1.0)
+  WARNING: Added dependency on R >= 4.1.0 because package code uses the
+  pipe |> or function shorthand \(...) syntax added in R 4.1.0.
+  File(s) using such syntax:
+    ‘bound_ne_mediator.R’ ‘check_compatibility.R’ ‘optimization.R’
+    ‘utilities.R’ ‘utilities_helpers.R’
+* building ‘medrobust_0.1.0.9000.tar.gz’
+
+══ Checking ════════════════════════════════════════════════════════════════════
+Setting env vars:
+• _R_CHECK_CRAN_INCOMING_REMOTE_               : FALSE
+• _R_CHECK_CRAN_INCOMING_                      : FALSE
+• _R_CHECK_FORCE_SUGGESTS_                     : FALSE
+• _R_CHECK_PACKAGES_USED_IGNORE_UNUSED_IMPORTS_: FALSE
+• NOT_CRAN                                     : true
+── R CMD check ─────────────────────────────────────────────────────────────────
+* using log directory ‘/private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck’
+* using R version 4.5.2 (2025-10-31)
+* using platform: aarch64-apple-darwin25.0.0
+* R was compiled by
+    Apple clang version 17.0.0 (clang-1700.3.19.1)
+    GNU Fortran (Homebrew GCC 15.2.0) 15.2.0
+* running under: macOS Tahoe 26.1
+* using session charset: UTF-8
+* using options ‘--no-manual --as-cran’
+* checking for file ‘medrobust/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘medrobust’ version ‘0.1.0.9000’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  .claude
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘medrobust’ can be installed ... WARNING
+Found the following significant warnings:
+  Note: possible error in 'binary_search_bounds(sensitivity_region = sensitivity_region, ': unused argument (n_iterations = n_grid) 
+  Note: possible error in 'auto_grid_search(sensitivity_region = sensitivity_region, ': unused argument (n_grid = n_grid) 
+  Note: possible error in 'simulate_dm_data(n = n, ': unused arguments (return_truth = FALSE, return_params = FALSE) 
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+See ‘/private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00install.out’ for details.
+Information on the location(s) of code generating the ‘Note’s can be
+obtained by re-running with environment variable R_KEEP_PKG_SOURCE set
+to ‘yes’.
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... NOTE
+License stub is invalid DCF.
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+'
+* checking top-level files ... NOTE
+Non-standard files/directories found at top level:
+  ‘BOOTSTRAP_IMPROVEMENTS.md’ ‘FINAL_OPTIMIZATION_SUMMARY.md’
+  ‘GRID_SEARCH_ALGORITHMS.md’ ‘LHS_DEFAULT_CHANGES.md’
+  ‘MEDIATOR_OPTIMIZATION.md’ ‘OPTIMIZATION_SUMMARY.md’
+  ‘QUARTO_VIGNETTES_SETUP.md’ ‘REGENERATE_DOCS.md’ ‘RENV_SETUP.md’
+  ‘S7_CONVERSION_GUIDE.md’ ‘VIGNETTE_GRID_SEARCH.md’ ‘WORKFLOW.md’
+  ‘check_output.txt’ ‘medrobust.code-workspace’ ‘test_lhs.R’
+  ‘test_mediator_speed.R’ ‘test_optimization.R’ ‘test_vectorization.R’
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... WARNING
+Found the following files with non-ASCII characters:
+  R/check_compatibility.R
+  R/falsification_summary.R
+  R/s7-methods.R
+  R/utilities_helpers.R
+Portable packages must use only ASCII characters in their R code and
+NAMESPACE directives, except perhaps in comments.
+Use \uxxxx escapes for other characters.
+Function ‘tools::showNonASCIIfile’ can help in finding non-ASCII
+characters in files.
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... NOTE
+Namespaces in Imports field not imported from:
+  ‘stats’ ‘utils’
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+apply_differential_misclassification: no visible global function
+  definition for ‘rbinom’
+apply_exposure_misclassification: no visible global function definition
+  for ‘rbinom’
+apply_mediator_misclassification: no visible global function definition
+  for ‘rbinom’
+binary_search_bounds : beta_samples: no visible global function
+  definition for ‘rbeta’
+binary_search_bounds: no visible global function definition for
+  ‘txtProgressBar’
+binary_search_bounds: no visible global function definition for
+  ‘setTxtProgressBar’
+bootstrap_width_summary: no visible global function definition for
+  ‘median’
+bootstrap_width_summary: no visible global function definition for ‘sd’
+bootstrap_width_summary: no visible global function definition for
+  ‘IQR’
+bootstrap_width_summary: no visible global function definition for
+  ‘quantile’
+bound_ne_exposure: no visible global function definition for
+  ‘txtProgressBar’
+bound_ne_exposure : <anonymous>: no visible global function definition
+  for ‘setTxtProgressBar’
+bound_ne_mediator : evaluate_param_set: no visible global function
+  definition for ‘across’
+bound_ne_mediator : evaluate_param_set: no visible global function
+  definition for ‘all_of’
+bound_ne_mediator : evaluate_param_set: no visible binding for global
+  variable ‘stratum_id’
+bound_ne_mediator: possible error in
+  binary_search_bounds(sensitivity_region = sensitivity_region,
+  evaluate_func = evaluate_wrapper, n_iterations = n_grid, verbose =
+  verbose): unused argument (n_iterations = n_grid)
+bound_ne_mediator: possible error in
+  auto_grid_search(sensitivity_region = sensitivity_region,
+  evaluate_func = evaluate_wrapper, n_grid = n_grid, verbose =
+  verbose): unused argument (n_grid = n_grid)
+bound_ne_mediator: no visible global function definition for
+  ‘txtProgressBar’
+bound_ne_mediator : <anonymous>: no visible global function definition
+  for ‘setTxtProgressBar’
+check_compatibility_exposure: no visible global function definition for
+  ‘across’
+check_compatibility_exposure: no visible global function definition for
+  ‘all_of’
+check_compatibility_exposure: no visible binding for global variable
+  ‘stratum_id’
+check_compatibility_mediator: no visible global function definition for
+  ‘across’
+check_compatibility_mediator: no visible global function definition for
+  ‘all_of’
+check_compatibility_mediator: no visible binding for global variable
+  ‘stratum_id’
+compute_bca_ci : <anonymous>: no visible global function definition for
+  ‘qnorm’
+compute_bca_ci: no visible global function definition for ‘qnorm’
+compute_bca_ci : <anonymous>: no visible global function definition for
+  ‘pnorm’
+compute_bca_ci: no visible global function definition for ‘quantile’
+compute_bootstrap_ci: no visible global function definition for
+  ‘txtProgressBar’
+compute_bootstrap_ci : <anonymous>: no visible global function
+  definition for ‘setTxtProgressBar’
+compute_bootstrap_ci: no visible global function definition for
+  ‘complete.cases’
+compute_bootstrap_ci: no visible global function definition for
+  ‘quantile’
+compute_bound_se: no visible global function definition for ‘sd’
+compute_effects_from_joint_probs: no visible binding for global
+  variable ‘stratum_id’
+compute_effects_from_joint_probs: no visible binding for global
+  variable ‘weight’
+compute_effects_from_params: no visible binding for global variable
+  ‘stratum_id’
+compute_effects_from_params: no visible binding for global variable
+  ‘weight’
+compute_naive_effects: no visible global function definition for
+  ‘as.formula’
+compute_naive_effects: no visible global function definition for ‘glm’
+compute_naive_effects: no visible global function definition for
+  ‘binomial’
+compute_naive_effects: no visible global function definition for ‘coef’
+compute_parameter_falsification: no visible global function definition
+  for ‘hist’
+compute_stratified_joint_distribution: no visible global function
+  definition for ‘across’
+compute_stratified_joint_distribution: no visible global function
+  definition for ‘all_of’
+compute_stratified_joint_distribution: no visible binding for global
+  variable ‘count’
+generate_confounders: no visible global function definition for
+  ‘rbinom’
+generate_true_variables: no visible global function definition for
+  ‘rbinom’
+generate_true_variables: no visible global function definition for
+  ‘plogis’
+get_data_summary : <anonymous>: no visible global function definition
+  for ‘sd’
+latin_hypercube_search: no visible global function definition for
+  ‘runif’
+latin_hypercube_search: no visible global function definition for
+  ‘txtProgressBar’
+latin_hypercube_search: no visible global function definition for
+  ‘setTxtProgressBar’
+plot_bootstrap_distribution: no visible global function definition for
+  ‘complete.cases’
+plot_bootstrap_distribution: no visible binding for global variable
+  ‘lower’
+plot_bootstrap_distribution: no visible binding for global variable
+  ‘upper’
+plot_bounds_line: no visible binding for global variable ‘param_value’
+plot_bounds_line: no visible binding for global variable ‘nie_lower’
+plot_bounds_line: no visible binding for global variable ‘nie_upper’
+plot_bounds_line: no visible binding for global variable ‘nde_lower’
+plot_bounds_line: no visible binding for global variable ‘nde_upper’
+plot_falsification: no visible binding for global variable ‘proportion’
+plot_falsification: no visible binding for global variable ‘category’
+plot_falsification: no visible binding for global variable ‘value’
+plot_falsification: no visible binding for global variable
+  ‘falsification_rate’
+plot_falsification: no visible binding for global variable
+  ‘parameter_label’
+plot_falsification: no visible binding for global variable ‘x’
+plot_falsification: no visible binding for global variable ‘y’
+precompute_observed_probs: no visible global function definition for
+  ‘across’
+precompute_observed_probs: no visible global function definition for
+  ‘all_of’
+precompute_observed_probs: no visible binding for global variable
+  ‘stratum_id’
+prepare_data: no visible global function definition for ‘na.omit’
+print.compatibility_test: no visible global function definition for
+  ‘head’
+run_power_simulations : run_one_sim: possible error in
+  simulate_dm_data(n = n, true_params = true_params, dm_params =
+  dm_params, misclass_type = misclass_type, confounders = confounders,
+  seed = seed + sim_idx * 1000, return_truth = FALSE, return_params =
+  FALSE): unused arguments (return_truth = FALSE, return_params =
+  FALSE)
+run_power_simulations: no visible global function definition for
+  ‘median’
+run_power_simulations: no visible global function definition for ‘sd’
+sobol_sequence_search: no visible global function definition for
+  ‘txtProgressBar’
+sobol_sequence_search: no visible global function definition for
+  ‘setTxtProgressBar’
+Undefined global functions or variables:
+  IQR across all_of as.formula binomial category coef complete.cases
+  count falsification_rate glm head hist lower median na.omit nde_lower
+  nde_upper nie_lower nie_upper param_value parameter_label plogis
+  pnorm proportion qnorm quantile rbeta rbinom runif sd
+  setTxtProgressBar stratum_id txtProgressBar upper value weight x y
+Consider adding
+  importFrom("graphics", "hist")
+  importFrom("stats", "IQR", "as.formula", "binomial", "coef",
+             "complete.cases", "glm", "median", "na.omit", "plogis",
+             "pnorm", "qnorm", "quantile", "rbeta", "rbinom", "runif",
+             "sd")
+  importFrom("utils", "head", "setTxtProgressBar", "txtProgressBar")
+to your NAMESPACE file.
+* checking Rd files ... WARNING
+checkRd: (-1) compute_effects_from_params.Rd:25: Lost braces; missing escapes or markup?
+    25 | Given solved causal parameters {pi_a, gamma_a0, gamma_a1} for each exposure
+       |                                ^
+prepare_Rd: ./man/compute_relative_precision.Rd:14: unexpected section header '\value'
+prepare_Rd: ./man/compute_relative_precision.Rd:17: unexpected section header '\description'
+prepare_Rd: ./man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+prepare_Rd: ./man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+'
+checkRd: (-1) compute_relative_precision.Rd:14-16: Lost braces
+    14 | \value{
+       |       ^
+checkRd: (-1) compute_relative_precision.Rd:17-19: Lost braces
+    17 | \description{
+       |             ^
+checkRd: (-1) compute_relative_precision.Rd:20: Lost braces; missing escapes or markup?
+    20 | \keyword{internal}
+       |         ^
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ...Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+'
+ OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... WARNING
+Codoc mismatches from Rd file 'compatibility_test.Rd':
+compatibility_test
+  Code: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
+                 = NULL, n_constraints_total = 0L,
+                 n_constraints_satisfied = 0L, n_constraints_violated =
+                 0L, violated_constraints = structure(list(), names =
+                 character(0), row.names = integer(0), class =
+                 "data.frame"), implied_probabilities = list(),
+                 stratum_details = list(), misclassified_variable =
+                 character(0), reason = NULL)
+  Docs: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
+                 = NULL, n_constraints_total = 0L,
+                 n_constraints_satisfied = 0L, n_constraints_violated =
+                 0L, violated_constraints = structure(list(), names =
+                 character(0), row.names = integer(0), class =
+                 "data.frame"), implied_probabilities = list(),
+                 stratum_details = list(), misclassified_variable =
+                 character(0), reason = NULL)
+  Mismatches in argument default values:
+    Name: 'violated_constraints'
+    Code: structure(list(), names = character(0), row.names = integer(0), class = "data.frame")
+    Docs: structure(list(), names = character(0), row.names = integer(0), 
+          class = "data.frame")
+Codoc mismatches from Rd file 'medrobust_bounds.Rd':
+medrobust_bounds
+  Code: function(NIE_lower = integer(0), NIE_upper = integer(0),
+                 NDE_lower = integer(0), NDE_upper = integer(0),
+                 compatible_sets = (function (.data = list(), row.names
+                 = NULL) { if (is.null(row.names)) { list2DF(.data) }
+                 else { out <- list2DF(.data, length(row.names))
+                 attr(out, "row.names") <- row.names out }})(),
+                 n_compatible = integer(0), n_evaluated = integer(0),
+                 falsified_proportion = integer(0), effect_scale =
+                 character(0), misclassified_variable = character(0),
+                 sensitivity_region = sensitivity_region(),
+                 naive_estimates = list(), bootstrap_results = NULL,
+                 data_summary = list(), call = NULL)
+  Docs: function(NIE_lower = integer(0), NIE_upper = integer(0),
+                 NDE_lower = integer(0), NDE_upper = integer(0),
+                 compatible_sets = (function(.data = list(), row.names
+                 = NULL) { if (is.null(row.names)) { list2DF(.data) }
+                 else { out <- list2DF(.data, length(row.names))
+                 attr(out, "row.names") <- row.names out }})(),
+                 n_compatible = integer(0), n_evaluated = integer(0),
+                 falsified_proportion = integer(0), effect_scale =
+                 character(0), misclassified_variable = character(0),
+                 sensitivity_region = sensitivity_region(),
+                 naive_estimates = list(), bootstrap_results = NULL,
+                 data_summary = list(), call = NULL)
+  Mismatches in argument default values:
+    Name: 'compatible_sets'
+    Code: (function (.data = list(), row.names = NULL) 
+      {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+    Docs: (function(.data = list(), row.names = NULL) {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+Codoc mismatches from Rd file 'power_analysis_result.Rd':
+power_analysis_result
+  Code: function(power_curve = (function (.data = list(), row.names =
+                 NULL) { if (is.null(row.names)) { list2DF(.data) }
+                 else { out <- list2DF(.data, length(row.names))
+                 attr(out, "row.names") <- row.names out }})(),
+                 true_effect = integer(0), target_power = integer(0),
+                 target_width = integer(0), recommended_n_power =
+                 NA_integer_, recommended_n_width = NA_integer_,
+                 simulation_params = list())
+  Docs: function(power_curve = (function(.data = list(), row.names =
+                 NULL) { if (is.null(row.names)) { list2DF(.data) }
+                 else { out <- list2DF(.data, length(row.names))
+                 attr(out, "row.names") <- row.names out }})(),
+                 true_effect = integer(0), target_power = integer(0),
+                 target_width = integer(0), recommended_n_power =
+                 NA_integer_, recommended_n_width = NA_integer_,
+                 simulation_params = list())
+  Mismatches in argument default values:
+    Name: 'power_curve'
+    Code: (function (.data = list(), row.names = NULL) 
+      {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+    Docs: (function(.data = list(), row.names = NULL) {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+Codoc mismatches from Rd file 'simulated_dm_data.Rd':
+simulated_dm_data
+  Code: function(observed = (function (.data = list(), row.names =
+                 NULL) { if (is.null(row.names)) { list2DF(.data) }
+                 else { out <- list2DF(.data, length(row.names))
+                 attr(out, "row.names") <- row.names out }})(), truth =
+                 NULL, true_effects = list(), generation_params =
+                 list(), misclassification_applied = list())
+  Docs: function(observed = (function(.data = list(), row.names = NULL)
+                 { if (is.null(row.names)) { list2DF(.data) } else {
+                 out <- list2DF(.data, length(row.names)) attr(out,
+                 "row.names") <- row.names out }})(), truth = NULL,
+                 true_effects = list(), generation_params = list(),
+                 misclassification_applied = list())
+  Mismatches in argument default values:
+    Name: 'observed'
+    Code: (function (.data = list(), row.names = NULL) 
+      {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+    Docs: (function(.data = list(), row.names = NULL) {
+          if (is.null(row.names)) {
+              list2DF(.data)
+          }
+          else {
+              out <- list2DF(.data, length(row.names))
+              attr(out, "row.names") <- row.names
+              out
+          }
+      })()
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in Rd file 'bootstrap_results.Rd'
+  ‘method’ ‘n_reps’ ‘n_failed’ ‘confidence_level’ ‘nie_lower_ci’
+  ‘nie_upper_ci’ ‘nde_lower_ci’ ‘nde_upper_ci’ ‘boot_nie_lower’
+  ‘boot_nie_upper’ ‘boot_nde_lower’ ‘boot_nde_upper’ ‘z0’
+  ‘acceleration’
+Undocumented arguments in Rd file 'compatibility_test.Rd'
+  ‘compatible’ ‘psi’ ‘sn1’ ‘sp1’ ‘n_constraints_total’
+  ‘n_constraints_satisfied’ ‘n_constraints_violated’
+  ‘violated_constraints’ ‘implied_probabilities’ ‘stratum_details’
+  ‘misclassified_variable’ ‘reason’
+Documented arguments not in \usage in Rd file 'compute_bca_ci.Rd':
+  ‘...’
+Undocumented arguments in Rd file 'medrobust_bounds.Rd'
+  ‘NIE_lower’ ‘NIE_upper’ ‘NDE_lower’ ‘NDE_upper’ ‘compatible_sets’
+  ‘n_compatible’ ‘n_evaluated’ ‘falsified_proportion’ ‘effect_scale’
+  ‘misclassified_variable’ ‘sensitivity_region’ ‘naive_estimates’
+  ‘bootstrap_results’ ‘data_summary’ ‘call’
+Documented arguments not in \usage in Rd file 'power_analysis.Rd':
+  ‘true_params’ ‘dm_params’ ‘misclass_type’ ‘sample_sizes’
+  ‘target_power’ ‘effect’ ‘n_grid’ ‘confounders’ ‘parallel’ ‘n_cores’
+  ‘verbose’ ‘seed’
+Undocumented arguments in Rd file 'power_analysis_result.Rd'
+  ‘power_curve’ ‘true_effect’ ‘target_power’ ‘target_width’
+  ‘recommended_n_power’ ‘recommended_n_width’ ‘simulation_params’
+Documented arguments not in \usage in Rd file 'simulate_dm_data.Rd':
+  ‘confounder_params’ ‘effect_modification’ ‘interaction_coef’
+  ‘return_truth’ ‘return_params’
+Undocumented arguments in Rd file 'simulated_dm_data.Rd'
+  ‘observed’ ‘truth’ ‘true_effects’ ‘generation_params’
+  ‘misclassification_applied’
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... NOTE
+Rd files without \description:
+  ‘compute_relative_precision.Rd’
+* checking for unstated dependencies in examples ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking examples ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ...
+  Running ‘testthat.R’ [4s/42s]
+ [4s/42s] ERROR
+Running the tests in ‘tests/testthat.R’ failed.
+Last 13 lines of output:
+  Differences:
+  `actual`:   FALSE
+  `expected`: TRUE 
+  
+  ── Error ('test-s7-methods.R:289:5'): S7 method dispatch is faster than S3 ─────
+  Error in `as.data.frame.default(bounds)`: cannot coerce class 'c("medrobust::medrobust_bounds", "S7_object")' to a data.frame
+  Backtrace:
+      ▆
+   1. ├─base::as.data.frame(bounds) at test-s7-methods.R:289:5
+   2. └─base::as.data.frame.default(bounds)
+  
+  [ FAIL 20 | WARN 2 | SKIP 1 | PASS 111 ]
+  Error:
+  ! Test failures.
+  Execution halted
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes ... OK
+* checking re-building of vignette outputs ... OK
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+
+Status: 1 ERROR, 5 WARNINGs, 6 NOTEs
+See
+  ‘/private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00check.log’
+for details.
+
+
+── R CMD check results ─────────────────────────────── medrobust 0.1.0.9000 ────
+Duration: 1m 21.5s
+
+❯ checking tests ...
+  See below...
+
+❯ checking whether package ‘medrobust’ can be installed ... WARNING
+  See below...
+
+❯ checking code files for non-ASCII characters ... WARNING
+  Found the following files with non-ASCII characters:
+    R/check_compatibility.R
+    R/falsification_summary.R
+    R/s7-methods.R
+    R/utilities_helpers.R
+  Portable packages must use only ASCII characters in their R code and
+  NAMESPACE directives, except perhaps in comments.
+  Use \uxxxx escapes for other characters.
+  Function ‘tools::showNonASCIIfile’ can help in finding non-ASCII
+  characters in files.
+
+❯ checking Rd files ... WARNING
+  checkRd: (-1) compute_effects_from_params.Rd:25: Lost braces; missing escapes or markup?
+      25 | Given solved causal parameters {pi_a, gamma_a0, gamma_a1} for each exposure
+         |                                ^
+  prepare_Rd: ./man/compute_relative_precision.Rd:14: unexpected section header '\value'
+  prepare_Rd: ./man/compute_relative_precision.Rd:17: unexpected section header '\description'
+  prepare_Rd: ./man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+  prepare_Rd: ./man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+  '
+  checkRd: (-1) compute_relative_precision.Rd:14-16: Lost braces
+      14 | \value{
+         |       ^
+  checkRd: (-1) compute_relative_precision.Rd:17-19: Lost braces
+      17 | \description{
+         |             ^
+  checkRd: (-1) compute_relative_precision.Rd:20: Lost braces; missing escapes or markup?
+      20 | \keyword{internal}
+         |         ^
+
+❯ checking for code/documentation mismatches ... WARNING
+  Codoc mismatches from Rd file 'compatibility_test.Rd':
+  compatibility_test
+    Code: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
+                   = NULL, n_constraints_total = 0L,
+                   n_constraints_satisfied = 0L, n_constraints_violated =
+                   0L, violated_constraints = structure(list(), names =
+                   character(0), row.names = integer(0), class =
+                   "data.frame"), implied_probabilities = list(),
+                   stratum_details = list(), misclassified_variable =
+                   character(0), reason = NULL)
+    Docs: function(compatible = logical(0), psi = list(), sn1 = NULL, sp1
+                   = NULL, n_constraints_total = 0L,
+                   n_constraints_satisfied = 0L, n_constraints_violated =
+                   0L, violated_constraints = structure(list(), names =
+                   character(0), row.names = integer(0), class =
+                   "data.frame"), implied_probabilities = list(),
+                   stratum_details = list(), misclassified_variable =
+                   character(0), reason = NULL)
+    Mismatches in argument default values:
+      Name: 'violated_constraints'
+      Code: structure(list(), names = character(0), row.names = integer(0), class = "data.frame")
+      Docs: structure(list(), names = character(0), row.names = integer(0), 
+            class = "data.frame")
+  
+  Codoc mismatches from Rd file 'medrobust_bounds.Rd':
+  medrobust_bounds
+    Code: function(NIE_lower = integer(0), NIE_upper = integer(0),
+                   NDE_lower = integer(0), NDE_upper = integer(0),
+                   compatible_sets = (function (.data = list(), row.names
+                   = NULL) { if (is.null(row.names)) { list2DF(.data) }
+                   else { out <- list2DF(.data, length(row.names))
+                   attr(out, "row.names") <- row.names out }})(),
+                   n_compatible = integer(0), n_evaluated = integer(0),
+                   falsified_proportion = integer(0), effect_scale =
+                   character(0), misclassified_variable = character(0),
+                   sensitivity_region = sensitivity_region(),
+                   naive_estimates = list(), bootstrap_results = NULL,
+                   data_summary = list(), call = NULL)
+    Docs: function(NIE_lower = integer(0), NIE_upper = integer(0),
+                   NDE_lower = integer(0), NDE_upper = integer(0),
+                   compatible_sets = (function(.data = list(), row.names
+                   = NULL) { if (is.null(row.names)) { list2DF(.data) }
+                   else { out <- list2DF(.data, length(row.names))
+                   attr(out, "row.names") <- row.names out }})(),
+                   n_compatible = integer(0), n_evaluated = integer(0),
+                   falsified_proportion = integer(0), effect_scale =
+                   character(0), misclassified_variable = character(0),
+                   sensitivity_region = sensitivity_region(),
+                   naive_estimates = list(), bootstrap_results = NULL,
+                   data_summary = list(), call = NULL)
+    Mismatches in argument default values:
+      Name: 'compatible_sets'
+      Code: (function (.data = list(), row.names = NULL) 
+        {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+      Docs: (function(.data = list(), row.names = NULL) {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+  
+  Codoc mismatches from Rd file 'power_analysis_result.Rd':
+  power_analysis_result
+    Code: function(power_curve = (function (.data = list(), row.names =
+                   NULL) { if (is.null(row.names)) { list2DF(.data) }
+                   else { out <- list2DF(.data, length(row.names))
+                   attr(out, "row.names") <- row.names out }})(),
+                   true_effect = integer(0), target_power = integer(0),
+                   target_width = integer(0), recommended_n_power =
+                   NA_integer_, recommended_n_width = NA_integer_,
+                   simulation_params = list())
+    Docs: function(power_curve = (function(.data = list(), row.names =
+                   NULL) { if (is.null(row.names)) { list2DF(.data) }
+                   else { out <- list2DF(.data, length(row.names))
+                   attr(out, "row.names") <- row.names out }})(),
+                   true_effect = integer(0), target_power = integer(0),
+                   target_width = integer(0), recommended_n_power =
+                   NA_integer_, recommended_n_width = NA_integer_,
+                   simulation_params = list())
+    Mismatches in argument default values:
+      Name: 'power_curve'
+      Code: (function (.data = list(), row.names = NULL) 
+        {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+      Docs: (function(.data = list(), row.names = NULL) {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+  
+  Codoc mismatches from Rd file 'simulated_dm_data.Rd':
+  simulated_dm_data
+    Code: function(observed = (function (.data = list(), row.names =
+                   NULL) { if (is.null(row.names)) { list2DF(.data) }
+                   else { out <- list2DF(.data, length(row.names))
+                   attr(out, "row.names") <- row.names out }})(), truth =
+                   NULL, true_effects = list(), generation_params =
+                   list(), misclassification_applied = list())
+    Docs: function(observed = (function(.data = list(), row.names = NULL)
+                   { if (is.null(row.names)) { list2DF(.data) } else {
+                   out <- list2DF(.data, length(row.names)) attr(out,
+                   "row.names") <- row.names out }})(), truth = NULL,
+                   true_effects = list(), generation_params = list(),
+                   misclassification_applied = list())
+    Mismatches in argument default values:
+      Name: 'observed'
+      Code: (function (.data = list(), row.names = NULL) 
+        {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+      Docs: (function(.data = list(), row.names = NULL) {
+            if (is.null(row.names)) {
+                list2DF(.data)
+            }
+            else {
+                out <- list2DF(.data, length(row.names))
+                attr(out, "row.names") <- row.names
+                out
+            }
+        })()
+
+❯ checking Rd \usage sections ... WARNING
+  Undocumented arguments in Rd file 'bootstrap_results.Rd'
+    ‘method’ ‘n_reps’ ‘n_failed’ ‘confidence_level’ ‘nie_lower_ci’
+    ‘nie_upper_ci’ ‘nde_lower_ci’ ‘nde_upper_ci’ ‘boot_nie_lower’
+    ‘boot_nie_upper’ ‘boot_nde_lower’ ‘boot_nde_upper’ ‘z0’
+    ‘acceleration’
+  
+  Undocumented arguments in Rd file 'compatibility_test.Rd'
+    ‘compatible’ ‘psi’ ‘sn1’ ‘sp1’ ‘n_constraints_total’
+    ‘n_constraints_satisfied’ ‘n_constraints_violated’
+    ‘violated_constraints’ ‘implied_probabilities’ ‘stratum_details’
+    ‘misclassified_variable’ ‘reason’
+  
+  Documented arguments not in \usage in Rd file 'compute_bca_ci.Rd':
+    ‘...’
+  
+  Undocumented arguments in Rd file 'medrobust_bounds.Rd'
+    ‘NIE_lower’ ‘NIE_upper’ ‘NDE_lower’ ‘NDE_upper’ ‘compatible_sets’
+    ‘n_compatible’ ‘n_evaluated’ ‘falsified_proportion’ ‘effect_scale’
+    ‘misclassified_variable’ ‘sensitivity_region’ ‘naive_estimates’
+    ‘bootstrap_results’ ‘data_summary’ ‘call’
+  
+  Documented arguments not in \usage in Rd file 'power_analysis.Rd':
+    ‘true_params’ ‘dm_params’ ‘misclass_type’ ‘sample_sizes’
+    ‘target_power’ ‘effect’ ‘n_grid’ ‘confounders’ ‘parallel’ ‘n_cores’
+    ‘verbose’ ‘seed’
+  
+  Undocumented arguments in Rd file 'power_analysis_result.Rd'
+    ‘power_curve’ ‘true_effect’ ‘target_power’ ‘target_width’
+    ‘recommended_n_power’ ‘recommended_n_width’ ‘simulation_params’
+  
+  Documented arguments not in \usage in Rd file 'simulate_dm_data.Rd':
+    ‘confounder_params’ ‘effect_modification’ ‘interaction_coef’
+    ‘return_truth’ ‘return_params’
+  
+  Undocumented arguments in Rd file 'simulated_dm_data.Rd'
+    ‘observed’ ‘truth’ ‘true_effects’ ‘generation_params’
+    ‘misclassification_applied’
+  
+  Functions with \usage entries need to have the appropriate \alias
+  entries, and all their arguments documented.
+  The \usage entries must correspond to syntactically valid R code.
+  See chapter ‘Writing R documentation files’ in the ‘Writing R
+  Extensions’ manual.
+
+❯ checking for hidden files and directories ... NOTE
+  Found the following hidden files and directories:
+    .claude
+  These were most likely included in error. See section ‘Package
+  structure’ in the ‘Writing R Extensions’ manual.
+
+❯ checking DESCRIPTION meta-information ... NOTE
+  License stub is invalid DCF.
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:14: unexpected section header '\value'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:17: unexpected section header '\description'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:20: unexpected section header '\keyword'
+  Warning: /private/var/folders/ks/18k8m75d55g71zc5btp253nc0000gn/T/RtmpgaXhBc/file3e471d19b950/medrobust.Rcheck/00_pkg_src/medrobust/man/compute_relative_precision.Rd:21: unexpected END_OF_INPUT '
+  '
+
+❯ checking top-level files ... NOTE
+  Non-standard files/directories found at top level:
+    ‘BOOTSTRAP_IMPROVEMENTS.md’ ‘FINAL_OPTIMIZATION_SUMMARY.md’
+    ‘GRID_SEARCH_ALGORITHMS.md’ ‘LHS_DEFAULT_CHANGES.md’
+    ‘MEDIATOR_OPTIMIZATION.md’ ‘OPTIMIZATION_SUMMARY.md’
+    ‘QUARTO_VIGNETTES_SETUP.md’ ‘REGENERATE_DOCS.md’ ‘RENV_SETUP.md’
+    ‘S7_CONVERSION_GUIDE.md’ ‘VIGNETTE_GRID_SEARCH.md’ ‘WORKFLOW.md’
+    ‘check_output.txt’ ‘medrobust.code-workspace’ ‘test_lhs.R’
+    ‘test_mediator_speed.R’ ‘test_optimization.R’ ‘test_vectorization.R’
+
+❯ checking dependencies in R code ... NOTE
+  Namespaces in Imports field not imported from:
+    ‘stats’ ‘utils’
+    All declared Imports should be used.
+
+❯ checking R code for possible problems ... NOTE
+  apply_differential_misclassification: no visible global function
+    definition for ‘rbinom’
+  apply_exposure_misclassification: no visible global function definition
+    for ‘rbinom’
+  apply_mediator_misclassification: no visible global function definition
+    for ‘rbinom’
+  binary_search_bounds : beta_samples: no visible global function
+    definition for ‘rbeta’
+  binary_search_bounds: no visible global function definition for
+    ‘txtProgressBar’
+  binary_search_bounds: no visible global function definition for
+    ‘setTxtProgressBar’
+  bootstrap_width_summary: no visible global function definition for
+    ‘median’
+  bootstrap_width_summary: no visible global function definition for ‘sd’
+  bootstrap_width_summary: no visible global function definition for
+    ‘IQR’
+  bootstrap_width_summary: no visible global function definition for
+    ‘quantile’
+  bound_ne_exposure: no visible global function definition for
+    ‘txtProgressBar’
+  bound_ne_exposure : <anonymous>: no visible global function definition
+    for ‘setTxtProgressBar’
+  bound_ne_mediator : evaluate_param_set: no visible global function
+    definition for ‘across’
+  bound_ne_mediator : evaluate_param_set: no visible global function
+    definition for ‘all_of’
+  bound_ne_mediator : evaluate_param_set: no visible binding for global
+    variable ‘stratum_id’
+  bound_ne_mediator: possible error in
+    binary_search_bounds(sensitivity_region = sensitivity_region,
+    evaluate_func = evaluate_wrapper, n_iterations = n_grid, verbose =
+    verbose): unused argument (n_iterations = n_grid)
+  bound_ne_mediator: possible error in
+    auto_grid_search(sensitivity_region = sensitivity_region,
+    evaluate_func = evaluate_wrapper, n_grid = n_grid, verbose =
+    verbose): unused argument (n_grid = n_grid)
+  bound_ne_mediator: no visible global function definition for
+    ‘txtProgressBar’
+  bound_ne_mediator : <anonymous>: no visible global function definition
+    for ‘setTxtProgressBar’
+  check_compatibility_exposure: no visible global function definition for
+    ‘across’
+  check_compatibility_exposure: no visible global function definition for
+    ‘all_of’
+  check_compatibility_exposure: no visible binding for global variable
+    ‘stratum_id’
+  check_compatibility_mediator: no visible global function definition for
+    ‘across’
+  check_compatibility_mediator: no visible global function definition for
+    ‘all_of’
+  check_compatibility_mediator: no visible binding for global variable
+    ‘stratum_id’
+  compute_bca_ci : <anonymous>: no visible global function definition for
+    ‘qnorm’
+  compute_bca_ci: no visible global function definition for ‘qnorm’
+  compute_bca_ci : <anonymous>: no visible global function definition for
+    ‘pnorm’
+  compute_bca_ci: no visible global function definition for ‘quantile’
+  compute_bootstrap_ci: no visible global function definition for
+    ‘txtProgressBar’
+  compute_bootstrap_ci : <anonymous>: no visible global function
+    definition for ‘setTxtProgressBar’
+  compute_bootstrap_ci: no visible global function definition for
+    ‘complete.cases’
+  compute_bootstrap_ci: no visible global function definition for
+    ‘quantile’
+  compute_bound_se: no visible global function definition for ‘sd’
+  compute_effects_from_joint_probs: no visible binding for global
+    variable ‘stratum_id’
+  compute_effects_from_joint_probs: no visible binding for global
+    variable ‘weight’
+  compute_effects_from_params: no visible binding for global variable
+    ‘stratum_id’
+  compute_effects_from_params: no visible binding for global variable
+    ‘weight’
+  compute_naive_effects: no visible global function definition for
+    ‘as.formula’
+  compute_naive_effects: no visible global function definition for ‘glm’
+  compute_naive_effects: no visible global function definition for
+    ‘binomial’
+  compute_naive_effects: no visible global function definition for ‘coef’
+  compute_parameter_falsification: no visible global function definition
+    for ‘hist’
+  compute_stratified_joint_distribution: no visible global function
+    definition for ‘across’
+  compute_stratified_joint_distribution: no visible global function
+    definition for ‘all_of’
+  compute_stratified_joint_distribution: no visible binding for global
+    variable ‘count’
+  generate_confounders: no visible global function definition for
+    ‘rbinom’
+  generate_true_variables: no visible global function definition for
+    ‘rbinom’
+  generate_true_variables: no visible global function definition for
+    ‘plogis’
+  get_data_summary : <anonymous>: no visible global function definition
+    for ‘sd’
+  latin_hypercube_search: no visible global function definition for
+    ‘runif’
+  latin_hypercube_search: no visible global function definition for
+    ‘txtProgressBar’
+  latin_hypercube_search: no visible global function definition for
+    ‘setTxtProgressBar’
+  plot_bootstrap_distribution: no visible global function definition for
+    ‘complete.cases’
+  plot_bootstrap_distribution: no visible binding for global variable
+    ‘lower’
+  plot_bootstrap_distribution: no visible binding for global variable
+    ‘upper’
+  plot_bounds_line: no visible binding for global variable ‘param_value’
+  plot_bounds_line: no visible binding for global variable ‘nie_lower’
+  plot_bounds_line: no visible binding for global variable ‘nie_upper’
+  plot_bounds_line: no visible binding for global variable ‘nde_lower’
+  plot_bounds_line: no visible binding for global variable ‘nde_upper’
+  plot_falsification: no visible binding for global variable ‘proportion’
+  plot_falsification: no visible binding for global variable ‘category’
+  plot_falsification: no visible binding for global variable ‘value’
+  plot_falsification: no visible binding for global variable
+    ‘falsification_rate’
+  plot_falsification: no visible binding for global variable
+    ‘parameter_label’
+  plot_falsification: no visible binding for global variable ‘x’
+  plot_falsification: no visible binding for global variable ‘y’
+  precompute_observed_probs: no visible global function definition for
+    ‘across’
+  precompute_observed_probs: no visible global function definition for
+    ‘all_of’
+  precompute_observed_probs: no visible binding for global variable
+    ‘stratum_id’
+  prepare_data: no visible global function definition for ‘na.omit’
+  print.compatibility_test: no visible global function definition for
+    ‘head’
+  run_power_simulations : run_one_sim: possible error in
+    simulate_dm_data(n = n, true_params = true_params, dm_params =
+    dm_params, misclass_type = misclass_type, confounders = confounders,
+    seed = seed + sim_idx * 1000, return_truth = FALSE, return_params =
+    FALSE): unused arguments (return_truth = FALSE, return_params =
+    FALSE)
+  run_power_simulations: no visible global function definition for
+    ‘median’
+  run_power_simulations: no visible global function definition for ‘sd’
+  sobol_sequence_search: no visible global function definition for
+    ‘txtProgressBar’
+  sobol_sequence_search: no visible global function definition for
+    ‘setTxtProgressBar’
+  Undefined global functions or variables:
+    IQR across all_of as.formula binomial category coef complete.cases
+    count falsification_rate glm head hist lower median na.omit nde_lower
+    nde_upper nie_lower nie_upper param_value parameter_label plogis
+    pnorm proportion qnorm quantile rbeta rbinom runif sd
+    setTxtProgressBar stratum_id txtProgressBar upper value weight x y
+  Consider adding
+    importFrom("graphics", "hist")
+    importFrom("stats", "IQR", "as.formula", "binomial", "coef",
+               "complete.cases", "glm", "median", "na.omit", "plogis",
+               "pnorm", "qnorm", "quantile", "rbeta", "rbinom", "runif",
+               "sd")
+    importFrom("utils", "head", "setTxtProgressBar", "txtProgressBar")
+  to your NAMESPACE file.
+
+❯ checking Rd contents ... NOTE
+  Rd files without \description:
+    ‘compute_relative_precision.Rd’
+
+── Test failures ───────────────────────────────────────────────── testthat ────
+
+> library(testthat)
+> library(medrobust)
+> 
+> test_check("medrobust")
+Validating inputs...
+Validating inputs...
+Saving _problems/test-s7-classes-437.R
+<medrobust::medrobust_bounds>
+ @ NIE_lower             : num 1
+ @ NIE_upper             : num 1.5
+ @ NDE_lower             : num 1.1
+ @ NDE_upper             : num 1.4
+ @ compatible_sets       :'data.frame':	2 obs. of  2 variables:
+ .. $ sn0: num  0.85 0.87
+ .. $ sp0: num  0.85 0.86
+ @ n_compatible          : int 2
+ @ n_evaluated           : int 100
+ @ falsified_proportion  : num 0.98
+ @ effect_scale          : chr "OR"
+ @ misclassified_variable: chr "mediator"
+ @ sensitivity_region    : <medrobust::sensitivity_region>
+ .. @ sn0_range   : num [1:2] 0.8 0.9
+ .. @ sp0_range   : num [1:2] 0.8 0.9
+ .. @ psi_sn_range: num [1:2] 1 1.5
+ .. @ psi_sp_range: num [1:2] 1 1.5
+ @ naive_estimates       : list()
+ @ bootstrap_results     : <medrobust::bootstrap_results>
+ .. @ method          : chr "percentile"
+ .. @ n_reps          : int 1000
+ .. @ n_failed        : int 0
+ .. @ confidence_level: num 0.95
+ .. @ nie_lower_ci    : num [1:2] 0.9 1.1
+ .. @ nie_upper_ci    : num [1:2] 1.4 1.6
+ .. @ nde_lower_ci    : num [1:2] 1 1.2
+ .. @ nde_upper_ci    : num [1:2] 1.3 1.5
+ .. @ boot_nie_lower  : num [1:1000] 1 1 1 1 1 1 1 1 1 1 ...
+ .. @ boot_nie_upper  : num [1:1000] 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 ...
+ .. @ boot_nde_lower  : num [1:1000] 1.1 1.1 1.1 1.1 1.1 1.1 1.1 1.1 1.1 1.1 ...
+ .. @ boot_nde_upper  : num [1:1000] 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 ...
+ .. @ z0              : NULL
+ .. @ acceleration    : NULL
+ @ data_summary          : list()
+ @ call                  : NULL
+Saving _problems/test-s7-methods-44.R
+Saving _problems/test-s7-methods-47.R
+Saving _problems/test-s7-methods-76.R
+Saving _problems/test-s7-methods-77.R
+Saving _problems/test-s7-methods-103.R
+Saving _problems/test-s7-methods-142.R
+Saving _problems/test-s7-methods-143.R
+Saving _problems/test-s7-methods-161.R
+Saving _problems/test-s7-methods-184.R
+Saving _problems/test-s7-methods-203.R
+Saving _problems/test-s7-methods-204.R
+Saving _problems/test-s7-methods-205.R
+Saving _problems/test-s7-methods-220.R
+Saving _problems/test-s7-methods-234.R
+Saving _problems/test-s7-methods-257.R
+Saving _problems/test-s7-methods-258.R
+Saving _problems/test-s7-methods-259.R
+Saving _problems/test-s7-methods-260.R
+Saving _problems/test-s7-methods-289.R
+[ FAIL 20 | WARN 2 | SKIP 1 | PASS 111 ]
+
+══ Skipped tests (1) ═══════════════════════════════════════════════════════════
+• BCa test skipped - takes too long for regular testing (1):
+  'test-bound_ne-comprehensive.R:139:3'
+
+══ Warnings ════════════════════════════════════════════════════════════════════
+── Warning ('test-bound_ne-comprehensive.R:202:3'): bound_ne works with different effect scales ──
+RR scale approximated as OR for naive estimates
+Backtrace:
+    ▆
+ 1. └─medrobust::bound_ne(...) at test-bound_ne-comprehensive.R:202:3
+ 2.   └─medrobust:::bound_ne_exposure(...)
+ 3.     └─medrobust:::compute_naive_effects(...)
+── Warning ('test-bound_ne-comprehensive.R:218:3'): bound_ne works with different effect scales ──
+RD scale not implemented for naive estimates, returning log-odds
+Backtrace:
+    ▆
+ 1. └─medrobust::bound_ne(...) at test-bound_ne-comprehensive.R:218:3
+ 2.   └─medrobust:::bound_ne_exposure(...)
+ 3.     └─medrobust:::compute_naive_effects(...)
+
+══ Failed tests ════════════════════════════════════════════════════════════════
+── Error ('test-s7-classes.R:437:3'): as_sensitivity_region converter works ────
+Error in `as.vector(x, "list")`: cannot coerce type 'object' to vector of type 'list'
+Backtrace:
+    ▆
+ 1. ├─base::as.list(sens_reg) at test-s7-classes.R:437:3
+ 2. └─base::as.list.default(sens_reg)
+── Failure ('test-s7-methods.R:44:3'): print method for medrobust_bounds works ──
+Expected `any(grepl("PARTIAL IDENTIFICATION BOUNDS", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:47:3'): print method for medrobust_bounds works ──
+Expected `any(grepl("Effect Scale", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:76:3'): summary method for medrobust_bounds works ──
+Expected `any(grepl("DETAILED SUMMARY", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:77:3'): summary method for medrobust_bounds works ──
+Expected `any(grepl("Sensitivity Region", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Error ('test-s7-methods.R:103:3'): as.data.frame method for medrobust_bounds works ──
+Error in `as.data.frame.default(bounds)`: cannot coerce class 'c("medrobust::medrobust_bounds", "S7_object")' to a data.frame
+Backtrace:
+    ▆
+ 1. ├─base::as.data.frame(bounds) at test-s7-methods.R:103:3
+ 2. └─base::as.data.frame.default(bounds)
+── Failure ('test-s7-methods.R:142:3'): print method for compatibility_test works ──
+Expected `any(grepl("COMPATIBILITY TEST", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:143:3'): print method for compatibility_test works ──
+Expected `any(grepl("Compatible", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:161:3'): print method for compatibility_test works ──
+Expected `any(grepl("NOT Compatible", output2))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:184:3'): summary method for compatibility_test works ──
+Expected `any(grepl("DETAILED COMPATIBILITY", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:203:3'): print method for falsification_summary works ──
+Expected `any(grepl("FALSIFICATION SUMMARY", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:204:3'): print method for falsification_summary works ──
+Expected `any(grepl("45.0%", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:205:3'): print method for falsification_summary works ──
+Expected `any(grepl("Most constrained", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:220:3'): summary method for falsification_summary works ──
+Expected `any(grepl("FALSIFICATION", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:234:3'): print method for sensitivity_region works ──
+Expected `any(grepl("Sensitivity Region", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:257:3'): print method for bootstrap_results works ──
+Expected `any(grepl("Bootstrap", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:258:3'): print method for bootstrap_results works ──
+Expected `any(grepl("95%", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:259:3'): print method for bootstrap_results works ──
+Expected `any(grepl("NIE", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Failure ('test-s7-methods.R:260:3'): print method for bootstrap_results works ──
+Expected `any(grepl("NDE", output))` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+── Error ('test-s7-methods.R:289:5'): S7 method dispatch is faster than S3 ─────
+Error in `as.data.frame.default(bounds)`: cannot coerce class 'c("medrobust::medrobust_bounds", "S7_object")' to a data.frame
+Backtrace:
+    ▆
+ 1. ├─base::as.data.frame(bounds) at test-s7-methods.R:289:5
+ 2. └─base::as.data.frame.default(bounds)
+
+[ FAIL 20 | WARN 2 | SKIP 1 | PASS 111 ]
+Error:
+! Test failures.
+Execution halted
+
+1 error ✖ | 5 warnings ✖ | 6 notes ✖
+Error: R CMD check found ERRORs
+Execution halted
