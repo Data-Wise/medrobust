@@ -219,6 +219,11 @@ bound_ne_exposure <- function(data,
     if (use_advanced_method) {
       n_total_evaluated <- attr(results, "n_evaluated")
       if (is.null(n_total_evaluated)) n_total_evaluated <- length(results)
+
+      # Check if any compatible sets were found
+      if (length(results) == 0) {
+        stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+      }
     }
   }
 

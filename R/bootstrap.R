@@ -151,10 +151,10 @@ compute_bootstrap_ci <- function(data,
   if (bootstrap_method == "percentile") {
     # Percentile method
     ci_results <- list(
-      nie_lower_ci = quantile(boot_nie_lower, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE),
-      nie_upper_ci = quantile(boot_nie_upper, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE),
-      nde_lower_ci = quantile(boot_nde_lower, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE),
-      nde_upper_ci = quantile(boot_nde_upper, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE)
+      nie_lower_ci = as.numeric(quantile(boot_nie_lower, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE)),
+      nie_upper_ci = as.numeric(quantile(boot_nie_upper, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE)),
+      nde_lower_ci = as.numeric(quantile(boot_nde_lower, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE)),
+      nde_upper_ci = as.numeric(quantile(boot_nde_upper, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE))
     )
 
   } else if (bootstrap_method == "bca") {

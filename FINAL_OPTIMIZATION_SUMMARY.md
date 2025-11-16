@@ -47,13 +47,23 @@ This caused "unused arguments" error when calling from bound_ne.R
 
 **Impact**: Bootstrap confidence intervals now work correctly
 
+### 5. ✅ Missing Empty Results Check (bound_ne_exposure.R)
+
+**Problem**: When using advanced grid search methods (LHS, Sobol, etc.), if no compatible parameter sets were found, the function would try to extract bounds from an empty list, causing "invalid 'type' (list)" error.
+
+**Fix**: Added check for empty results after advanced method execution (lines 223-226)
+
+**Impact**: Proper error message when no compatible sets found, instead of cryptic list error
+
 ## Files Modified
 
 | File | Changes | Lines |
 |------|---------|-------|
+| **R/bound_ne_exposure.R** | Added empty results check for advanced methods | 223-226 |
 | **R/bound_ne_mediator.R** | Grid search dispatch, evaluate_wrapper, n_evaluated fix | 204-264, 337-363, 373 |
 | **R/utilities.R** | Removed duplicate compute_bootstrap_ci() | 141-200 |
 | **R/bootstrap.R** | S7 property accessor fix | 70-73 |
+| **tests/testthat/test-bound_ne-comprehensive.R** | Comprehensive test suite | New file |
 | **MEDIATOR_OPTIMIZATION.md** | Technical documentation | New file |
 | **test_mediator_speed.R** | Performance test script | New file |
 | **FINAL_OPTIMIZATION_SUMMARY.md** | This file | New file |

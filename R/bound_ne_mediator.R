@@ -286,7 +286,7 @@ bound_ne_mediator <- function(data,
 
       # Export required utility functions to workers
       parallel::clusterExport(cl, c(
-        "odds_to_prob", "prob_to_odds"
+        "odds_to_prob", "prob_to_odds", "compute_effects_from_params"
       ), envir = asNamespace("medrobust"))
 
       # Load required packages on each worker
