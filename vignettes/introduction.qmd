@@ -262,11 +262,9 @@ summary(bounds)
 #| fig-width: 7
 #| fig-height: 5
 #| message: false
-#| eval: false
 
 # Use the plot() method to visualize bounds
-# NOTE: Temporarily disabled for vignette building - works in interactive use
-# plot(bounds)
+plot(bounds)
 ```
 
 The plot() method creates a clear visualization showing the bounds for NIE and NDE as error bars.
@@ -357,7 +355,7 @@ bounds_list <- as.list(bounds)
 names(bounds_list)
 
 # Plot method for visualization
-# plot(bounds)
+plot(bounds)
 ```
 
 ### Step 8: Sensitivity Plots
@@ -460,7 +458,7 @@ print(power_df)
 #| message: false
 
 # Plot power curves
-# plot(power_result)
+plot(power_result)
 ```
 
 The power plot shows:
