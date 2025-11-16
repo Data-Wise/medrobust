@@ -81,7 +81,7 @@ compute_joint_distribution <- function(var1, var2, var3) {
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom dplyr group_by summarise n cur_group_id
+#' @importFrom dplyr group_by summarise n cur_group_id mutate
 compute_stratified_joint_distribution <- function(data, exposure, mediator,
                                                   outcome, confounders) {
 
@@ -89,9 +89,9 @@ compute_stratified_joint_distribution <- function(data, exposure, mediator,
   group_vars <- c(confounders, exposure, mediator, outcome)
 
   # Compute frequencies for each stratum
-  result <- data %>%
-    dplyr::group_by(across(all_of(group_vars))) %>%
-    dplyr::summarise(count = dplyr::n(), .groups = "drop") %>%
+  result <- data |>
+    dplyr::group_by(across(all_of(group_vars))) |>
+    dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
     dplyr::mutate(prob = count / sum(count))
 
   return(as.data.frame(result))

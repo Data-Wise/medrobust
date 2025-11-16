@@ -217,12 +217,12 @@ check_compatibility_mediator <- function(data,
     strata <- data.frame(stratum_id = 1)
     data$stratum_id <- 1
   } else {
-    data <- data %>%
-      dplyr::group_by(across(all_of(confounders))) %>%
-      dplyr::mutate(stratum_id = cur_group_id()) %>%
+    data <- data |>
+      dplyr::group_by(across(all_of(confounders))) |>
+      dplyr::mutate(stratum_id = cur_group_id()) |>
       dplyr::ungroup()
-    strata <- data %>%
-      dplyr::select(stratum_id, all_of(confounders)) %>%
+    strata <- data |>
+      dplyr::select(stratum_id, all_of(confounders)) |>
       dplyr::distinct()
   }
 
@@ -239,7 +239,7 @@ check_compatibility_mediator <- function(data,
   for (a in c(0, 1)) {
     for (s in strata$stratum_id) {
       # Get data for this (a, stratum) combination
-      data_as <- data %>%
+      data_as <- data |>
         dplyr::filter(!!sym(exposure) == a, stratum_id == s)
 
       if (nrow(data_as) < 5) {
@@ -254,10 +254,10 @@ check_compatibility_mediator <- function(data,
       }
 
       # Compute observed joint probabilities
-      obs_probs <- data_as %>%
-        dplyr::group_by(!!sym(outcome), !!sym(mediator)) %>%
-        dplyr::summarise(n = n(), .groups = "drop") %>%
-        dplyr::mutate(prob = n / sum(n)) %>%
+      obs_probs <- data_as |>
+        dplyr::group_by(!!sym(outcome), !!sym(mediator)) |>
+        dplyr::summarise(n = n(), .groups = "drop") |>
+        dplyr::mutate(prob = n / sum(n)) |>
         dplyr::select(-n)
 
       # Extract P_11, P_10, P_01, P_00
@@ -442,12 +442,12 @@ check_compatibility_exposure <- function(data,
     strata <- data.frame(stratum_id = 1)
     data$stratum_id <- 1
   } else {
-    data <- data %>%
-      dplyr::group_by(across(all_of(confounders))) %>%
-      dplyr::mutate(stratum_id = cur_group_id()) %>%
+    data <- data |>
+      dplyr::group_by(across(all_of(confounders))) |>
+      dplyr::mutate(stratum_id = cur_group_id()) |>
       dplyr::ungroup()
-    strata <- data %>%
-      dplyr::select(stratum_id, all_of(confounders)) %>%
+    strata <- data |>
+      dplyr::select(stratum_id, all_of(confounders)) |>
       dplyr::distinct()
   }
 
@@ -465,7 +465,7 @@ check_compatibility_exposure <- function(data,
     for (y in c(0, 1)) {
       for (s in strata$stratum_id) {
         # Get data for this combination
-        data_mys <- data %>%
+        data_mys <- data |>
           dplyr::filter(!!sym(mediator) == m, !!sym(outcome) == y, stratum_id == s)
 
         if (nrow(data_mys) < 5) {
@@ -479,9 +479,9 @@ check_compatibility_exposure <- function(data,
         }
 
         # Compute observed P*(A*=a* | M=m, Y=y, C=c)
-        obs_probs <- data_mys %>%
-          dplyr::group_by(!!sym(exposure)) %>%
-          dplyr::summarise(n = n(), .groups = "drop") %>%
+        obs_probs <- data_mys |>
+          dplyr::group_by(!!sym(exposure)) |>
+          dplyr::summarise(n = n(), .groups = "drop") |>
           dplyr::mutate(prob = n / sum(n))
 
         P_star_1 <- obs_probs$prob[obs_probs[[exposure]] == 1]

@@ -94,15 +94,12 @@ compute_bootstrap_ci <- function(data,
                            c("data", "exposure", "mediator", "outcome",
                              "confounders", "misclassified_variable",
                              "sensitivity_region", "n_grid", "effect_scale",
-                             "grid_method"),
+                             "grid_method", "boot_iteration"),
                            envir = environment())
 
-    # Export required functions from namespace
-    parallel::clusterExport(cl, c("bound_ne", "odds_to_prob", "prob_to_odds"),
-                           envir = asNamespace("medrobust"))
-
-    # Load required packages on workers
+    # Load required packages on workers (including medrobust)
     parallel::clusterEvalQ(cl, {
+      library(medrobust)
       library(dplyr)
       library(rlang)
     })
@@ -182,7 +179,7 @@ compute_bootstrap_ci <- function(data,
   # Compile results
   results <- list(
     method = bootstrap_method,
-    n_reps = nrow(boot_matrix),
+    n_reps = bootstrap_reps,  # Total number of bootstrap iterations attempted
     n_failed = n_failed,
     confidence_level = confidence_level,
 
@@ -204,6 +201,7 @@ compute_bootstrap_ci <- function(data,
   if (verbose) {
     cat("\n", strrep("-", 60), "\n")
     cat("Bootstrap Results (", bootstrap_reps, " replicates, ",
+        bootstrap_reps - n_failed, " successful, ",
         n_failed, " failed)\n", sep = "")
     cat(strrep("-", 60), "\n")
     cat("\nNIE Lower Bound ", confidence_level*100, "% CI: [",

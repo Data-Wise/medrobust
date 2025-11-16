@@ -353,10 +353,10 @@ compute_effects_from_params <- function(solved_params,
     strata_weights <- data.frame(stratum_id = 1, weight = 1)
   } else {
     # Compute stratum weights (empirical distribution of C)
-    strata_weights <- data %>%
-      dplyr::group_by(stratum_id) %>%
-      dplyr::summarise(n = n(), .groups = "drop") %>%
-      dplyr::mutate(weight = n / sum(n)) %>%
+    strata_weights <- data |>
+      dplyr::group_by(stratum_id) |>
+      dplyr::summarise(n = n(), .groups = "drop") |>
+      dplyr::mutate(weight = n / sum(n)) |>
       dplyr::select(stratum_id, weight)
   }
 
@@ -468,10 +468,10 @@ compute_effects_from_joint_probs <- function(P_true_list,
   if (is.null(C_names) || length(C_names) == 0) {
     strata_weights <- data.frame(stratum_id = 1, weight = 1)
   } else {
-    strata_weights <- data %>%
-      dplyr::group_by(stratum_id) %>%
-      dplyr::summarise(n = n(), .groups = "drop") %>%
-      dplyr::mutate(weight = n / sum(n)) %>%
+    strata_weights <- data |>
+      dplyr::group_by(stratum_id) |>
+      dplyr::summarise(n = n(), .groups = "drop") |>
+      dplyr::mutate(weight = n / sum(n)) |>
       dplyr::select(stratum_id, weight)
   }
 
