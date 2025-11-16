@@ -198,35 +198,39 @@ test_that("bound_ne works with different effect scales", {
   )
   expect_equal(bounds_or@effect_scale, "OR")
 
-  # Test RR scale
-  bounds_rr <- bound_ne(
-    data = test_data,
-    exposure = "A_star",
-    mediator = "M",
-    outcome = "Y",
-    confounders = "C1",
-    misclassified_variable = "exposure",
-    sensitivity_region = sens_region,
-    n_grid = 10,
-    effect_scale = "RR",
-    grid_method = "lhs",
-    verbose = FALSE
+  # Test RR scale (suppress expected warning about RR approximation)
+  bounds_rr <- suppressWarnings(
+    bound_ne(
+      data = test_data,
+      exposure = "A_star",
+      mediator = "M",
+      outcome = "Y",
+      confounders = "C1",
+      misclassified_variable = "exposure",
+      sensitivity_region = sens_region,
+      n_grid = 10,
+      effect_scale = "RR",
+      grid_method = "lhs",
+      verbose = FALSE
+    )
   )
   expect_equal(bounds_rr@effect_scale, "RR")
 
-  # Test RD scale
-  bounds_rd <- bound_ne(
-    data = test_data,
-    exposure = "A_star",
-    mediator = "M",
-    outcome = "Y",
-    confounders = "C1",
-    misclassified_variable = "exposure",
-    sensitivity_region = sens_region,
-    n_grid = 10,
-    effect_scale = "RD",
-    grid_method = "lhs",
-    verbose = FALSE
+  # Test RD scale (suppress expected warning about RD not implemented)
+  bounds_rd <- suppressWarnings(
+    bound_ne(
+      data = test_data,
+      exposure = "A_star",
+      mediator = "M",
+      outcome = "Y",
+      confounders = "C1",
+      misclassified_variable = "exposure",
+      sensitivity_region = sens_region,
+      n_grid = 10,
+      effect_scale = "RD",
+      grid_method = "lhs",
+      verbose = FALSE
+    )
   )
   expect_equal(bounds_rd@effect_scale, "RD")
 })
