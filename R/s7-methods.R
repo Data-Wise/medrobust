@@ -186,6 +186,119 @@ method(as.data.frame, medrobust_bounds) <- function(x, ...) {
   return(result)
 }
 
+#' Plot method for medrobust_bounds
+#'
+#' @param x A medrobust_bounds object
+#' @param ... Additional arguments (ignored)
+#' @importFrom ggplot2 ggplot aes geom_errorbar geom_point geom_hline
+#' @importFrom ggplot2 labs theme_bw coord_flip scale_color_manual annotate
+#' @noRd
+#' @export
+method(plot, medrobust_bounds) <- function(x, ...) {
+
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("ggplot2 required for plotting. Install with: install.packages('ggplot2')")
+  }
+
+  # Prepare data for plotting
+  bounds_data <- data.frame(
+    effect = c("NIE", "NDE"),
+    lower = c(x@NIE_lower, x@NDE_lower),
+    upper = c(x@NIE_upper, x@NDE_upper),
+    stringsAsFactors = FALSE
+  )
+
+  # Add naive estimates if available
+  if (!is.null(x@naive_estimates)) {
+    bounds_data$naive <- c(
+      x@naive_estimates$NIE,
+      x@naive_estimates$NDE
+    )
+  } else {
+    bounds_data$naive <- NA
+  }
+
+  # Add bootstrap CIs if available
+  if (!is.null(x@bootstrap_results)) {
+    bounds_data$ci_lower_low <- c(
+      x@bootstrap_results@nie_lower_ci[1],
+      x@bootstrap_results@nde_lower_ci[1]
+    )
+    bounds_data$ci_lower_high <- c(
+      x@bootstrap_results@nie_lower_ci[2],
+      x@bootstrap_results@nde_lower_ci[2]
+    )
+    bounds_data$ci_upper_low <- c(
+      x@bootstrap_results@nie_upper_ci[1],
+      x@bootstrap_results@nde_upper_ci[1]
+    )
+    bounds_data$ci_upper_high <- c(
+      x@bootstrap_results@nie_upper_ci[2],
+      x@bootstrap_results@nde_upper_ci[2]
+    )
+  }
+
+  # Determine null value based on effect scale
+  null_value <- if (x@effect_scale == "RD") 0 else 1
+
+  # Create main plot
+  p <- ggplot2::ggplot(bounds_data, ggplot2::aes(x = effect)) +
+    # Bounds intervals
+    ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = lower, ymax = upper),
+      width = 0.3, linewidth = 1.5, color = "steelblue"
+    ) +
+    # Points at bound endpoints
+    ggplot2::geom_point(
+      ggplot2::aes(y = lower),
+      size = 3, color = "steelblue", shape = 16
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(y = upper),
+      size = 3, color = "steelblue", shape = 16
+    ) +
+    # Null hypothesis line
+    ggplot2::geom_hline(
+      yintercept = null_value,
+      linetype = "dashed", color = "red", alpha = 0.7
+    ) +
+    ggplot2::labs(
+      title = "Partial Identification Bounds",
+      subtitle = sprintf(
+        "Sensitivity Analysis: %s misclassification (%d/%d compatible sets)",
+        x@misclassified_variable, x@n_compatible, x@n_evaluated
+      ),
+      x = "Causal Effect",
+      y = paste("Effect (", x@effect_scale, ")", sep = "")
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::coord_flip()
+
+  # Add naive estimates if available
+  if (!is.null(x@naive_estimates)) {
+    p <- p + ggplot2::geom_point(
+      ggplot2::aes(y = naive),
+      size = 3, color = "coral", shape = 18
+    )
+  }
+
+  # Add bootstrap CIs if available
+  if (!is.null(x@bootstrap_results)) {
+    # Lower bound CI
+    p <- p + ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = ci_lower_low, ymax = ci_lower_high),
+      width = 0.15, linewidth = 0.8, color = "darkblue", alpha = 0.5
+    )
+    # Upper bound CI
+    p <- p + ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = ci_upper_low, ymax = ci_upper_high),
+      width = 0.15, linewidth = 0.8, color = "darkblue", alpha = 0.5
+    )
+  }
+
+  return(p)
+}
+
 
 # =============================================================================
 # Methods for compatibility_test
