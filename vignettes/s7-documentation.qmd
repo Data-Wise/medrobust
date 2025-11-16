@@ -25,7 +25,7 @@ This design promotes encapsulation and clear separation of concerns, with `medro
 
 The following diagram illustrates the relationships between the S7 classes in the `medrobust` package.
 
-```{plantuml}
+``` plantuml
 @startuml
 !theme plain
 skinparam classAttributeIconSize 0
@@ -106,7 +106,9 @@ medrobust_bounds o-- "0..1" bootstrap_results
 ### `medrobust_bounds`
 
 -   **Purpose**: The primary container for the results of a partial identification analysis. It stores the calculated bounds for the Natural Indirect Effect (NIE) and Natural Direct Effect (NDE).
+
 -   **Properties**:
+
     -   `NIE_lower`, `NIE_upper`: (numeric) The lower and upper bounds for the NIE.
     -   `NDE_lower`, `NDE_upper`: (numeric) The lower and upper bounds for the NDE.
     -   `compatible_sets`: (data.frame) A data frame of sensitivity parameters compatible with the data.
@@ -116,12 +118,14 @@ medrobust_bounds o-- "0..1" bootstrap_results
     -   `effect_scale`: (character) The scale of the effects ("OR", "RR", or "RD").
     -   `misclassified_variable`: (character) The variable assumed to be misclassified ("exposure" or "mediator").
     -   `sensitivity_region`: (`sensitivity_region`) The object defining the analysis's parameter space.
-    -   `bootstrap_results`: (`bootstrap_results` | NULL) An object containing bootstrap CIs, if computed.
+    -   `bootstrap_results`: (`bootstrap_results` \| NULL) An object containing bootstrap CIs, if computed.
+
 -   **Example**:
-    ```r
+
+    ``` r
     # Conceptual example; construction is handled by bound_ne()
     library(medrobust)
-    
+
     # Define a sensitivity region first
     region <- sensitivity_region(
       sn0_range = c(0.8, 1), sp0_range = c(0.8, 1),
@@ -141,21 +145,26 @@ medrobust_bounds o-- "0..1" bootstrap_results
       misclassified_variable = "exposure",
       sensitivity_region = region
     )
-    
+
     print(bounds_result)
     ```
 
 ### `sensitivity_region`
 
 -   **Purpose**: Defines the multi-dimensional parameter space for the sensitivity analysis.
+
 -   **Properties**:
+
     -   `sn0_range`: (numeric) `[min, max]` range for baseline sensitivity (Sn0).
     -   `sp0_range`: (numeric) `[min, max]` range for baseline specificity (Sp0).
     -   `psi_sn_range`: (numeric) `[min, max]` range for the sensitivity odds ratio.
     -   `psi_sp_range`: (numeric) `[min, max]` range for the specificity odds ratio.
+
 -   **Constructor**: `sensitivity_region()`
+
 -   **Example**:
-    ```r
+
+    ``` r
     # Define a sensitivity region for analysis
     region <- sensitivity_region(
       sn0_range = c(0.85, 0.95),
@@ -163,27 +172,31 @@ medrobust_bounds o-- "0..1" bootstrap_results
       psi_sn_range = c(0.8, 1.2),
       psi_sp_range = c(0.9, 1.1)
     )
-    
+
     print(region)
     ```
 
 ### `compatibility_test`
 
 -   **Purpose**: Stores detailed results from testing a single point in the sensitivity parameter space.
+
 -   **Properties**:
+
     -   `compatible`: (logical) `TRUE` if the parameter set is compatible with the data.
     -   `psi`: (list) The list of sensitivity parameters that were tested.
     -   `violated_constraints`: (data.frame) If incompatible, details on the violated constraints.
     -   `reason`: (character) A string explaining the reason for incompatibility.
+
 -   **Example**:
-    ```r
+
+    ``` r
     # Conceptual example; construction is handled by check_compatibility()
     test_result <- new("compatibility_test",
         compatible = FALSE,
         psi = list(sn0 = 0.7, sp0 = 0.7, psi_sn = 1, psi_sp = 1),
         reason = "Implied probabilities are not in [0, 1]"
     )
-    
+
     print(test_result)
     ```
 
@@ -195,12 +208,7 @@ medrobust_bounds o-- "0..1" bootstrap_results
 -   **Parameters**:
     -   `x`: The S7 object to print.
 -   **Return Value**: Invisibly returns the object `x`.
--   **Example**:
-    ```r
-    # Assuming 'bounds_result' is a medrobust_bounds object from a previous run
-    # print(bounds_result) 
-    # This would display a formatted summary of the bounds in the console.
-    ```
+-   **Example**: `r     # Assuming 'bounds_result' is a medrobust_bounds object from a previous run     # print(bounds_result)      # This would display a formatted summary of the bounds in the console.`
 
 ### `summary()`
 
@@ -208,12 +216,7 @@ medrobust_bounds o-- "0..1" bootstrap_results
 -   **Parameters**:
     -   `object`: The S7 object to summarize.
 -   **Return Value**: Invisibly returns the object `object`.
--   **Example**:
-    ```r
-    # Assuming 'bounds_result' is a medrobust_bounds object
-    # summary(bounds_result)
-    # This would display the print() summary plus extra details like naive estimates.
-    ```
+-   **Example**: `r     # Assuming 'bounds_result' is a medrobust_bounds object     # summary(bounds_result)     # This would display the print() summary plus extra details like naive estimates.`
 
 ### `plot()`
 
@@ -221,12 +224,7 @@ medrobust_bounds o-- "0..1" bootstrap_results
 -   **Parameters**:
     -   `x`: A `power_analysis_result` object.
 -   **Return Value**: A `ggplot` object (or a combined plot object).
--   **Example**:
-    ```r
-    # Assuming 'power_res' is a power_analysis_result object
-    # plot(power_res)
-    # This would generate and display power and bound width curves.
-    ```
+-   **Example**: `r     # Assuming 'power_res' is a power_analysis_result object     # plot(power_res)     # This would generate and display power and bound width curves.`
 
 ### `as.data.frame()`
 
@@ -234,9 +232,4 @@ medrobust_bounds o-- "0..1" bootstrap_results
 -   **Parameters**:
     -   `x`: A `medrobust_bounds` object.
 -   **Return Value**: A single-row `data.frame` containing key results.
--   **Example**:
-    ```r
-    # Assuming 'bounds_result' is a medrobust_bounds object
-    # df <- as.data.frame(bounds_result)
-    # 'df' would now be a data.frame with columns like NIE_lower, NIE_upper, etc.
-    ```
+-   **Example**: `r     # Assuming 'bounds_result' is a medrobust_bounds object     # df <- as.data.frame(bounds_result)     # 'df' would now be a data.frame with columns like NIE_lower, NIE_upper, etc.`
