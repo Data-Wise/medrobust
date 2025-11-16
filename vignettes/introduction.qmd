@@ -210,7 +210,6 @@ print(sens_region)
 #| tbl-cap: "Computed bounds on NIE and NDE under differential exposure misclassification"
 #| echo: true
 #| message: false
-#| cache: true
 
 # Compute bounds over the sensitivity region
 #
@@ -311,7 +310,6 @@ For inference, we can compute bootstrap confidence intervals:
 ```{r}
 #| label: bootstrap-bounds
 #| tbl-cap: "Computed bounds with bootstrap confidence intervals"
-#| cache: true
 #| message: false
 
 # This takes longer, so we use fewer bootstrap replications for the vignette
@@ -407,7 +405,6 @@ Power analysis helps determine the sample size needed to detect mediation effect
 ```{r}
 #| label: power-analysis-basic
 #| tbl-cap: "Power analysis results for different sample sizes"
-#| cache: true
 #| message: false
 
 # Conduct power analysis
@@ -494,7 +491,6 @@ Now let's consider mediator misclassification instead:
 #| label: tbl-mediator-misclass
 #| tbl-cap: "Computed bounds on NIE and NDE under differential mediator misclassification"
 #| message: false
-#| cache: true
 
 # Generate data with mediator misclassification
 sim_data_med <- simulate_dm_data(
@@ -540,7 +536,6 @@ As a special case, we can handle non-differential misclassification by setting `
 #| tbl-cap: "Computed bounds on NIE and NDE under non-differential exposure misclassification"
 #| echo: true
 #| message: false
-#| cache: true
 
 # Non-differential misclassification: error doesn't depend on Y
 sens_region_nondiff <- sensitivity_region(
