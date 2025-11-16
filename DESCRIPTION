@@ -6,7 +6,7 @@ Authors@R: c(
     person("Davood", "Tofighi",
            email = "dtofighi@gmail.com",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0000-0000-0000"))
+           comment = c(ORCID = "0000-0001-8523-7776"))
     )
 Maintainer: Davood Tofighi <dtofighi@gmail.com>
 Description: Provides tools for conducting sensitivity analysis for causal
@@ -28,7 +28,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.1.0)
 Imports:
     S7 (>= 0.1.0),
     dplyr (>= 1.1.0),
