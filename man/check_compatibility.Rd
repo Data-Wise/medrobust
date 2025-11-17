@@ -76,15 +76,15 @@ The function is useful for:
 }
 \examples{
 \dontrun{
-data("arsenic_synthetic")
+data("heals_data")
 
 # Test non-differential misclassification with high accuracy
 test_ndm <- check_compatibility(
-  data = arsenic_synthetic,
+  data = heals_data,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
-  confounders = c("age", "smoking", "alcohol"),
+  confounders = c("age", "male", "smoking", "bmi"),
   psi = list(sn0 = 0.90, sp0 = 0.90, psi_sn = 1.0, psi_sp = 1.0),
   misclassified_variable = "exposure"
 )
@@ -93,11 +93,11 @@ print(test_ndm)
 
 # Test strong differential misclassification
 test_strong_dm <- check_compatibility(
-  data = arsenic_synthetic,
+  data = heals_data,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
-  confounders = c("age", "smoking", "alcohol"),
+  confounders = c("age", "male", "smoking", "bmi"),
   psi = list(sn0 = 0.85, sp0 = 0.85, psi_sn = 3.0, psi_sp = 1.0),
   misclassified_variable = "exposure"
 )

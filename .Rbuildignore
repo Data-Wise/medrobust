@@ -43,3 +43,4 @@
 ^VECTORIZATION_IMPROVEMENTS\.md$
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
 ^vignettes/_freeze$
+^vignettes/.*\.html$

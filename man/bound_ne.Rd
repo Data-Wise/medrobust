@@ -138,23 +138,23 @@ Non-differential misclassification corresponds to psi_sn = psi_sp = 1.
 \examples{
 \dontrun{
 # Load example data
-data("arsenic_synthetic")
+data("heals_data")
 
 # Define sensitivity region
 sens_region <- list(
-  sn0_range = c(0.80, 0.90),
-  sp0_range = c(0.80, 0.90),
+  sn0_range = c(0.55, 0.65),
+  sp0_range = c(0.85, 0.95),
   psi_sn_range = c(1.0, 2.0),
-  psi_sp_range = c(1.0, 1.0)
+  psi_sp_range = c(0.5, 1.0)
 )
 
 # Compute bounds for exposure misclassification
 bounds <- bound_ne(
-  data = arsenic_synthetic,
+  data = heals_data,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
-  confounders = c("age", "smoking", "alcohol"),
+  confounders = c("age", "male", "smoking", "bmi"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
   n_grid = 50
