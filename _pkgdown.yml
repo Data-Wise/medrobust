@@ -1,0 +1,126 @@
+url: https://data-wise.github.io/medrobust/
+
+template:
+  bootstrap: 5
+  bootswatch: litera
+  bslib:
+    # Consistent academic blue across ecosystem
+    primary: "#0054AD"
+    bg: "#ffffff"
+    fg: "#212529"
+    # Modern, readable fonts (consistent with medfit/probmed)
+    base_font: { google: "Inter" }
+    heading_font: { google: "Montserrat" }
+    code_font: { google: "Fira Code" }
+    font-size-base: 0.925rem
+
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "medrobust: Robust Causal Mediation Analysis"
+    twitter:
+      creator: "@dtofighi"
+      card: summary_large_image
+
+home:
+  title: "medrobust: Robust Causal Mediation Analysis"
+  description: >
+    Tools for conducting sensitivity analysis for causal mediation effects
+    when the exposure or mediator is measured with differential misclassification.
+    Provides partial identification bounds and data-driven falsification.
+
+  sidebar:
+    structure: [links, license, citation, authors, dev]
+
+  links:
+  - text: "Source Code"
+    href: https://github.com/data-wise/medrobust
+  - text: "Report Issues"
+    href: https://github.com/data-wise/medrobust/issues
+  - text: "Request Feature"
+    href: https://github.com/data-wise/medrobust/issues/new
+
+logo:
+  image: man/figures/logo.png
+  align: right
+  width: 350px
+
+navbar:
+  structure:
+    left:  [home, reference, articles, news]
+    right: [search, github]
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+      aria-label: Home
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Vignettes
+      menu:
+      - text: "Getting Started"
+        href: articles/introduction.html
+      - text: "─────────────"
+      - text: "Advanced Topics"
+      - text: "Mediator Misclassification"
+        href: articles/mediator_misclass.html
+      - text: "Exposure Misclassification"
+        href: articles/exposure_misclass.html
+      - text: "Interpretation Guide"
+        href: articles/interpretation.html
+    news:
+      text: News
+      href: news/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/data-wise/medrobust
+      aria-label: GitHub
+
+reference:
+- title: Main Functions
+  desc: Core functions for partial identification and sensitivity analysis
+  contents:
+  - bound_ne
+  - check_compatibility
+  - falsification_summary
+
+- title: Visualization
+  desc: Functions for creating publication-ready plots
+  contents:
+  - sensitivity_plot
+  - starts_with("plot_")
+
+- title: Data Simulation
+  desc: Generate synthetic data for testing and power analysis
+  contents:
+  - simulate_dm_data
+  - power_analysis
+
+- title: Utilities
+  desc: Helper functions for extracting and comparing results
+  contents:
+  - extract_bounds
+  - compare_bounds
+
+development:
+  mode: auto
+  version_label: default
+  version_tooltip: "Development version"
+
+authors:
+  Davood Tofighi:
+    href: "https://orcid.org/0000-0001-8523-7776"
+    html: "<img src='https://orcid.org/sites/default/files/images/orcid_16x16.png' height='16' width='16' alt='ORCID iD icon'> Davood Tofighi"
+
+footer:
+  structure:
+    left: [developed_by, built_with]
+    right: [package_version]
+  components:
+    package_version: "Version {version}"
+    developed_by: |
+      Developed by [Davood Tofighi](https://orcid.org/0000-0001-8523-7776)
+    built_with: |
+      Built with [pkgdown](https://pkgdown.r-lib.org/)
