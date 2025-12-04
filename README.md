@@ -20,6 +20,20 @@ Unlike existing measurement error correction methods that assume non-differentia
 - **Synthetic data generation** for power analysis and methods research
 - **Modern S7 OOP system** for type safety, automatic validation, and robust error checking
 
+## Mediationverse Ecosystem
+
+**medrobust** is part of the **mediationverse** ecosystem for mediation analysis in R:
+
+| Package | Purpose | Role |
+|---------|---------|------|
+| [**medfit**](https://github.com/data-wise/medfit) | Model fitting, extraction, bootstrap | Foundation |
+| [**probmed**](https://github.com/data-wise/probmed) | Probabilistic effect size (P_med) | Application |
+| [**RMediation**](https://github.com/data-wise/rmediation) | Confidence intervals (DOP, MBCO) | Application |
+| **medrobust** (this) | Sensitivity analysis | Application |
+| [**medsim**](https://github.com/data-wise/medsim) | Simulation infrastructure | Support |
+
+See [Ecosystem Coordination](https://github.com/data-wise/medfit/blob/main/planning/ECOSYSTEM.md) for version compatibility and development guidelines.
+
 ## Installation
 
 ### Development version from GitHub
