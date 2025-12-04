@@ -1,8 +1,13 @@
 # medrobust: Robust Causal Mediation Analysis Under Differential Misclassification
 
-[![R-CMD-check](https://github.com/data-wise/medrobust/workflows/R-CMD-check/badge.svg)](https://github.com/data-wise/medrobust/actions)
-[![codecov](https://codecov.io/gh/data-wise/medrobust/branch/main/graph/badge.svg)](https://codecov.io/gh/data-wise/medrobust)
-[![CRAN status](https://www.r-pkg.org/badges/version/medrobust)](https://CRAN.R-project.org/package=medrobust)
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![R-CMD-check](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml)
+[![Website Status](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml)
+[![R-hub](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml)
+[![Codecov](https://codecov.io/gh/data-wise/medrobust/graph/badge.svg)](https://codecov.io/gh/data-wise/medrobust)
+<!-- badges: end -->
 
 ## Overview
 
