@@ -1,3 +1,13 @@
+# medrobust (development version)
+
+## Ecosystem Notes
+
+* Part of the mediationverse ecosystem for mediation analysis
+* Optionally integrates with medfit for naive estimates
+* See [Ecosystem Coordination](https://github.com/data-wise/medfit/blob/main/planning/ECOSYSTEM.md) for guidelines
+
+---
+
 # medrobust 0.1.0
 
 ## Initial Release (2025-Q2)

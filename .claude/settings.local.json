@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im)",
+      "Bash(Rscript:*)",
+      "Bash(time Rscript:*)",
+      "Bash(quarto render:*)",
+      "Bash(timeout 120 quarto render:*)",
+      "Bash(tee:*)",
+      "Bash(cat \"/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/check_output.txt\")",
+      "Bash(cat:*)",
+      "Bash(.Rbuildignore)",
+      "Bash(R -q -e:*)",
+      "Bash(R CMD check:*)",
+      "Bash(R CMD build:*)",
+      "Bash(echo:*)",
+      "Bash(\"/Users/dt/Library/CloudStorage/GoogleDrive-dtofighi@gmail.com/My Drive/packages/medrobust/.Rbuildignore\")",
+      "Bash(timeout 120 R:*)",
+      "Bash(R -q --vanilla -e:*)",
+      "Bash(R:*)",
+      "Bash(timeout 180 R:*)",
+      "Bash(xargs kill:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
