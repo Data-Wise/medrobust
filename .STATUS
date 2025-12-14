@@ -1,0 +1,58 @@
+📦 medrobust - Robust Causal Mediation Analysis
+────────────────────────────────────────────────
+
+📍 LOCATION
+~/projects/r-packages/active/medrobust/
+
+⏰ LAST UPDATED
+2025-12-14
+
+────────────────────────────────────────────────
+
+🎯 CURRENT STATUS
+Priority: P0
+Status: active
+Progress: 65
+
+────────────────────────────────────────────────
+
+📋 DESCRIPTION
+Sensitivity analysis for causal mediation effects
+under differential misclassification (recall bias,
+outcome-dependent measurement error).
+
+Implements partial identification bounds without
+requiring gold-standard measurements.
+
+Version: 0.1.0.9000
+
+────────────────────────────────────────────────
+
+Next: Complete vignettes, prepare for CRAN submission
+Blocked: None
+
+────────────────────────────────────────────────
+
+✅ COMPLETED
+- S7 class system
+- NDE/NIE partial identification bounds
+- Data-driven falsification tests
+- Sensitivity analysis grid
+- Bootstrap inference (percentile + BCa)
+- Publication-ready visualizations
+- Mediator misclassification support
+- Exposure misclassification support
+
+────────────────────────────────────────────────
+
+📁 KEY FILES
+R/              # 50+ source files
+tests/testthat/ # Test suite
+man/            # Documentation
+vignettes/      # Method tutorials
+
+────────────────────────────────────────────────
+
+🔗 DEPENDENCIES
+Imports: S7, dplyr, ggplot2, stats, rlang, parallel
+Part of: mediationverse ecosystem
