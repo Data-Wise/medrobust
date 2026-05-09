@@ -49,5 +49,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          args: 'c("--no-manual", "--ignore-vignettes")'
-          build_args: 'c("--no-manual")'
+          args: >
+            ${{ runner.os == 'Windows' && 'c("--no-manual", "--ignore-vignettes")' || 'c("--no-manual", "--as-cran")' }}
+          build_args: >
+            ${{ runner.os == 'Windows' && 'c("--no-manual", "--no-build-vignettes")' || 'c("--no-manual")' }}
