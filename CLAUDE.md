@@ -110,6 +110,19 @@ R/
 
 ---
 
+## Repository Infrastructure
+
+- **Default branch**: `main` (renamed from `claude/check-measurement-error-...` on 2026-05-09)
+- **Integration branch**: `dev` (created 2026-05-09; planning hub, no feature code)
+- **Remote**: HTTPS via `gh auth setup-git`
+- **CI**: R-CMD-check workflow (`.github/workflows/R-CMD-check.yaml`) added 2026-05-09 via PR #1
+  - macOS + Ubuntu: full check including vignettes
+  - Windows: package check only (vignette build skipped via `runner.os == 'Windows'` conditional due to quarto issues)
+- **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
+- **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
+
+---
+
 ## Ecosystem Coordination
 
 medrobust is an **application package** in the mediationverse ecosystem.
@@ -140,9 +153,10 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 ## Key References
 
 - Tofighi (2025): Partial identification under differential misclassification (*Biostatistics*, in preparation)
+  - Manuscript source: `~/projects/research/measurement error/` (theory notes + `medrobust R package/` design notes)
 - Manski (2003): Partial identification of probability distributions
 - Carroll et al. (2006): Measurement error in nonlinear models
 
 ---
 
-**Last Updated**: 2025-12-04
+**Last Updated**: 2026-05-09
