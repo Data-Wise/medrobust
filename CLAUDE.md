@@ -15,7 +15,8 @@ faults are in the implementation. **Do not trust `bound_ne()` numbers or the sim
    third row encodes `P01` with the **Y=1 parameterization** (`(1-pi)*g0`) where it needs the
    **Y=0** form (`(1-pi)*(1-g0)`). Result: biased recovery of `(pi, gamma)` → bounds offset
    (NDE overstated, NIE understated; ~0.05–0.12 OR). **Fix:** replace the 3×3 with two clean
-   2×2 systems (one per Y stratum). Apply the same audit to `bound_ne_exposure.R` (§5.2).
+   2×2 systems (one per Y stratum). **`bound_ne_exposure.R` audited — NO bug** (uses the
+   correct 2×2 matrix inverse; verified to 1e-16). Mediator-path only.
 2. **`compute_true_effects()` (simulate_dm_data.R) uses plug-in-mean-M**, not g-computation —
    wrong simulation ground truth (NDE_OR 1.500 vs correct 1.480).
 

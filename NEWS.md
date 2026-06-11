@@ -6,8 +6,8 @@
   `bound_ne_mediator.R` built the `P01` (Y=0) equation with the Y=1 parameterization,
   biasing recovery of the true conditional probabilities and therefore the NDE/NIE bounds
   (NDE overstated, NIE understated). Being replaced with two per-outcome 2×2 systems.
-  Exposure path (`bound_ne_exposure.R`) audited under the same fix. Derivation verified
-  exact; see `PLAN-fix-bound_ne-solve-2026-06-11.md`.
+  Exposure path (`bound_ne_exposure.R`) audited and found CORRECT (standard 2×2 matrix
+  inverse) — not affected. Derivation verified exact; see `PLAN-fix-bound_ne-solve-2026-06-11.md`.
 * **`simulate_dm_data()` true effects.** `compute_true_effects()` computed natural effects by
   plugging E[M] into the outcome model rather than averaging the outcome over the mediator
   distribution (g-computation). Corrected to proper g-computation; affects simulation ground

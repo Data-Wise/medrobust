@@ -65,9 +65,16 @@ gamma_a0 <- x0 / (1 - pi_a)       # P(Y=1 | M=0, a,c)
 Then keep the existing validity checks (0≤·≤1) and boundary handling. Solvable iff
 `det(A1), det(A0) != 0`, i.e. `sn_y + sp_y != 1` — add that to compatibility pruning.
 
-**Apply the identical fix to the exposure analogue** in `R/bound_ne_exposure.R` (verify its
-system construction has the same defect; the A* parameterization differs but the
-two-2×2-systems principle is the same — derive from manuscript §5.2).
+**Exposure path — AUDITED 2026-06-11: NO bug, do NOT change.** `R/bound_ne_exposure.R`
+(lines ~128–135) uses the standard 2×2 misclassification matrix inverse
+`P_1 = (sp·P*_1 − (1−sp)·P*_0)/(sn+sp−1)`, `P_0 = (sn·P*_0 − (1−sn)·P*_1)/(sn+sp−1)`
+with `denom = sn_y+sp_y−1`. Verified algebraically correct (recovers true probs to 1e-16,
+incl. differential Sn/Sp). The bug is SPECIFIC to the mediator path's 3×3 formulation.
+
+**Verification of the proposed mediator fix (`dev-diagnostics/verify_fix.R`, 2026-06-11):**
+On arbitrary true params with DIFFERENTIAL Sn/Sp (Sn1=.88,Sp1=.93,Sn0=.80,Sp0=.85):
+- current 3×3 recovers pi=0.428/g1=0.344/g0=0.205 (true 0.350/0.420/0.180) → WRONG
+- two-2×2 fix recovers all three to **0.00e+00** error, pi consistent across Y blocks → EXACT
 
 ---
 
