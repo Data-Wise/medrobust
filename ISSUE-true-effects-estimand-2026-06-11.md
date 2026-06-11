@@ -47,14 +47,21 @@ and grid k∈{9,81}. Conclusions:
   (k=9) but CONTAINS it at dense grid (k=81, pop scale):
   NDE [1.4715,1.5300] ∋ 1.4802 ✓. So sims must use a high `n_grid` (≥~50–80/axis).
 
-- **(2b) `bound_ne` systematic offset — GENUINE OPEN BUG.** At matched settings `bound_ne`
-  sits ~0.05 ABOVE the faithful analytic bound at every n
-  (N=200k: bound_ne NDE [1.531,1.564] vs analytic [1.413,1.474]). Two implementations of
-  the same §4.2 bound should not differ by a stable offset. **Investigate
-  `R/bound_ne_mediator.R`** — candidate causes: internal grid construction/density,
-  OR-scale stratum aggregation, or the min/max search. Isolate on NDE first.
+- **(2b) `bound_ne` g-computation bug — PINPOINTED.** Derivation verified exact
+  (popcheck recovers truth to 5e-17), so the fault is in `bound_ne`. Direct point test
+  (region = {true Ψ}, n=5e5) returns the wrong effect on BOTH scales:
+  `NDE_OR 1.601 / NIE_OR 1.121` vs oracle `1.480 / 1.199`; `NDE_RD 0.076 / NIE_RD 0.022`
+  vs `0.062 / 0.034`.
+  **Signature: NDE overstated, NIE understated (opposite directions)** → NOT an OR/Jensen
+  conversion (same-direction). This is the classic signature of using the WRONG mediator
+  distribution in the cross-world g-computation: a swap of which $\pi_a$ multiplies which
+  $\gamma_{a'}$, or $M(0)$↔$M(1)$ in $E[Y(1,M(\cdot))]$. NDE uses $M(0)$, NIE is the
+  $M(1)-M(0)$ contrast, so one swap pushes NDE up and NIE down — exactly observed.
+  **Fix in `R/bound_ne_mediator.R`** (and exposure analogue): verify the mediator-distribution
+  indices in the $E[Y(a,M(a^*))]$ assembly against `dev-diagnostics/popcheck_exact_recovery.R`.
 
-Repro: `dev-diagnostics/diag_grid_scale_sweep.R`, `diag_dense_grid_popscale.R`.
+Repro: `dev-diagnostics/{bne_point_test, oracle_potential_outcomes, popcheck_exact_recovery,
+diag_grid_scale_sweep}.R`.
 
 ## Cross-refs
 Research finding: `~/projects/research/me-mediator-bounds/02_Notes/FINDING-sim-coverage-2026-06-11.md`

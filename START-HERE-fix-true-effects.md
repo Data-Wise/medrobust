@@ -122,11 +122,14 @@ Rscript dev-diagnostics/diag_analytic_bound.R     # analytic bound vs bound_ne v
   - **(2a) Grid resolution = usage fix.** Confirmed the analytic §4.2 bound covers truth
     only at a DENSE grid (k=81), not coarse (k=9). So in `run_simulations.R` raise
     `n_grid` to ≥~50–80. Re-run `dev-diagnostics/diag_dense_grid_popscale.R` to confirm.
-  - **(2b) `bound_ne` systematic ~0.05 offset = REAL BUG to fix.** `bound_ne` sits
-    consistently above the faithful analytic bound at matched settings (pop scale).
-    Investigate `R/bound_ne_mediator.R` (grid construction / OR-scale stratum aggregation /
-    min-max search). Isolate on NDE first; NIE shows the same smaller offset.
-    Repro: `dev-diagnostics/diag_grid_scale_sweep.R`.
+  - **(2b) `bound_ne` g-computation bug = PINPOINTED, REAL fix needed.** Point test
+    (region = {true Ψ}, n=5e5) returns NDE_OR 1.601 / NIE_OR 1.121 vs oracle 1.480 / 1.199,
+    wrong on BOTH OR and RD scales. **Signature: NDE↑, NIE↓ (opposite directions)** ⇒ a
+    cross-world mediator-distribution swap in g-computation, NOT an OR-conversion issue.
+    **Fix `R/bound_ne_mediator.R`** (and exposure analogue): check the mediator-distribution
+    indices in the E[Y(a, M(a*))] sum against the reference
+    `dev-diagnostics/popcheck_exact_recovery.R` (correct to 5e-17). Run
+    `dev-diagnostics/bne_point_test.R` to confirm the fix returns the oracle.
 
   Do NOT scale the sims until BOTH the estimand fix (#1) lands AND 2b is resolved.
 
