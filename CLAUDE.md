@@ -4,37 +4,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## ⚠️ ACTIVE FIX — two correctness bugs found 2026-06-11 (branch `fix/true-effects-estimand`)
+## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
 
-Smoke-testing the differential-misclassification simulations surfaced **two real bugs**.
-The manuscript §4.2 derivation is **verified exact** (population recovery to 5e-17); the
-faults are in the implementation. **Do not trust `bound_ne()` numbers or the simulator's
-`@true_effects` until these land.**
+Smoke-testing the differential-misclassification simulations surfaced **two real bugs**, now
+**both fixed and verified**. The manuscript §4.2 derivation was verified exact (population
+recovery to 5e-17); the faults were in the implementation.
 
-1. **`bound_ne_mediator.R` linear SOLVE is mis-specified** (~lines 114–125). The 3×3 system's
-   third row encodes `P01` with the **Y=1 parameterization** (`(1-pi)*g0`) where it needs the
-   **Y=0** form (`(1-pi)*(1-g0)`). Result: biased recovery of `(pi, gamma)` → bounds offset
-   (NDE overstated, NIE understated; ~0.05–0.12 OR). **Fix:** replace the 3×3 with two clean
-   2×2 systems (one per Y stratum). **`bound_ne_exposure.R` audited — NO bug** (uses the
-   correct 2×2 matrix inverse; verified to 1e-16). Mediator-path only.
-2. **`compute_true_effects()` (simulate_dm_data.R) uses plug-in-mean-M**, not g-computation —
-   wrong simulation ground truth (NDE_OR 1.500 vs correct 1.480).
+1. **`bound_ne_mediator.R` mediator SOLVE** — the mis-specified 3×3 system (whose `P01` row
+   used the Y=1 parameterization `(1-pi)*g0` instead of the Y=0 form `(1-pi)*(1-g0)`) was
+   replaced with **two per-Y-stratum 2×2 systems** (each solvable iff `Sn_y+Sp_y≠1`). Point
+   test moved 1.601→1.495 (→1.480 as n→∞; residual is finite-sample, confirmed by an n-scaling
+   sweep). `bound_ne_exposure.R` was audited and is **correct** (closed-form 2×2 inverse,
+   verified to 1e-16) — never affected.
+2. **`compute_true_effects()` (simulate_dm_data.R)** — replaced plug-in-mean-M/mean-C with
+   **Monte-Carlo g-computation over the empirical confounder distribution**. `@true_effects`
+   now returns NDE_OR=1.48025 / NIE_OR=1.19940 = oracle (was 1.500).
+3. **`odds_to_prob()` (utilities_helpers.R)** — now maps infinite odds → probability 1, so
+   perfect classification (`sn=1`/`sp=1`) no longer yields `NaN`.
 
-**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — do NOT change it**
+**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — was NOT changed**
 (verified: fed true params it returns the oracle).
 
-**Authoritative docs:**
-- Fix plan + drop-in code + test strategy: `PLAN-fix-bound_ne-solve-2026-06-11.md`
-- Diagnosis/derivation: `ISSUE-true-effects-estimand-2026-06-11.md`,
-  `START-HERE-fix-true-effects.md`
-- Verified reference oracles (gitignored): `dev-diagnostics/` —
-  `popcheck_exact_recovery.R` (correct solve, 5e-17), `oracle_potential_outcomes.R`,
-  `bne_point_test.R` (must return 1.480/1.199 after fix), `instrument_formula_vs_solve.R`
-- Downstream impact: manuscripts M2a/M2b — research notes in
-  `~/projects/research/me-mediator-bounds/02_Notes/INVESTIGATION-...md`
+**Verification status (all green):**
+- `devtools::test()`: 157 pass / 0 fail / 1 skip (incl. new `test-recovery.R`,
+  `test-true-effects.R`, `test-bound-contains-truth.R`).
+- `devtools::check()` (`--as-cran`): 0 errors / 0 warnings / 2 benign NOTEs (new submission,
+  dev-version string).
+- New vignette `vignettes/identification-math.qmd` documents the derivation; registered in
+  `_pkgdown.yml`.
 
-**Gate:** `devtools::check()` clean (CRAN P0) + new recovery/point tests pass + sims recover
-nominal coverage, before merge to `main`.
+**Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
+`ISSUE-true-effects-estimand-2026-06-11.md`, `START-HERE-fix-true-effects.md`; reference
+oracles in `dev-diagnostics/` (gitignored). Downstream: regenerate manuscript M2a/M2b
+illustrative numbers and scale sims (`n_grid≥50`) after merge.
+
+**Remaining:** PR `fix/true-effects-estimand` → `main`.
 
 ---
 
@@ -97,10 +101,10 @@ R/
 ├── s3_methods.R              # print / summary / plot methods
 ├── bound_ne.R                # Main bounds dispatch
 ├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
-├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  ⚠️ solve bug (see top)
+├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
 ├── utilities_helpers.R       # compute_effects_from_params (g-computation; VERIFIED correct)
 ├── check_compatibility.R     # Falsification tests
-├── simulate_dm_data.R        # Data generation  ⚠️ compute_true_effects estimand bug (see top)
+├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
 └── visualization.R           # Sensitivity plots
 ```
 (Filenames verified against `R/` on 2026-06-11.)

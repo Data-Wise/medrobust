@@ -1,10 +1,10 @@
 status: active
 priority: P0
-progress: 60
-next: FIX two correctness bugs (branch fix/true-effects-estimand) BEFORE CRAN — bound_ne_mediator solve mis-specified + compute_true_effects estimand. See PLAN-fix-bound_ne-solve-2026-06-11.md. Then vignettes + CRAN.
-blocked: CRAN submission blocked until bound_ne solve fix lands + tests pass (bounds currently biased)
+progress: 90
+next: PR fix/true-effects-estimand -> main. Both correctness bugs fixed + verified (mediator two-2x2 solve; compute_true_effects g-computation). devtools::test() 157 pass/0 fail; check() 0 errors/0 warnings. Then regenerate manuscript illustrative numbers + scale sims (n_grid>=50).
+blocked: none
 type: r
-last_updated: 2026-05-09
+last_updated: 2026-06-11
 
 # ═══════════════════════════════════════════════════════════════════
 # Below is the original .STATUS content (preserved for reference)

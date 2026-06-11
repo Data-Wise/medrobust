@@ -1,19 +1,29 @@
 # medrobust (development version)
 
-## Bug fixes (in progress — branch `fix/true-effects-estimand`, 2026-06-11)
+## Bug fixes (2026-06-11)
 
 * **(critical) `bound_ne()` mediator solve mis-specified.** The 3×3 linear system in
   `bound_ne_mediator.R` built the `P01` (Y=0) equation with the Y=1 parameterization,
   biasing recovery of the true conditional probabilities and therefore the NDE/NIE bounds
-  (NDE overstated, NIE understated). Being replaced with two per-outcome 2×2 systems.
-  Exposure path (`bound_ne_exposure.R`) audited and found CORRECT (standard 2×2 matrix
-  inverse) — not affected. Derivation verified exact; see `PLAN-fix-bound_ne-solve-2026-06-11.md`.
+  (NDE overstated, NIE understated, by ~0.05–0.12 on the OR scale; worst under strong
+  differential error). Replaced with two per-outcome 2×2 systems (manuscript §4.2), each
+  solvable iff `Sn_y + Sp_y ≠ 1`. The exposure path (`bound_ne_exposure.R`) was audited and
+  found CORRECT (closed-form 2×2 matrix inverse; verified to ~1e-16) — not affected.
 * **`simulate_dm_data()` true effects.** `compute_true_effects()` computed natural effects by
-  plugging E[M] into the outcome model rather than averaging the outcome over the mediator
-  distribution (g-computation). Corrected to proper g-computation; affects simulation ground
-  truth only.
-* Added regression tests: exact population recovery at the true Ψ, point-test against the
-  potential-outcome oracle, and bound-contains-truth at large n.
+  plugging E[M] (and mean-C) into the nonlinear outcome model rather than averaging the
+  outcome over the mediator and confounder distributions (g-computation). This biased the
+  simulation ground truth (`NDE_OR` ~1.500 vs the correct ~1.480). Corrected to Monte-Carlo
+  g-computation over the empirical confounder distribution; affects the simulator's
+  `@true_effects` only (the bounds themselves already targeted the correct estimand).
+* **`odds_to_prob()` boundary.** Perfect classification (`sn = 1` or `sp = 1`) produced
+  infinite odds and a downstream `NaN`; the helper now maps infinite odds to probability 1,
+  so no-misclassification settings (e.g. `sn0 = sp0 = 1`) work correctly.
+* Added regression tests: exact-population recovery at the true Ψ (non-differential and
+  differential), agreement of `@true_effects` with an independent potential-outcome oracle,
+  and bound-contains-truth on large-n simulated data.
+* Added the *Identification Mathematics* vignette documenting the estimand, the mediator
+  two-2×2 identification, the exposure closed form, and the finite-sample convergence
+  evidence.
 
 ## Ecosystem Notes
 

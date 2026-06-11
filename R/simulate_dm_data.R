@@ -333,35 +333,38 @@ compute_true_effects <- function(beta_AM, theta_AY, theta_MY,
                                  confounder_params,
                                  data) {
 
+  # Per-row confounder contributions to the M and Y linear predictors, matching
+  # the DGP exactly (see data generation above: C_sum_M = rowSums(C) * beta_C and
+  # C_sum_Y = rowSums(C) * theta_C). Kept as vectors (one entry per observation)
+  # so we average the OUTCOME over the empirical C distribution, not the inputs.
   if (confounders > 0) {
-    C_cols <- paste0("C", 1:confounders)
+    C_cols   <- paste0("C", seq_len(confounders))
     C_values <- data[, C_cols, drop = FALSE]
-
-    alpha_C <- confounder_params$effect_on_A
-    beta_C <- confounder_params$effect_on_M
-    theta_C <- confounder_params$effect_on_Y
-
-    C_sum_M <- rowMeans(C_values) * beta_C * confounders
-    C_sum_Y <- rowMeans(C_values) * theta_C * confounders
-
-    C_mean_M <- mean(C_sum_M)
-    C_mean_Y <- mean(C_sum_Y)
+    beta_C   <- confounder_params$effect_on_M
+    theta_C  <- confounder_params$effect_on_Y
+    lpM_C <- rowSums(C_values) * beta_C
+    lpY_C <- rowSums(C_values) * theta_C
   } else {
-    C_mean_M <- 0
-    C_mean_Y <- 0
+    lpM_C <- 0
+    lpY_C <- 0
   }
 
-  # Counterfactual probabilities
-  prob_M_a1 <- expit(baseline_M + beta_AM * 1 + C_mean_M)
-  E_Y_a1_Ma1 <- expit(baseline_Y + theta_AY * 1 + theta_MY * prob_M_a1 +
-                        interaction_coef * 1 * prob_M_a1 + C_mean_Y)
-
-  prob_M_a0 <- expit(baseline_M + beta_AM * 0 + C_mean_M)
-  E_Y_a1_Ma0 <- expit(baseline_Y + theta_AY * 1 + theta_MY * prob_M_a0 +
-                        interaction_coef * 1 * prob_M_a0 + C_mean_Y)
-
-  E_Y_a0_Ma0 <- expit(baseline_Y + theta_AY * 0 + theta_MY * prob_M_a0 +
-                        interaction_coef * 0 * prob_M_a0 + C_mean_Y)
+  # Natural-effect g-computation (binary M, binary Y). For E[Y(a, M(aprime))]:
+  # average the outcome over the M(aprime) distribution analytically (M binary),
+  # then over the empirical C distribution by Monte Carlo across observations.
+  # This is the g-formula; it avoids the plug-in-mean (Jensen) error of
+  # collapsing M and C to their means before the nonlinear expit().
+  EY <- function(a, aprime) {
+    piM <- expit(baseline_M + beta_AM * aprime + lpM_C)            # P(M=1 | aprime, c_i)
+    g1  <- expit(baseline_Y + theta_AY * a + theta_MY * 1 +
+                   interaction_coef * a * 1 + lpY_C)               # P(Y=1 | a, M=1, c_i)
+    g0  <- expit(baseline_Y + theta_AY * a + theta_MY * 0 +
+                   interaction_coef * a * 0 + lpY_C)               # P(Y=1 | a, M=0, c_i)
+    mean(piM * g1 + (1 - piM) * g0)                                # avg over M, then over C
+  }
+  E_Y_a1_Ma1 <- EY(1, 1)
+  E_Y_a1_Ma0 <- EY(1, 0)
+  E_Y_a0_Ma0 <- EY(0, 0)
 
   # OR scale
   odds_a1_Ma1 <- E_Y_a1_Ma1 / (1 - E_Y_a1_Ma1)
