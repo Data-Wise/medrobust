@@ -1,0 +1,38 @@
+# Methodological Details of medrobust
+
+## Introduction
+
+This vignette provides a brief overview of the statistical theory and
+methods implemented in the `medrobust` package. For a complete
+treatment, please refer to Tofighi (2025).
+
+## Causal Framework
+
+We define the natural direct effect (NDE) and natural indirect effect
+(NIE) under the counterfactual framework…
+
+## Partial Identification under Differential Misclassification
+
+Let $`A^*`$ be the misclassified version of the true exposure $`A`$. The
+relationship is governed by sensitivity and specificity parameters that
+depend on the outcome $`Y`$:
+
+- $`Sn_y = P(A^*=1 | A=1, Y=y)`$
+- $`Sp_y = P(A^*=0 | A=0, Y=y)`$
+
+The core of the method involves expressing the observed data
+distribution as a function of the true, unobserved distribution and the
+sensitivity parameters.
+
+## Testable Implications
+
+The model is not point-identified, but it does have testable
+implications. Specifically, the observed probabilities must lie within
+certain bounds for any valid set of sensitivity parameters. These
+constraints are used to falsify regions of the parameter space.
+
+## References
+
+Tofighi, D. (2025). Partial identification bounds for causal mediation
+effects under differential misclassification. *Manuscript in
+preparation*.
