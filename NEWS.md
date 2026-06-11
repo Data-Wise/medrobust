@@ -1,5 +1,20 @@
 # medrobust (development version)
 
+## Bug fixes (in progress — branch `fix/true-effects-estimand`, 2026-06-11)
+
+* **(critical) `bound_ne()` mediator solve mis-specified.** The 3×3 linear system in
+  `bound_ne_mediator.R` built the `P01` (Y=0) equation with the Y=1 parameterization,
+  biasing recovery of the true conditional probabilities and therefore the NDE/NIE bounds
+  (NDE overstated, NIE understated). Being replaced with two per-outcome 2×2 systems.
+  Exposure path (`bound_ne_exposure.R`) audited under the same fix. Derivation verified
+  exact; see `PLAN-fix-bound_ne-solve-2026-06-11.md`.
+* **`simulate_dm_data()` true effects.** `compute_true_effects()` computed natural effects by
+  plugging E[M] into the outcome model rather than averaging the outcome over the mediator
+  distribution (g-computation). Corrected to proper g-computation; affects simulation ground
+  truth only.
+* Added regression tests: exact population recovery at the true Ψ, point-test against the
+  potential-outcome oracle, and bound-contains-truth at large n.
+
 ## Ecosystem Notes
 
 * Part of the mediationverse ecosystem for mediation analysis

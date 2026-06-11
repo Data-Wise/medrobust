@@ -4,6 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## ⚠️ ACTIVE FIX — two correctness bugs found 2026-06-11 (branch `fix/true-effects-estimand`)
+
+Smoke-testing the differential-misclassification simulations surfaced **two real bugs**.
+The manuscript §4.2 derivation is **verified exact** (population recovery to 5e-17); the
+faults are in the implementation. **Do not trust `bound_ne()` numbers or the simulator's
+`@true_effects` until these land.**
+
+1. **`bound_ne_mediator.R` linear SOLVE is mis-specified** (~lines 114–125). The 3×3 system's
+   third row encodes `P01` with the **Y=1 parameterization** (`(1-pi)*g0`) where it needs the
+   **Y=0** form (`(1-pi)*(1-g0)`). Result: biased recovery of `(pi, gamma)` → bounds offset
+   (NDE overstated, NIE understated; ~0.05–0.12 OR). **Fix:** replace the 3×3 with two clean
+   2×2 systems (one per Y stratum). Apply the same audit to `bound_ne_exposure.R` (§5.2).
+2. **`compute_true_effects()` (simulate_dm_data.R) uses plug-in-mean-M**, not g-computation —
+   wrong simulation ground truth (NDE_OR 1.500 vs correct 1.480).
+
+**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — do NOT change it**
+(verified: fed true params it returns the oracle).
+
+**Authoritative docs:**
+- Fix plan + drop-in code + test strategy: `PLAN-fix-bound_ne-solve-2026-06-11.md`
+- Diagnosis/derivation: `ISSUE-true-effects-estimand-2026-06-11.md`,
+  `START-HERE-fix-true-effects.md`
+- Verified reference oracles (gitignored): `dev-diagnostics/` —
+  `popcheck_exact_recovery.R` (correct solve, 5e-17), `oracle_potential_outcomes.R`,
+  `bne_point_test.R` (must return 1.480/1.199 after fix), `instrument_formula_vs_solve.R`
+- Downstream impact: manuscripts M2a/M2b — research notes in
+  `~/projects/research/me-mediator-bounds/02_Notes/INVESTIGATION-...md`
+
+**Gate:** `devtools::check()` clean (CRAN P0) + new recovery/point tests pass + sims recover
+nominal coverage, before merge to `main`.
+
+---
+
 ## About This Package
 
 **medrobust** provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with **differential misclassification**. It derives partial identification bounds that remain valid without requiring validation data.
@@ -60,14 +93,16 @@ devtools::test()
 ```
 R/
 ├── s7-classes.R              # S7 class definitions
-├── s7-methods.R              # S7 methods (print, summary, plot)
-├── bound_ne.R                # Main bounds computation
-├── bound_nie_exposure.R      # Exposure misclassification
-├── bound_nie_mediator.R      # Mediator misclassification
+├── s3_methods.R              # print / summary / plot methods
+├── bound_ne.R                # Main bounds dispatch
+├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
+├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  ⚠️ solve bug (see top)
+├── utilities_helpers.R       # compute_effects_from_params (g-computation; VERIFIED correct)
 ├── check_compatibility.R     # Falsification tests
-├── bootstrap.R               # Bootstrap infrastructure
-└── sensitivity_plot.R        # Visualization
+├── simulate_dm_data.R        # Data generation  ⚠️ compute_true_effects estimand bug (see top)
+└── visualization.R           # Sensitivity plots
 ```
+(Filenames verified against `R/` on 2026-06-11.)
 
 ---
 
@@ -159,4 +194,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-05-09
+**Last Updated**: 2026-06-11 (added ACTIVE FIX section; corrected R/ file listing)
