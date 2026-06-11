@@ -1,7 +1,8 @@
 status: active
 priority: P0
-progress: 65
-next: Complete vignettes, prepare for CRAN submission
+progress: 60
+next: FIX two correctness bugs (branch fix/true-effects-estimand) BEFORE CRAN — bound_ne_mediator solve mis-specified + compute_true_effects estimand. See PLAN-fix-bound_ne-solve-2026-06-11.md. Then vignettes + CRAN.
+blocked: CRAN submission blocked until bound_ne solve fix lands + tests pass (bounds currently biased)
 type: r
 last_updated: 2026-05-09
 
