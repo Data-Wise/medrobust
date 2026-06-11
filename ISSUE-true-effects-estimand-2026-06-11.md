@@ -39,11 +39,22 @@ generalize by summing over mediator support). Add a regression test:
 > on a large sample with NO misclassification, `@true_effects$NDE_OR` must match the
 > empirical g-computation estimate within Monte Carlo error.
 
-## Secondary (open) question
-After the truth fix, re-check whether the OR-scale **NDE** bound from `bound_ne` /
-`bound_ne_mediator` contains the corrected truth at large n with the true Ψ inside the
-region. Independent analytic bound currently sits ~0.09 below — investigate
-OR-scale NDE composition + compatibility pruning. NIE appears fine.
+## Secondary issues — RESOLVED into two, after grid×scale sweep (2026-06-11)
+An independent base-R analytic bound (manuscript §4.2) was run at n∈{4k,20k,200k,300k}
+and grid k∈{9,81}. Conclusions:
+
+- **(2a) Grid resolution — usage, not a bug.** Analytic bound MISSES truth at coarse grid
+  (k=9) but CONTAINS it at dense grid (k=81, pop scale):
+  NDE [1.4715,1.5300] ∋ 1.4802 ✓. So sims must use a high `n_grid` (≥~50–80/axis).
+
+- **(2b) `bound_ne` systematic offset — GENUINE OPEN BUG.** At matched settings `bound_ne`
+  sits ~0.05 ABOVE the faithful analytic bound at every n
+  (N=200k: bound_ne NDE [1.531,1.564] vs analytic [1.413,1.474]). Two implementations of
+  the same §4.2 bound should not differ by a stable offset. **Investigate
+  `R/bound_ne_mediator.R`** — candidate causes: internal grid construction/density,
+  OR-scale stratum aggregation, or the min/max search. Isolate on NDE first.
+
+Repro: `dev-diagnostics/diag_grid_scale_sweep.R`, `diag_dense_grid_popscale.R`.
 
 ## Cross-refs
 Research finding: `~/projects/research/me-mediator-bounds/02_Notes/FINDING-sim-coverage-2026-06-11.md`

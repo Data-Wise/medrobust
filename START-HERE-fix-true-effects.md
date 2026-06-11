@@ -118,11 +118,17 @@ Rscript dev-diagnostics/diag_analytic_bound.R     # analytic bound vs bound_ne v
 
 - **Expected after fix:** `diag_estimand_compare.R` shows package NDE_OR ≈ correct NDE_OR
   (Δ ~ 0, was 0.02).
-- **Then check the SECOND issue:** in `diag_analytic_bound.R`, does the **OR-scale NDE
-  bound** now contain the corrected truth at large n with the true Ψ in-region?
-  - If YES → the only problem was the estimand; proceed to sims.
-  - If NO (gap persists) → open a focused issue on OR-scale NDE composition in
-    `bound_ne` / `R/bound_ne_mediator.R`. NIE was fine; isolate to NDE.
+- **Then the SECONDARY work — already diagnosed (2026-06-11), two parts:**
+  - **(2a) Grid resolution = usage fix.** Confirmed the analytic §4.2 bound covers truth
+    only at a DENSE grid (k=81), not coarse (k=9). So in `run_simulations.R` raise
+    `n_grid` to ≥~50–80. Re-run `dev-diagnostics/diag_dense_grid_popscale.R` to confirm.
+  - **(2b) `bound_ne` systematic ~0.05 offset = REAL BUG to fix.** `bound_ne` sits
+    consistently above the faithful analytic bound at matched settings (pop scale).
+    Investigate `R/bound_ne_mediator.R` (grid construction / OR-scale stratum aggregation /
+    min-max search). Isolate on NDE first; NIE shows the same smaller offset.
+    Repro: `dev-diagnostics/diag_grid_scale_sweep.R`.
+
+  Do NOT scale the sims until BOTH the estimand fix (#1) lands AND 2b is resolved.
 
 ---
 
