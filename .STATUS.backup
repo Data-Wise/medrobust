@@ -1,15 +1,3 @@
-status: active
-priority: P0
-progress: 90
-next: PR fix/true-effects-estimand -> main. Both correctness bugs fixed + verified (mediator two-2x2 solve; compute_true_effects g-computation). devtools::test() 157 pass/0 fail; check() 0 errors/0 warnings. Then regenerate manuscript illustrative numbers + scale sims (n_grid>=50).
-blocked: none
-type: r
-last_updated: 2026-06-11
-
-# ═══════════════════════════════════════════════════════════════════
-# Below is the original .STATUS content (preserved for reference)
-# ═══════════════════════════════════════════════════════════════════
-
 📦 medrobust - Robust Causal Mediation Analysis
 ────────────────────────────────────────────────
 
@@ -17,7 +5,7 @@ last_updated: 2026-06-11
 ~/projects/r-packages/active/medrobust/
 
 ⏰ LAST UPDATED
-2026-05-09
+2025-12-14
 
 ────────────────────────────────────────────────
 
@@ -42,13 +30,6 @@ Version: 0.1.0.9000
 
 Next: Complete vignettes, prepare for CRAN submission
 Blocked: None
-
-📋 Recent Housekeeping (2026-05-09):
-- ✅ Renamed default branch from claude/check-measurement-error-project-...
-  to `main` (resolved branch hygiene tech debt)
-- ✅ Switched origin URL from SSH to HTTPS (gh-token auth)
-- ✅ R CMD build verified clean (medrobust_0.1.0.9000.tar.gz)
-- ✅ All 22 R/ files parse cleanly
 
 ────────────────────────────────────────────────
 

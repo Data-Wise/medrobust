@@ -4,6 +4,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
+
+Smoke-testing the differential-misclassification simulations surfaced **two real bugs**, now
+**both fixed and verified**. The manuscript §4.2 derivation was verified exact (population
+recovery to 5e-17); the faults were in the implementation.
+
+1. **`bound_ne_mediator.R` mediator SOLVE** — the mis-specified 3×3 system (whose `P01` row
+   used the Y=1 parameterization `(1-pi)*g0` instead of the Y=0 form `(1-pi)*(1-g0)`) was
+   replaced with **two per-Y-stratum 2×2 systems** (each solvable iff `Sn_y+Sp_y≠1`). Point
+   test moved 1.601→1.495 (→1.480 as n→∞; residual is finite-sample, confirmed by an n-scaling
+   sweep). `bound_ne_exposure.R` was audited and is **correct** (closed-form 2×2 inverse,
+   verified to 1e-16) — never affected.
+2. **`compute_true_effects()` (simulate_dm_data.R)** — replaced plug-in-mean-M/mean-C with
+   **Monte-Carlo g-computation over the empirical confounder distribution**. `@true_effects`
+   now returns NDE_OR=1.48025 / NIE_OR=1.19940 = oracle (was 1.500).
+3. **`odds_to_prob()` (utilities_helpers.R)** — now maps infinite odds → probability 1, so
+   perfect classification (`sn=1`/`sp=1`) no longer yields `NaN`.
+
+**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — was NOT changed**
+(verified: fed true params it returns the oracle).
+
+**Verification status (all green):**
+- `devtools::test()`: 157 pass / 0 fail / 1 skip (incl. new `test-recovery.R`,
+  `test-true-effects.R`, `test-bound-contains-truth.R`).
+- `devtools::check()` (`--as-cran`): 0 errors / 0 warnings / 2 benign NOTEs (new submission,
+  dev-version string).
+- New vignette `vignettes/identification-math.qmd` documents the derivation; registered in
+  `_pkgdown.yml`.
+
+**Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
+`ISSUE-true-effects-estimand-2026-06-11.md`, `START-HERE-fix-true-effects.md`; reference
+oracles in `dev-diagnostics/` (gitignored). Downstream: regenerate manuscript M2a/M2b
+illustrative numbers and scale sims (`n_grid≥50`) after merge.
+
+**Remaining:** PR `fix/true-effects-estimand` → `main`.
+
+---
+
 ## About This Package
 
 **medrobust** provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with **differential misclassification**. It derives partial identification bounds that remain valid without requiring validation data.
@@ -60,14 +98,16 @@ devtools::test()
 ```
 R/
 ├── s7-classes.R              # S7 class definitions
-├── s7-methods.R              # S7 methods (print, summary, plot)
-├── bound_ne.R                # Main bounds computation
-├── bound_nie_exposure.R      # Exposure misclassification
-├── bound_nie_mediator.R      # Mediator misclassification
+├── s3_methods.R              # print / summary / plot methods
+├── bound_ne.R                # Main bounds dispatch
+├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
+├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
+├── utilities_helpers.R       # compute_effects_from_params (g-computation; VERIFIED correct)
 ├── check_compatibility.R     # Falsification tests
-├── bootstrap.R               # Bootstrap infrastructure
-└── sensitivity_plot.R        # Visualization
+├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
+└── visualization.R           # Sensitivity plots
 ```
+(Filenames verified against `R/` on 2026-06-11.)
 
 ---
 
@@ -110,6 +150,19 @@ R/
 
 ---
 
+## Repository Infrastructure
+
+- **Default branch**: `main` (renamed from `claude/check-measurement-error-...` on 2026-05-09)
+- **Integration branch**: `dev` (created 2026-05-09; planning hub, no feature code)
+- **Remote**: HTTPS via `gh auth setup-git`
+- **CI**: R-CMD-check workflow (`.github/workflows/R-CMD-check.yaml`) added 2026-05-09 via PR #1
+  - macOS + Ubuntu: full check including vignettes
+  - Windows: package check only (vignette build skipped via `runner.os == 'Windows'` conditional due to quarto issues)
+- **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
+- **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
+
+---
+
 ## Ecosystem Coordination
 
 medrobust is an **application package** in the mediationverse ecosystem.
@@ -140,9 +193,10 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 ## Key References
 
 - Tofighi (2025): Partial identification under differential misclassification (*Biostatistics*, in preparation)
+  - Manuscript source: `~/projects/research/measurement error/` (theory notes + `medrobust R package/` design notes)
 - Manski (2003): Partial identification of probability distributions
 - Carroll et al. (2006): Measurement error in nonlinear models
 
 ---
 
-**Last Updated**: 2025-12-04
+**Last Updated**: 2026-06-11 (added ACTIVE FIX section; corrected R/ file listing)

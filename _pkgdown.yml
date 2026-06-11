@@ -64,6 +64,8 @@ navbar:
         href: articles/introduction.html
       - text: "─────────────"
       - text: "Advanced Topics"
+      - text: "Identification Mathematics"
+        href: articles/identification-math.html
       - text: "Mediator Misclassification"
         href: articles/mediator_misclass.html
       - text: "Exposure Misclassification"
@@ -103,6 +105,44 @@ reference:
   contents:
   - extract_bounds
   - compare_bounds
+
+- title: Classes and Constructors
+  desc: S7 classes and sensitivity-region constructors
+  contents:
+  - medrobust_bounds
+  - power_analysis_result
+  - compatibility_test
+  - sensitivity_region
+  - as_sensitivity_region
+
+- title: Falsification and Hypothesis Tests
+  desc: Falsified-region extraction and multiple-testing helpers
+  contents:
+  - extract_falsified_region
+  - new_falsification_summary
+  - test_multiple_hypotheses
+
+- title: Bootstrap and Inference
+  desc: Bootstrap results and standard-error helpers
+  contents:
+  - bootstrap_results
+  - bootstrap_width_summary
+  - compute_bound_se
+
+- title: Methods and Formatting
+  desc: S3 methods and effect-formatting helpers
+  contents:
+  - as.data.frame.medrobust_bounds
+  - as.list.sensitivity_region
+  - print.compatibility_test
+  - summary.compatibility_test
+  - format_effect
+
+- title: Datasets
+  desc: Example and synthetic datasets
+  contents:
+  - heals_data
+  - simulated_dm_data
 
 development:
   mode: auto

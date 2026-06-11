@@ -34,13 +34,12 @@ jobs:
 
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: 1.5.57
+          version: release
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: any::pkgdown, any::quarto, local::.
           needs: website
-          dependencies: '"hard"'
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)

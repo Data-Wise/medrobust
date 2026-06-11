@@ -105,37 +105,41 @@ bound_ne_mediator <- function(data,
         P_01 <- P[1, 2]
         P_00 <- P[1, 1]
 
-        # Solve system of equations for (pi_a, gamma_a0, gamma_a1)
-        # System:
-        # P_11 = sn1 * gamma_a1 * pi_a + (1-sp1) * gamma_a0 * (1-pi_a)
-        # P_10 = (1-sn1) * gamma_a1 * pi_a + sp1 * gamma_a0 * (1-pi_a)
-        # P_01 = sn0 * (1-gamma_a1) * pi_a + (1-sp0) * (1-gamma_a0) * (1-pi_a)
+        # Recover (pi_a, gamma_a0, gamma_a1) via two 2x2 systems, one per Y stratum.
+        # Under differential mediator misclassification, sensitivity/specificity
+        # depend on Y, so the Y=1 and Y=0 cells form two INDEPENDENT 2x2 systems.
+        # Stacking them into a single 3x3 (as the previous implementation did)
+        # mis-couples a Y=1 unknown ((1-pi)*g0) into the Y=0 P_01 equation, which
+        # actually involves (1-pi)*(1-g0). The split below is the manuscript §4.2 form.
+        #
+        #   Y = 1:  x1 = pi_a * gamma_a1     = P(M=1, Y=1 | a, c)
+        #           x0 = (1-pi_a) * gamma_a0 = P(M=0, Y=1 | a, c)
+        #     P_11 = sn1 * x1 + (1-sp1) * x0
+        #     P_10 = (1-sn1) * x1 + sp1 * x0
+        #   Y = 0:  z1 = pi_a * (1-gamma_a1)     = P(M=1, Y=0 | a, c)
+        #           z0 = (1-pi_a) * (1-gamma_a0) = P(M=0, Y=0 | a, c)
+        #     P_01 = sn0 * z1 + (1-sp0) * z0
+        #     P_00 = (1-sn0) * z1 + sp0 * z0
+        # Each block is solvable iff det = sn_y + sp_y - 1 != 0.
 
-        # This is a 3x3 linear system. We can solve it using matrix methods.
-        # Rewrite as: A * theta = b
-        # where theta = c(pi_a * gamma_a1, (1-pi_a) * gamma_a0, pi_a * (1-gamma_a1))
+        A1 <- matrix(c(sn1, (1 - sp1), (1 - sn1), sp1), nrow = 2, byrow = TRUE)
+        A0 <- matrix(c(sn0, (1 - sp0), (1 - sn0), sp0), nrow = 2, byrow = TRUE)
 
-        A_mat <- matrix(c(
-          sn1, (1-sp1), 0,
-          (1-sn1), sp1, 0,
-          0, 0, sn0
-        ), nrow = 3, byrow = TRUE)
-        A_mat[3, 3] <- sn0
-        A_mat[3, 2] <- (1-sp0)
-
-        b_vec <- c(P_11, P_10, P_01)
-
-        # Solve system
+        # Solve both 2x2 systems
         tryCatch({
-          theta_sol <- solve(A_mat, b_vec)
+          # Degenerate sensitivity/specificity (sn_y + sp_y == 1) is non-identified
+          if (abs(sn1 + sp1 - 1) < 1e-8 || abs(sn0 + sp0 - 1) < 1e-8) {
+            compatible <- FALSE
+            break
+          }
 
-          # Extract pi_a, gamma_a0, gamma_a1
-          pi_gamma1 <- theta_sol[1]
-          oneminuspi_gamma0 <- theta_sol[2]
-          pi_oneminusgamma1 <- theta_sol[3]
+          xy1 <- solve(A1, c(P_11, P_10))   # (x1, x0)
+          xy0 <- solve(A0, c(P_01, P_00))   # (z1, z0)
+          x1 <- xy1[1]; x0 <- xy1[2]
+          z1 <- xy0[1]; z0 <- xy0[2]
 
-          # Solve for pi_a
-          pi_a <- pi_gamma1 + pi_oneminusgamma1
+          # pi_a = P(M=1 | a, c) = P(M=1,Y=1) + P(M=1,Y=0)
+          pi_a <- x1 + z1
 
           # Check if valid probability
           if (pi_a < 0 || pi_a > 1) {
@@ -143,18 +147,19 @@ bound_ne_mediator <- function(data,
             break
           }
 
-          # Solve for gamma_a1, gamma_a0
+          # gamma_a1 = P(Y=1 | M=1, a, c) = x1 / pi_a
+          # gamma_a0 = P(Y=1 | M=0, a, c) = x0 / (1 - pi_a)
           if (pi_a < 1e-6) {
-            # pi_a essentially 0
-            gamma_a1 <- 0.5  # Undefined, set to arbitrary value
-            gamma_a0 <- oneminuspi_gamma0 / (1 - pi_a)
+            # pi_a essentially 0: gamma_a1 undefined
+            gamma_a1 <- 0.5
+            gamma_a0 <- x0 / (1 - pi_a)
           } else if (pi_a > 1 - 1e-6) {
-            # pi_a essentially 1
-            gamma_a1 <- pi_gamma1 / pi_a
-            gamma_a0 <- 0.5  # Undefined
+            # pi_a essentially 1: gamma_a0 undefined
+            gamma_a1 <- x1 / pi_a
+            gamma_a0 <- 0.5
           } else {
-            gamma_a1 <- pi_gamma1 / pi_a
-            gamma_a0 <- oneminuspi_gamma0 / (1 - pi_a)
+            gamma_a1 <- x1 / pi_a
+            gamma_a0 <- x0 / (1 - pi_a)
           }
 
           # Check if valid probabilities
