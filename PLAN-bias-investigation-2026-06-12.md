@@ -70,3 +70,30 @@ scales {OR, RR, RD}, paths {mediator, exposure}. `e_pop` = endpoint at the popul
 Imbens & Manski (2004, *Econometrica*); Kilian (1998, *REStat*); Nakagawa et al. (2025, SAFE
 bootstrap); Schafer (2024, *SIMODS*, iterated bootstrap / Möbius); Yang (2015, *J. Econometrics*,
 3rd-order bias); Abadie & Imbens (2011, bias-corrected matching).
+
+---
+
+## FINDINGS & RESOLUTION (2026-06-12)
+
+**Conclusion: there is no material finite-sample bias to correct. The under-coverage is
+the Imbens-Manski narrow-set-vs-sampling-noise problem, and the IM CI (already built in
+`R/bound_ci.R`) is the correct and sufficient fix.**
+
+Evidence:
+1. **Stage 1 (single-Psi bias, isolates H1):** at the true Psi the effect is ~unbiased
+   (NDE bias +0.17→+0.01 from n=200→8000; NIE +0.02→+0.003) and biased *high*, not low.
+   So H1 (plug-in nonlinearity) is NOT the cause of the bound's apparent low bias.
+2. **Population bound is correct:** over [0.85,0.95]^2 at n=3e5 the bound is
+   NDE[1.426,1.580] ∋ 1.480 and NIE[1.178,1.217] ∋ 1.199; the single-Psi corner sweep
+   confirms this is the genuine partial-ID range. The earlier "[1.06,1.07]" was a single
+   unlucky n=2000 realization, not systematic bias (over-read of one sample).
+3. **Mechanism:** identified-set width (~0.15 for NDE) is comparable to endpoint sampling
+   SD at small n, so the *raw* set under-covers the true point — the textbook IM problem.
+   Raw coverage rises with n (0.20→0.83) as SD shrinks relative to width: the IM signature.
+4. **IM CI achieves nominal coverage** (exposure, psi=1, n=500): NIE 0.12→**0.93**,
+   NDE 0.09→**0.95**. (`dev-diagnostics/im_cov.R`.)
+
+Revised plan: SKIP bias correction (Stages 2-bias, 4-escalation). Remaining work is pure
+productionization of the IM CI: mediator primitive + `bound_ci_mediator`; wire
+`ci_method="analytic"` (IM, no bias-correction) into `bound_ne`; full coverage table
+N∈{100,200,500} both paths OR/RR/RD; tests; CRAN-clean; update SPEC-analytic-ci sec 8.
