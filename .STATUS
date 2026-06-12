@@ -1,10 +1,10 @@
 status: active
 priority: P0
-progress: 95
-next: PR fix/exposure-nie -> main (exposure NIE assembly fixed: conditional P(A|M,Y,C) -> joint via observed P(M,Y|C); point test recovers 1.480/1.199). All three correctness bugs now fixed (mediator solve, true-effects estimand, exposure NIE). Then M2a/M2b sims + manuscript numbers.
-blocked: none. (Exposure NIE bound fixed 2026-06-11 — was the last open correctness bug.)
+progress: 96
+next: INVESTIGATE finite-sample bias of the partial-ID bound endpoints (branch feature/analytic-ci). All 3 correctness bugs fixed+merged (PRs #2,#4); analytic-CI foundation built (R/bound_ci.R: single-Psi primitive + Imbens-Manski + envelope SE, 11x faster). KEY: point bound is biased LOW at small n (exposure NDE [1.06,1.07] vs 1.48 at n=2000; mediator raw coverage 0.20->0.83 with n) -> a CI around a biased centre can't reach nominal coverage. Tackle the BIAS before finishing CI plumbing. See SPEC-analytic-ci-2026-06-11.md sec 8.
+blocked: none (correctness). OPEN (methods): finite-sample endpoint bias -> coverage; needs bias diagnosis/correction vs asymptotic framing.
 type: r
-last_updated: 2026-06-11
+last_updated: 2026-06-12
 
 # ═══════════════════════════════════════════════════════════════════
 # Below is the original .STATUS content (preserved for reference)
