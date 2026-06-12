@@ -44,3 +44,12 @@
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
 ^vignettes/_freeze$
 ^vignettes/.*\.html$
+^CLAUDE\.md$
+^CLAUDE-CODE-PROMPT.*\.md$
+^PLAN-.*\.md$
+^SPEC-.*\.md$
+^ISSUE-.*\.md$
+^START-HERE.*\.md$
+^dev-diagnostics$
+^\.STATUS
+^TECHNICAL-NOTES.*\.md$

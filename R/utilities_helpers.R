@@ -18,8 +18,10 @@ prob_to_odds <- function(p) {
 }
 
 # Convert odds to probability
+# Infinite odds (e.g. from prob_to_odds(1) under perfect sensitivity/specificity)
+# map to probability 1; odds / (1 + odds) would give NaN there (Inf/Inf).
 odds_to_prob <- function(odds) {
-  odds / (1 + odds)
+  ifelse(is.infinite(odds), 1, odds / (1 + odds))
 }
 
 # Logit function

@@ -4,6 +4,66 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
+
+Smoke-testing the differential-misclassification simulations surfaced **two real bugs**, now
+**both fixed and verified**. The manuscript §4.2 derivation was verified exact (population
+recovery to 5e-17); the faults were in the implementation.
+
+1. **`bound_ne_mediator.R` mediator SOLVE** — the mis-specified 3×3 system (whose `P01` row
+   used the Y=1 parameterization `(1-pi)*g0` instead of the Y=0 form `(1-pi)*(1-g0)`) was
+   replaced with **two per-Y-stratum 2×2 systems** (each solvable iff `Sn_y+Sp_y≠1`). Point
+   test moved 1.601→1.495 (→1.480 as n→∞; residual is finite-sample, confirmed by an n-scaling
+   sweep). `bound_ne_exposure.R` was audited and is **correct** (closed-form 2×2 inverse,
+   verified to 1e-16) — never affected.
+2. **`compute_true_effects()` (simulate_dm_data.R)** — replaced plug-in-mean-M/mean-C with
+   **Monte-Carlo g-computation over the empirical confounder distribution**. `@true_effects`
+   now returns NDE_OR=1.48025 / NIE_OR=1.19940 = oracle (was 1.500).
+3. **`odds_to_prob()` (utilities_helpers.R)** — now maps infinite odds → probability 1, so
+   perfect classification (`sn=1`/`sp=1`) no longer yields `NaN`.
+
+**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — was NOT changed**
+(verified: fed true params it returns the oracle).
+
+**Verification status (all green):**
+- `devtools::test()`: 157 pass / 0 fail / 1 skip (incl. new `test-recovery.R`,
+  `test-true-effects.R`, `test-bound-contains-truth.R`).
+- `devtools::check()` (`--as-cran`): 0 errors / 0 warnings / 2 benign NOTEs (new submission,
+  dev-version string).
+- New vignette `vignettes/identification-math.qmd` documents the derivation; registered in
+  `_pkgdown.yml`.
+
+**Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
+`ISSUE-true-effects-estimand-2026-06-11.md`, `START-HERE-fix-true-effects.md`; reference
+oracles in `dev-diagnostics/` (gitignored). Downstream: regenerate manuscript M2a/M2b
+illustrative numbers and scale sims (`n_grid≥50`) after merge.
+
+**Remaining:** PR `fix/true-effects-estimand` → `main`. (Merged via PR #2, 2026-06-11.)
+
+---
+
+## ✅ RESOLVED — exposure NIE bound fixed (2026-06-11, branch `fix/exposure-nie`)
+
+The **exposure (A\*) path's NIE bound** missed the truth (true 1.199 vs [0.980, 0.991]) while
+its NDE bound was correct. **Root cause:** `bound_ne_exposure.R` recovers the **conditional**
+`P(A=a | M,Y,C)`, but `compute_effects_from_joint_probs()` consumed those as the **joint**
+`P(A,M,Y | C)`, dropping the observed `P(M,Y | C)` weight → the M,Y marginal became effectively
+uniform → `P(M|A=1)` and `P(M|A=0)` collapsed toward the same shape → NIE driven to the null
+(NDE survives because it fixes the mediator distribution at M(0) in both terms).
+
+**Fix:** multiply the recovered conditional by the observed `P(M=m, Y=y | C)` (M and Y are not
+misclassified in the exposure scenario) to form the joint, in `evaluate_param_set()`
+(`R/bound_ne_exposure.R`, shared by the serial and parallel paths). The exposure *solve* was
+already correct; only the NIE *assembly* was wrong. `compute_effects_from_joint_probs()` is
+otherwise correct and was not changed structurally.
+
+**Verified:** point test `dev-diagnostics/bne_point_test_exposure.R` recovers NDE 1.480 / NIE
+1.199 within 0.01 (was NIE ~0.99); `smoke2_popcheck_both_paths.R` exposure NIE row now TRUE;
+new tests `test-recovery-exposure.R`, `test-bound-contains-truth-exposure.R` pass; mediator path
+unaffected. Oracle: `dev-diagnostics/oracle_exposure.R`.
+
+---
+
 ## About This Package
 
 **medrobust** provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with **differential misclassification**. It derives partial identification bounds that remain valid without requiring validation data.
@@ -60,14 +120,16 @@ devtools::test()
 ```
 R/
 ├── s7-classes.R              # S7 class definitions
-├── s7-methods.R              # S7 methods (print, summary, plot)
-├── bound_ne.R                # Main bounds computation
-├── bound_nie_exposure.R      # Exposure misclassification
-├── bound_nie_mediator.R      # Mediator misclassification
+├── s3_methods.R              # print / summary / plot methods
+├── bound_ne.R                # Main bounds dispatch
+├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
+├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
+├── utilities_helpers.R       # compute_effects_from_params (g-computation; VERIFIED correct)
 ├── check_compatibility.R     # Falsification tests
-├── bootstrap.R               # Bootstrap infrastructure
-└── sensitivity_plot.R        # Visualization
+├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
+└── visualization.R           # Sensitivity plots
 ```
+(Filenames verified against `R/` on 2026-06-11.)
 
 ---
 
@@ -159,4 +221,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-05-09
+**Last Updated**: 2026-06-11 (added ACTIVE FIX section; corrected R/ file listing)

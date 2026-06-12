@@ -63,4 +63,4 @@ tests/testthat/_snaps/
 renv/library/
 renv/local/
 renv/staging/
-renv/.cache/
+renv/.cache/dev-diagnostics/

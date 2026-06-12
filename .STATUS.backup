@@ -1,15 +1,3 @@
-status: active
-priority: P0
-progress: 96
-next: PRODUCTIONIZE the Imbens-Manski CI (branch feature/analytic-ci). Bias investigation RESOLVED: NO material finite-sample bias (single-Psi ~unbiased; population bound contains truth; earlier "[1.06,1.07]" was one unlucky sample). Under-coverage is the IM narrow-set-vs-noise problem; IM CI (built in R/bound_ci.R) achieves nominal coverage at n=500 (NIE 0.12->0.93, NDE 0.09->0.95). Remaining: mediator primitive + bound_ci_mediator, wire ci_method="analytic" into bound_ne, full coverage table N{100,200,500} both paths OR/RR/RD, tests, CRAN. See PLAN-bias-investigation-2026-06-12.md.
-blocked: none. (All 3 correctness bugs fixed+merged PRs #2,#4. Methods question resolved: IM CI, no bias correction.)
-type: r
-last_updated: 2026-06-12
-
-# ═══════════════════════════════════════════════════════════════════
-# Below is the original .STATUS content (preserved for reference)
-# ═══════════════════════════════════════════════════════════════════
-
 📦 medrobust - Robust Causal Mediation Analysis
 ────────────────────────────────────────────────
 
@@ -17,7 +5,7 @@ last_updated: 2026-06-12
 ~/projects/r-packages/active/medrobust/
 
 ⏰ LAST UPDATED
-2026-05-09
+2025-12-14
 
 ────────────────────────────────────────────────
 
@@ -42,13 +30,6 @@ Version: 0.1.0.9000
 
 Next: Complete vignettes, prepare for CRAN submission
 Blocked: None
-
-📋 Recent Housekeeping (2026-05-09):
-- ✅ Renamed default branch from claude/check-measurement-error-project-...
-  to `main` (resolved branch hygiene tech debt)
-- ✅ Switched origin URL from SSH to HTTPS (gh-token auth)
-- ✅ R CMD build verified clean (medrobust_0.1.0.9000.tar.gz)
-- ✅ All 22 R/ files parse cleanly
 
 ────────────────────────────────────────────────
 

@@ -19,7 +19,11 @@
 #' @param n_grid Integer. Number of grid points per parameter dimension. Default is 50.
 #' @param effect_scale Character string. Scale for reporting effects: "OR" (odds ratio),
 #'   "RR" (risk ratio), or "RD" (risk difference). Default is "OR".
-#' @param confidence_level Numeric. Confidence level for bootstrap intervals. Default is 0.95.
+#' @param confidence_level Numeric. Confidence level for confidence intervals. Default is 0.95.
+#' @param ci_method Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
+#'   attaches Imbens-Manski confidence intervals (see [bound_ci()]) to the result's
+#'   `@analytic_ci` slot.
+#' @param ci_n_boot Integer. Resamples for the analytic CI endpoint SEs. Default 200.
 #' @param bootstrap Logical. Whether to compute bootstrap confidence intervals. Default is FALSE.
 #' @param bootstrap_reps Integer. Number of bootstrap replicates if bootstrap=TRUE. Default is 1000.
 #' @param bootstrap_method Character string. Bootstrap CI method: "percentile" (default) or "bca"
@@ -144,6 +148,8 @@ bound_ne <- function(data,
                      n_grid = 50,
                      effect_scale = c("OR", "RR", "RD"),
                      confidence_level = 0.95,
+                     ci_method = c("none", "analytic"),
+                     ci_n_boot = 200L,
                      bootstrap = FALSE,
                      bootstrap_reps = 1000,
                      bootstrap_method = c("percentile", "bca"),
@@ -159,6 +165,7 @@ bound_ne <- function(data,
   # Match arguments
   grid_method <- match.arg(grid_method)
   bootstrap_method <- match.arg(bootstrap_method)
+  ci_method <- match.arg(ci_method)
 
   # Record start time
   start_time <- Sys.time()
@@ -313,6 +320,16 @@ bound_ne <- function(data,
     data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
     call = match.call()
   )
+
+  # Analytic (Imbens-Manski) confidence intervals, if requested
+  if (ci_method == "analytic" && output@n_compatible > 0) {
+    if (verbose) cat("\nComputing analytic (Imbens-Manski) confidence intervals...\n")
+    output@analytic_ci <- tryCatch(
+      bound_ci(output, data, exposure, mediator, outcome, confounders,
+               misclassified_variable = misclassified_variable,
+               n_boot = ci_n_boot, level = confidence_level),
+      error = function(e) NULL)
+  }
 
   if (verbose) {
     cat("\n" , strrep("=", 60), "\n")
