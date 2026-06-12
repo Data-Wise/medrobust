@@ -40,7 +40,7 @@
 #' \donttest{
 #' # Compute bounds first (see ?bound_ne)
 #' sim <- simulate_dm_data(
-#'   n = 600,
+#'   n = 8000,
 #'   true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
 #'   dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
 #'   misclass_type = "mediator", confounders = 1, seed = 1

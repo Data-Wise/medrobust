@@ -93,7 +93,7 @@
 #' \donttest{
 #' # Simulate data with a known mediator-misclassification mechanism
 #' sim <- simulate_dm_data(
-#'   n = 600,
+#'   n = 8000,
 #'   true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
 #'   dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
 #'   misclass_type = "mediator", confounders = 1, seed = 1
@@ -123,6 +123,18 @@
 #' # View results
 #' print(bounds)
 #' summary(bounds)
+#'
+#' # The raw estimated bound [L, U] is consistent but is NOT a confidence set;
+#' # at finite n it can under-cover the true effect. For inference, add
+#' # Imbens-Manski confidence intervals via ci_method = "analytic":
+#' set.seed(1)
+#' bounds_ci <- bound_ne(
+#'   data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+#'   confounders = "C1", misclassified_variable = "mediator",
+#'   sensitivity_region = sens_region, n_grid = 10,
+#'   ci_method = "analytic", ci_n_boot = 100
+#' )
+#' bounds_ci@analytic_ci$NDE   # lower/upper bound + IM confidence interval
 #'
 #' # Visualize
 #' sensitivity_plot(bounds, param = "psi_sn")
