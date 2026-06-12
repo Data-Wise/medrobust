@@ -40,7 +40,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>SPEC (scope) — Fast analytic confidence intervals for bound_ne endpoints</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/main/SPEC-analytic-ci-2026-06-11.md" class="external-link"><code>SPEC-analytic-ci-2026-06-11.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/SPEC-analytic-ci-2026-06-11.md" class="external-link"><code>SPEC-analytic-ci-2026-06-11.md</code></a></small>
     </div>
 
 <div id="spec-scope--fast-analytic-confidence-intervals-for-bound_ne-endpoints" class="section level1">
@@ -92,6 +92,36 @@
 <div class="section level2">
 <h2 id="id_7-recommendation">7. Recommendation<a class="anchor" aria-label="anchor" href="#id_7-recommendation"></a></h2>
 <p>Build the <strong>numerical-gradient MVP</strong> first (validates the whole approach in days, not the bootstrap’s years), wire it into <code>run_simulations.R</code> behind <code>ci_method</code>, confirm R3/R4 on a small run, then decide whether closed-form influence functions are worth it. Out of scope: changing the point bounds or the mediator/exposure estimands (all verified).</p>
+<hr></div>
+<div class="section level2">
+<h2 id="id_8-implementation-status--findings-2026-06-12-branch-featureanalytic-ci">8. Implementation status &amp; findings (2026-06-12, branch <code>feature/analytic-ci</code>)<a class="anchor" aria-label="anchor" href="#id_8-implementation-status--findings-2026-06-12-branch-featureanalytic-ci"></a></h2>
+<div class="section level3">
+<h3 id="built-and-validated-rbound_cir-wip--not-yet-in-the-exported-api">Built and validated (<code>R/bound_ci.R</code>, WIP — not yet in the exported API)<a class="anchor" aria-label="anchor" href="#built-and-validated-rbound_cir-wip--not-yet-in-the-exported-api"></a></h3>
+<ul><li>
+<strong><code>.effect_at_psi_exposure()</code></strong> — NDE/NIE at a <em>single</em> fixed Ψ with no grid search. Validated: reproduces <code>bound_ne</code>’s per-Ψ effect to &lt; 1e-3.</li>
+<li>
+<strong><code>.imbens_manski_ci()</code></strong> — set CI <code>[L − c·seL, U + c·seU]</code>. Validated: <code>c → z_{0.975}=1.96</code> when <code>Δ=0</code>, <code>c → z_{0.95}=1.645</code> when <code>Δ ≫ se</code>.</li>
+<li>
+<strong><code>bound_ci_exposure()</code></strong> — endpoint SEs by re-evaluating the effect at the <em>fixed</em> argmin/ argmax Ψ on resampled data (one primitive call per resample, no grid). Demonstrated <strong>11.2× faster</strong> than the full bootstrap (7s vs 78s, n=2000); NIE CI covered the truth.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="design-note--mvp-se-method">Design note — MVP SE method<a class="anchor" aria-label="anchor" href="#design-note--mvp-se-method"></a></h3>
+<p>The first cut uses an <strong>envelope resample</strong> for the endpoint SE (resample → re-evaluate at the fixed optimal Ψ), not the spec’s pure numerical-gradient delta method. Rationale: it reuses the validated single-Ψ primitive directly, is robust (no gradient/covariance bookkeeping, no boundary/tie fragility), and already delivers the ~<code>n_grid^k</code>× speedup that makes the coverage study feasible. The <strong>no-resampling numerical-gradient delta method remains the optimization target</strong> (needs the primitive to accept a perturbed cell table + the multinomial covariance).</p>
+</div>
+<div class="section level3">
+<h3 id="warning-key-finding--the-point-bound-is-finite-sample-biased-this-dominates-coverage">⚠️ Key finding — the point bound is finite-sample biased (this dominates coverage)<a class="anchor" aria-label="anchor" href="#warning-key-finding--the-point-bound-is-finite-sample-biased-this-dominates-coverage"></a></h3>
+<p>Validation surfaced that the <strong>point</strong> bound is biased <em>low</em> at small n, independent of the CI: e.g. exposure NDE point bound <code>[1.058, 1.074]</code> vs truth <code>1.480</code> at n=2000 (and the mediator side showed raw NDE coverage 0.20→0.83 as n grows). <strong>A confidence interval centred on a biased point estimate cannot achieve nominal coverage</strong>, however well-calibrated the interval width is. Implication: the coverage problem is now <strong>two</strong> pieces — (i) interval width (this CI feature), and (ii) <strong>finite-sample bias of the bound endpoints</strong> (a separate issue). Resolving (ii) — via a small-sample bias diagnosis/correction, or by framing the coverage claim around the bias-vanishes-with-n behaviour — is likely <strong>more important than finishing the CI plumbing</strong>.</p>
+</div>
+<div class="section level3">
+<h3 id="open-items-priority-order">Open items (priority order)<a class="anchor" aria-label="anchor" href="#open-items-priority-order"></a></h3>
+<ol style="list-style-type: decimal"><li>
+<strong>Investigate/quantify the finite-sample endpoint bias</strong> (item ii above) — decide bias correction vs. documented asymptotic framing. <em>Highest leverage for coverage.</em>
+</li>
+<li>Mediator primitive (<code>.effect_at_psi_mediator</code>) + <code>bound_ci_mediator</code>.</li>
+<li>Numerical-gradient delta-method SE (replace the envelope resample; truly no-resampling).</li>
+<li>Wire <code>ci_method = "analytic"</code> into <code>bound_ne</code>; populate the <code>*_ci</code> fields.</li>
+<li>Coverage study at N ∈ {100, 200, 500}; tests; docs; CRAN-clean.</li>
+</ol></div>
 </div>
 </div>
 

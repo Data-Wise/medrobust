@@ -44,7 +44,7 @@ to differential misclassification. The method does not require validation data."
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial Identification Bounds for Natural Effects Under Differential Misclassification</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/main/R/bound_ne.R" class="external-link"><code>R/bound_ne.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/R/bound_ne.R" class="external-link"><code>R/bound_ne.R</code></a></small>
       <div class="d-none name"><code>bound_ne.Rd</code></div>
     </div>
 
@@ -67,6 +67,8 @@ to differential misclassification. The method does not require validation data.<
 <span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  effect_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OR"</span>, <span class="st">"RR"</span>, <span class="st">"RD"</span><span class="op">)</span>,</span>
 <span>  confidence_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  ci_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"analytic"</span><span class="op">)</span>,</span>
+<span>  ci_n_boot <span class="op">=</span> <span class="fl">200L</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  bootstrap_reps <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  bootstrap_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"percentile"</span>, <span class="st">"bca"</span><span class="op">)</span>,</span>
@@ -127,7 +129,17 @@ giving the minimum and maximum values. If NULL, default ranges are used.</p></dd
 
 
 <dt id="arg-confidence-level">confidence_level<a class="anchor" aria-label="anchor" href="#arg-confidence-level"></a></dt>
-<dd><p>Numeric. Confidence level for bootstrap intervals. Default is 0.95.</p></dd>
+<dd><p>Numeric. Confidence level for confidence intervals. Default is 0.95.</p></dd>
+
+
+<dt id="arg-ci-method">ci_method<a class="anchor" aria-label="anchor" href="#arg-ci-method"></a></dt>
+<dd><p>Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
+attaches Imbens-Manski confidence intervals (see [bound_ci()]) to the result's
+`@analytic_ci` slot.</p></dd>
+
+
+<dt id="arg-ci-n-boot">ci_n_boot<a class="anchor" aria-label="anchor" href="#arg-ci-n-boot"></a></dt>
+<dd><p>Integer. Resamples for the analytic CI endpoint SEs. Default 200.</p></dd>
 
 
 <dt id="arg-bootstrap">bootstrap<a class="anchor" aria-label="anchor" href="#arg-bootstrap"></a></dt>

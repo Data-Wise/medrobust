@@ -67,8 +67,11 @@ Falsified-region extraction and multiple-testing helpers
 
 ## Bootstrap and Inference
 
-Bootstrap results and standard-error helpers
+Confidence intervals, bootstrap results, and standard-error helpers
 
+- [`bound_ci()`](https://data-wise.github.io/medrobust/dev/reference/bound_ci.md)
+  : Confidence intervals for partial-identification bounds
+  (Imbens-Manski)
 - [`bootstrap_results()`](https://data-wise.github.io/medrobust/dev/reference/bootstrap_results.md)
   : Bootstrap Results Class
 - [`bootstrap_width_summary()`](https://data-wise.github.io/medrobust/dev/reference/bootstrap_width_summary.md)

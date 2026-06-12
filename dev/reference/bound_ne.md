@@ -19,6 +19,8 @@ bound_ne(
   n_grid = 50,
   effect_scale = c("OR", "RR", "RD"),
   confidence_level = 0.95,
+  ci_method = c("none", "analytic"),
+  ci_n_boot = 200L,
   bootstrap = FALSE,
   bootstrap_reps = 1000,
   bootstrap_method = c("percentile", "bca"),
@@ -78,7 +80,17 @@ bound_ne(
 
 - confidence_level:
 
-  Numeric. Confidence level for bootstrap intervals. Default is 0.95.
+  Numeric. Confidence level for confidence intervals. Default is 0.95.
+
+- ci_method:
+
+  Character. \`"none"\` (default) or \`"analytic"\`. If \`"analytic"\`,
+  attaches Imbens-Manski confidence intervals (see \[bound_ci()\]) to
+  the result's \`@analytic_ci\` slot.
+
+- ci_n_boot:
+
+  Integer. Resamples for the analytic CI endpoint SEs. Default 200.
 
 - bootstrap:
 

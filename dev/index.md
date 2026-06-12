@@ -56,6 +56,18 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("data-wise/medrobust", build_vignettes = TRUE)
 ```
 
+### From r-universe (pre-built binaries)
+
+No compiler needed — binaries for Windows, macOS, and Linux:
+
+``` r
+
+install.packages(
+  "medrobust",
+  repos = c("https://data-wise.r-universe.dev", "https://cloud.r-project.org")
+)
+```
+
 ### From CRAN (coming soon)
 
 ``` r

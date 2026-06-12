@@ -97,3 +97,59 @@ in days, not the bootstrap’s years), wire it into `run_simulations.R`
 behind `ci_method`, confirm R3/R4 on a small run, then decide whether
 closed-form influence functions are worth it. Out of scope: changing the
 point bounds or the mediator/exposure estimands (all verified).
+
+------------------------------------------------------------------------
+
+## 8. Implementation status & findings (2026-06-12, branch `feature/analytic-ci`)
+
+### Built and validated (`R/bound_ci.R`, WIP — not yet in the exported API)
+
+- **`.effect_at_psi_exposure()`** — NDE/NIE at a *single* fixed Ψ with
+  no grid search. Validated: reproduces `bound_ne`’s per-Ψ effect to \<
+  1e-3.
+- **`.imbens_manski_ci()`** — set CI `[L − c·seL, U + c·seU]`.
+  Validated: `c → z_{0.975}=1.96` when `Δ=0`, `c → z_{0.95}=1.645` when
+  `Δ ≫ se`.
+- **`bound_ci_exposure()`** — endpoint SEs by re-evaluating the effect
+  at the *fixed* argmin/ argmax Ψ on resampled data (one primitive call
+  per resample, no grid). Demonstrated **11.2× faster** than the full
+  bootstrap (7s vs 78s, n=2000); NIE CI covered the truth.
+
+### Design note — MVP SE method
+
+The first cut uses an **envelope resample** for the endpoint SE
+(resample → re-evaluate at the fixed optimal Ψ), not the spec’s pure
+numerical-gradient delta method. Rationale: it reuses the validated
+single-Ψ primitive directly, is robust (no gradient/covariance
+bookkeeping, no boundary/tie fragility), and already delivers the
+~`n_grid^k`× speedup that makes the coverage study feasible. The
+**no-resampling numerical-gradient delta method remains the optimization
+target** (needs the primitive to accept a perturbed cell table + the
+multinomial covariance).
+
+### ⚠️ Key finding — the point bound is finite-sample biased (this dominates coverage)
+
+Validation surfaced that the **point** bound is biased *low* at small n,
+independent of the CI: e.g. exposure NDE point bound `[1.058, 1.074]` vs
+truth `1.480` at n=2000 (and the mediator side showed raw NDE coverage
+0.20→0.83 as n grows). **A confidence interval centred on a biased point
+estimate cannot achieve nominal coverage**, however well-calibrated the
+interval width is. Implication: the coverage problem is now **two**
+pieces — (i) interval width (this CI feature), and (ii) **finite-sample
+bias of the bound endpoints** (a separate issue). Resolving (ii) — via a
+small-sample bias diagnosis/correction, or by framing the coverage claim
+around the bias-vanishes-with-n behaviour — is likely **more important
+than finishing the CI plumbing**.
+
+### Open items (priority order)
+
+1.  **Investigate/quantify the finite-sample endpoint bias** (item ii
+    above) — decide bias correction vs. documented asymptotic framing.
+    *Highest leverage for coverage.*
+2.  Mediator primitive (`.effect_at_psi_mediator`) +
+    `bound_ci_mediator`.
+3.  Numerical-gradient delta-method SE (replace the envelope resample;
+    truly no-resampling).
+4.  Wire `ci_method = "analytic"` into `bound_ne`; populate the `*_ci`
+    fields.
+5.  Coverage study at N ∈ {100, 200, 500}; tests; docs; CRAN-clean.

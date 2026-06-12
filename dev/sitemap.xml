@@ -10,6 +10,7 @@
 <url><loc>https://data-wise.github.io/medrobust/dev/LICENSE-text.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/MEDIATOR_OPTIMIZATION.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/OPTIMIZATION_SUMMARY.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/PLAN-bias-investigation-2026-06-12.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/PLAN-fix-bound_ne-solve-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/PLAN-fix-exposure-NIE-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/POWER_ANALYSIS_OPTIMIZATIONS.html</loc></url>
@@ -21,6 +22,7 @@
 <url><loc>https://data-wise.github.io/medrobust/dev/SPEC-analytic-ci-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/SPEC-fix-exposure-NIE-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/START-HERE-fix-true-effects.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/TECHNICAL-NOTES-bounds-2026-06-12.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/VECTORIZATION_IMPROVEMENTS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/VIGNETTE_GRID_SEARCH.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/WORKFLOW.html</loc></url>
@@ -39,6 +41,7 @@
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/as_sensitivity_region.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/bootstrap_results.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/bootstrap_width_summary.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/reference/bound_ci.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/bound_ne.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/bounds_cross_null.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/reference/check_compatibility.html</loc></url>

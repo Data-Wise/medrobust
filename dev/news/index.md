@@ -2,6 +2,23 @@
 
 ## medrobust (development version)
 
+### New features (2026-06-12)
+
+- **[`bound_ci()`](https://data-wise.github.io/medrobust/dev/reference/bound_ci.md)
+  — confidence intervals for the partial-identification bounds.** The
+  raw estimated bound `[L̂, Û]` is consistent but is not a confidence
+  set; when the identified set is narrow relative to endpoint sampling
+  uncertainty it under-covers the true effect at small samples
+  (e.g. exposure NDE coverage ~0.09 at n=500).
+  [`bound_ci()`](https://data-wise.github.io/medrobust/dev/reference/bound_ci.md)
+  applies the Imbens & Manski (2004) construction, widening the
+  endpoints by standard errors obtained by re-evaluating the effect at
+  the fixed optimal sensitivity parameter on resampled data (no grid
+  search per replicate). This restores approximately nominal coverage at
+  small n (exposure NDE 0.09→0.95, NIE 0.12→0.93; mediator NDE
+  0.19→0.96, NIE 0.39→0.99 at n=500), for both the exposure and mediator
+  paths. See the *Identification Mathematics* vignette.
+
 ### Bug fixes (2026-06-11)
 
 - **(critical)

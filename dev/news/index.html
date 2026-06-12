@@ -40,11 +40,16 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features (2026-06-12)<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/bound_ci.html">bound_ci()</a></code> — confidence intervals for the partial-identification bounds.</strong> The raw estimated bound <code>[L̂, Û]</code> is consistent but is not a confidence set; when the identified set is narrow relative to endpoint sampling uncertainty it under-covers the true effect at small samples (e.g. exposure NDE coverage ~0.09 at n=500). <code><a href="../reference/bound_ci.html">bound_ci()</a></code> applies the Imbens &amp; Manski (2004) construction, widening the endpoints by standard errors obtained by re-evaluating the effect at the fixed optimal sensitivity parameter on resampled data (no grid search per replicate). This restores approximately nominal coverage at small n (exposure NDE 0.09→0.95, NIE 0.12→0.93; mediator NDE 0.19→0.96, NIE 0.39→0.99 at n=500), for both the exposure and mediator paths. See the <em>Identification Mathematics</em> vignette.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes (2026-06-11)<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
