@@ -52,3 +52,4 @@
 ^START-HERE.*\.md$
 ^dev-diagnostics$
 ^\.STATUS
+^TECHNICAL-NOTES.*\.md$

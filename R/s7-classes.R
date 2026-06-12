@@ -265,6 +265,7 @@ medrobust_bounds <- new_class(
       class = .sensitivity_region_class
     ),
     naive_estimates = new_property(class = class_list, default = NULL),
+    analytic_ci = new_property(class = class_list, default = NULL),
     bootstrap_results = new_property(
       class = class_any,
       default = NULL,

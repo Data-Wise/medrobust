@@ -7,6 +7,7 @@
 [![Website Status](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml)
 [![R-hub](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml)
 [![Codecov](https://codecov.io/gh/data-wise/medrobust/graph/badge.svg)](https://codecov.io/gh/data-wise/medrobust)
+[![r-universe](https://data-wise.r-universe.dev/badges/medrobust)](https://data-wise.r-universe.dev/medrobust)
 <!-- badges: end -->
 
 ## Overview
@@ -49,6 +50,17 @@ if (!require("devtools")) install.packages("devtools")
 
 # Install medrobust
 devtools::install_github("data-wise/medrobust", build_vignettes = TRUE)
+```
+
+### From r-universe (pre-built binaries)
+
+No compiler needed — binaries for Windows, macOS, and Linux:
+
+```r
+install.packages(
+  "medrobust",
+  repos = c("https://data-wise.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ### From CRAN (coming soon)
