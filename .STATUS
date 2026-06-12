@@ -1,8 +1,8 @@
 status: active
 priority: P0
 progress: 96
-next: INVESTIGATE finite-sample bias of the partial-ID bound endpoints (branch feature/analytic-ci). All 3 correctness bugs fixed+merged (PRs #2,#4); analytic-CI foundation built (R/bound_ci.R: single-Psi primitive + Imbens-Manski + envelope SE, 11x faster). KEY: point bound is biased LOW at small n (exposure NDE [1.06,1.07] vs 1.48 at n=2000; mediator raw coverage 0.20->0.83 with n) -> a CI around a biased centre can't reach nominal coverage. Tackle the BIAS before finishing CI plumbing. See SPEC-analytic-ci-2026-06-11.md sec 8.
-blocked: none (correctness). OPEN (methods): finite-sample endpoint bias -> coverage; needs bias diagnosis/correction vs asymptotic framing.
+next: PRODUCTIONIZE the Imbens-Manski CI (branch feature/analytic-ci). Bias investigation RESOLVED: NO material finite-sample bias (single-Psi ~unbiased; population bound contains truth; earlier "[1.06,1.07]" was one unlucky sample). Under-coverage is the IM narrow-set-vs-noise problem; IM CI (built in R/bound_ci.R) achieves nominal coverage at n=500 (NIE 0.12->0.93, NDE 0.09->0.95). Remaining: mediator primitive + bound_ci_mediator, wire ci_method="analytic" into bound_ne, full coverage table N{100,200,500} both paths OR/RR/RD, tests, CRAN. See PLAN-bias-investigation-2026-06-12.md.
+blocked: none. (All 3 correctness bugs fixed+merged PRs #2,#4. Methods question resolved: IM CI, no bias correction.)
 type: r
 last_updated: 2026-06-12
 
