@@ -114,3 +114,87 @@ bound_ci_exposure <- function(bounds, data, exposure, mediator, outcome,
   }
   out
 }
+
+# --- single-Psi effect, MEDIATOR path ----------------------------------------
+# Mirrors the per-(a, stratum) two-2x2 solve in bound_ne_mediator.R for one Psi.
+.effect_at_psi_mediator <- function(data, A_name, M_star_name, Y_name, C_names,
+                                    sn0, sp0, psi_sn, psi_sp, effect_scale = "OR") {
+  sn1 <- odds_to_prob(psi_sn * prob_to_odds(sn0))
+  sp1 <- odds_to_prob(psi_sp * prob_to_odds(sp0))
+  if (any(c(sn1, sp1) < 0 | c(sn1, sp1) > 1)) return(NULL)
+  if ((sn0 + sp0 - 1) <= 1e-8 || (sn1 + sp1 - 1) <= 1e-8) return(NULL)
+
+  if (is.null(C_names) || length(C_names) == 0) {
+    data$stratum_id <- 1L; strata <- data.frame(stratum_id = 1L)
+  } else {
+    data <- data |>
+      dplyr::group_by(dplyr::across(dplyr::all_of(C_names))) |>
+      dplyr::mutate(stratum_id = dplyr::cur_group_id()) |> dplyr::ungroup()
+    strata <- data |>
+      dplyr::select(stratum_id, dplyr::all_of(C_names)) |> dplyr::distinct()
+  }
+  A1 <- matrix(c(sn1, 1 - sp1, 1 - sn1, sp1), 2, 2, byrow = TRUE)
+  A0 <- matrix(c(sn0, 1 - sp0, 1 - sn0, sp0), 2, 2, byrow = TRUE)
+  solved <- list()
+  for (a in c(0, 1)) for (s in strata$stratum_id) {
+    das <- data[data[[A_name]] == a & data$stratum_id == s, , drop = FALSE]
+    if (nrow(das) < 5) return(NULL)
+    tab <- table(factor(das[[Y_name]], 0:1), factor(das[[M_star_name]], 0:1))
+    P <- as.numeric(tab) / sum(tab)         # column-major: Y0M0, Y1M0, Y0M1, Y1M1
+    P_00 <- P[1]; P_10 <- P[2]; P_01 <- P[3]; P_11 <- P[4]
+    xy1 <- tryCatch(solve(A1, c(P_11, P_10)), error = function(e) NULL)
+    xy0 <- tryCatch(solve(A0, c(P_01, P_00)), error = function(e) NULL)
+    if (is.null(xy1) || is.null(xy0)) return(NULL)
+    x1 <- xy1[1]; x0 <- xy1[2]; z1 <- xy0[1]; pi_a <- x1 + z1
+    if (pi_a < 0 || pi_a > 1) return(NULL)
+    g1 <- if (pi_a < 1e-6) 0.5 else x1 / pi_a
+    g0 <- if (pi_a > 1 - 1e-6) 0.5 else x0 / (1 - pi_a)
+    if (any(c(g0, g1) < 0 | c(g0, g1) > 1)) return(NULL)
+    solved[[paste0("a", a, "_s", s)]] <-
+      list(pi_a = pi_a, gamma_a0 = g0, gamma_a1 = g1, stratum_id = s)
+  }
+  eff <- compute_effects_from_params(solved, data, C_names, effect_scale)
+  list(nie = eff$nie, nde = eff$nde)
+}
+
+# --- generic endpoint SE + unified bound_ci ----------------------------------
+# eval_fn(d) -> list(nie, nde) at the fixed Psi; resample d, take sd of `which`.
+.endpoint_se <- function(eval_fn, data, which, n_boot = 200L, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+  n <- nrow(data)
+  vals <- vapply(seq_len(n_boot), function(b) {
+    e <- tryCatch(eval_fn(data[sample.int(n, n, replace = TRUE), , drop = FALSE]),
+                  error = function(err) NULL)
+    if (is.null(e)) NA_real_ else e[[which]]
+  }, numeric(1))
+  stats::sd(vals, na.rm = TRUE)
+}
+
+# Imbens-Manski CIs for NDE and NIE from a fitted bound object + its data.
+# misclassified_variable selects the per-Psi primitive.
+bound_ci <- function(bounds, data, exposure, mediator, outcome, confounders,
+                     misclassified_variable = c("exposure", "mediator"),
+                     n_boot = 200L, level = 0.95, seed = NULL) {
+  misclassified_variable <- match.arg(misclassified_variable)
+  scale <- bounds@effect_scale
+  primitive <- if (misclassified_variable == "exposure")
+    function(d, psi) .effect_at_psi_exposure(d, exposure, mediator, outcome, confounders,
+                                             psi$sn0, psi$sp0, psi$psi_sn, psi$psi_sp, scale)
+  else
+    function(d, psi) .effect_at_psi_mediator(d, exposure, mediator, outcome, confounders,
+                                             psi$sn0, psi$sp0, psi$psi_sn, psi$psi_sp, scale)
+  cs <- bounds@compatible_sets
+  pick <- function(col, fun) cs[which(cs[[col]] == fun(cs[[col]]))[1], ]
+  out <- list()
+  for (eff in c("NIE", "NDE")) {
+    w <- tolower(eff)
+    lo_psi <- pick(eff, min); hi_psi <- pick(eff, max)
+    seL <- .endpoint_se(function(d) primitive(d, lo_psi), data, w, n_boot, seed)
+    seU <- .endpoint_se(function(d) primitive(d, hi_psi), data, w, n_boot, seed)
+    L <- min(cs[[eff]]); U <- max(cs[[eff]])
+    ci <- .imbens_manski_ci(L, U, seL, seU, level)
+    out[[eff]] <- c(lower = L, upper = U, se_lower = seL, se_upper = seU,
+                    ci_lower = unname(ci["lower"]), ci_upper = unname(ci["upper"]))
+  }
+  out
+}
