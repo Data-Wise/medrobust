@@ -1,3 +1,16 @@
+# medrobust 0.2.1 (2026-06-12)
+
+CRAN-preparation release (documentation only; no change to computed results).
+
+* `DESCRIPTION`: explained the `BCa` acronym and added method references in the
+  `authors (year) <doi:...>` / `<ISBN:...>` form (Manski, 2003; Imbens & Manski, 2004).
+* Added `\value` documentation to all exported S7 classes (`medrobust_bounds`,
+  `bootstrap_results`, `compatibility_test`, `power_analysis_result`, `simulated_dm_data`).
+* Replaced `\dontrun{}` with `\donttest{}` for runnable examples and rewrote the example
+  code so each executes against small simulated data; the computationally intensive
+  `power_analysis()` example remains in `\dontrun{}`. Removed an example that wrote a file
+  to the working directory.
+
 # medrobust 0.2.0 (2026-06-12)
 
 This release fixes three correctness bugs in the differential-misclassification bounds and

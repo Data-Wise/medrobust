@@ -128,6 +128,9 @@ sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range)
 #' @param z0 BCa bias-correction parameter
 #' @param acceleration BCa acceleration parameter
 #'
+#' @return An S7 object of class `bootstrap_results` holding bootstrap
+#'   confidence intervals and the replicate samples for the lower and upper
+#'   bound endpoints of the natural direct and indirect effects.
 #' @export
 bootstrap_results <- new_class(
   name = "bootstrap_results",
@@ -196,6 +199,10 @@ bootstrap_results <- new_class(
 #' @param data_summary Summary statistics from the data
 #' @param call The function call that created this object
 #'
+#' @return An S7 object of class `medrobust_bounds` containing the partial
+#'   identification bounds for the natural direct and indirect effects, the
+#'   parameter sets compatible with the data, and the associated inference and
+#'   diagnostic summaries.
 #' @usage NULL
 #' @export
 medrobust_bounds <- new_class(
@@ -315,6 +322,9 @@ medrobust_bounds <- new_class(
 #' @param misclassified_variable Character: "exposure" or "mediator"
 #' @param reason Character describing reason for incompatibility (if any)
 #'
+#' @return An S7 object of class `compatibility_test` holding the outcome of the
+#'   data-compatibility (falsification) test, including the satisfied and
+#'   violated testable constraints.
 #' @usage NULL
 #' @export
 compatibility_test <- new_class(
@@ -467,6 +477,9 @@ new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_fals
 #' @param generation_params List of parameters used to generate the data
 #' @param misclassification_applied List of misclassification parameters applied
 #'
+#' @return An S7 object of class `simulated_dm_data` holding the simulated
+#'   observed data together with the true (unobserved) values, the true causal
+#'   effects, and the data-generating parameters.
 #' @usage NULL
 #' @export
 simulated_dm_data <- new_class(
@@ -529,6 +542,9 @@ simulated_dm_data <- new_class(
 #' @param recommended_n_width Recommended sample size to achieve target width
 #' @param simulation_params List of simulation parameters used
 #'
+#' @return An S7 object of class `power_analysis_result` holding the power and
+#'   bound-width curves across sample sizes and the recommended sample sizes for
+#'   the target power and width.
 #' @usage NULL
 #' @export
 power_analysis_result <- new_class(

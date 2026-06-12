@@ -53,14 +53,30 @@ The falsification analysis is useful for:
 }
 }
 \examples{
-\dontrun{
-bounds <- bound_ne(...)
+\donttest{
+# Compute bounds first (see ?bound_ne)
+sim <- simulate_dm_data(
+  n = 600,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
+set.seed(1)
+bounds <- bound_ne(
+  data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+  confounders = "C1", misclassified_variable = "mediator",
+  sensitivity_region = list(
+    sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+    psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)
+  ),
+  n_grid = 10
+)
 
 falsif <- falsification_summary(bounds)
 print(falsif)
 
 # View falsification plot
-falsif$plot
+falsif@plot
 }
 
 }

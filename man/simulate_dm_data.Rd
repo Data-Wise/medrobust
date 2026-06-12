@@ -81,7 +81,7 @@ power analysis, methods validation, and simulation studies. Allows control
 over true causal parameters and misclassification mechanisms.
 }
 \examples{
-\dontrun{
+\donttest{
 # Basic simulation with moderate effects and mild DM
 sim_data <- simulate_dm_data(
   n = 500,
@@ -101,6 +101,7 @@ sim_data <- simulate_dm_data(
 )
 
 # Use in analysis
+set.seed(1)
 bounds <- bound_ne(
   data = sim_data@observed,
   exposure = "A_star",

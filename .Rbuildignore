@@ -53,3 +53,4 @@
 ^dev-diagnostics$
 ^\.STATUS
 ^TECHNICAL-NOTES.*\.md$
+^Rplots\.pdf$

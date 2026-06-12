@@ -36,6 +36,9 @@
 #'   \item{simulation_params}{Parameters used for simulation}
 #'
 #' @examples
+#' # A power analysis runs many bootstrap-bound replications across several
+#' # sample sizes, so it is computationally intensive; it is wrapped in
+#' # \dontrun{} to keep checks fast. Reduce sample_sizes / n_sim to run quickly.
 #' \dontrun{
 #' # Power analysis for exposure DM with moderate effects
 #' power_result <- power_analysis(

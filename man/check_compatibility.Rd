@@ -75,7 +75,7 @@ The function is useful for:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 data("heals_data")
 
 # Test non-differential misclassification with high accuracy
