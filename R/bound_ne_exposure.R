@@ -136,6 +136,25 @@ bound_ne_exposure <- function(data,
       return(NULL)
     }
 
+    # The solve recovers the CONDITIONAL P(A = a | M = m, Y = y, C = s) (obs_probs
+    # is conditional on the M,Y,C cell), but compute_effects_from_joint_probs()
+    # expects the JOINT P(A = a, M = m, Y = y | C = s). Since M and Y are NOT
+    # misclassified in the exposure scenario, P(M = m, Y = y | C = s) is the
+    # observed cell frequency; multiply to convert conditional -> joint. Omitting
+    # this weight makes the M,Y marginal effectively uniform, which collapses
+    # P(M | A=1) and P(M | A=0) toward the same shape and drives NIE toward the
+    # null while leaving NDE (which fixes the mediator distribution at M(0))
+    # largely intact.
+    Pmy_vec <- vapply(seq_len(nrow(combinations)), function(i) {
+      sz <- stratum_sizes[stratum_sizes[[M_name]] == combinations$m[i] &
+                            stratum_sizes[[Y_name]] == combinations$y[i] &
+                            stratum_sizes$stratum_id == combinations$s[i], ]
+      n_s <- sum(stratum_sizes$n[stratum_sizes$stratum_id == combinations$s[i]])
+      if (nrow(sz) == 0 || n_s == 0) 0 else sz$n[1] / n_s
+    }, numeric(1))
+    P_1my_vec <- P_1my_vec * Pmy_vec
+    P_0my_vec <- P_0my_vec * Pmy_vec
+
     # Store results in list format (convert vectors to list)
     P_true_list <- lapply(seq_len(nrow(combinations)), function(i) {
       c(P_1 = max(0, P_1my_vec[i]),
