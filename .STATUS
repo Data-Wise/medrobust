@@ -1,8 +1,8 @@
-status: active
+status: released
 priority: P0
-progress: 96
-next: PRODUCTIONIZE the Imbens-Manski CI (branch feature/analytic-ci). Bias investigation RESOLVED: NO material finite-sample bias (single-Psi ~unbiased; population bound contains truth; earlier "[1.06,1.07]" was one unlucky sample). Under-coverage is the IM narrow-set-vs-noise problem; IM CI (built in R/bound_ci.R) achieves nominal coverage at n=500 (NIE 0.12->0.93, NDE 0.09->0.95). Remaining: mediator primitive + bound_ci_mediator, wire ci_method="analytic" into bound_ne, full coverage table N{100,200,500} both paths OR/RR/RD, tests, CRAN. See PLAN-bias-investigation-2026-06-12.md.
-blocked: none. (All 3 correctness bugs fixed+merged PRs #2,#4. Methods question resolved: IM CI, no bias correction.)
+progress: 100
+next: RELEASED v0.2.0 (2026-06-12). 3 correctness bugs fixed (mediator solve, true-effects estimand, exposure NIE) + new bound_ci()/ci_method="analytic" Imbens-Manski CIs (both paths; coverage raw 0.00-0.42 -> IM 0.90-1.00 over N{100,200,500}xOR/RR/RD). dev->main merged (PR #7), tag v0.2.0 + GitHub release created. r-universe will rebuild 0.2.0 on next sync (currently 0.1.0.9000). Optional next: CRAN submission (cran-comments + revdep + winbuilder); M2a/M2b sims now unblocked.
+blocked: none.
 type: r
 last_updated: 2026-06-12
 
