@@ -123,8 +123,9 @@ reference:
   - test_multiple_hypotheses
 
 - title: Bootstrap and Inference
-  desc: Bootstrap results and standard-error helpers
+  desc: Confidence intervals, bootstrap results, and standard-error helpers
   contents:
+  - bound_ci
   - bootstrap_results
   - bootstrap_width_summary
   - compute_bound_se

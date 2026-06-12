@@ -243,6 +243,17 @@ coverage at small $n$:
 | NDE | $0.09$ | $0.95$ |
 | NIE | $0.12$ | $0.93$ |
 
+In the package this is `bound_ci()`, called on a fitted bound:
+
+```{r bound-ci-usage, eval=FALSE}
+b  <- bound_ne(data, exposure = "A_star", mediator = "M", outcome = "Y",
+               confounders = "C1", misclassified_variable = "exposure",
+               sensitivity_region = region, n_grid = 50, effect_scale = "OR")
+ci <- bound_ci(b, data, exposure = "A_star", mediator = "M", outcome = "Y",
+               confounders = "C1", misclassified_variable = "exposure")
+ci$NDE   # lower, upper (point bounds); ci_lower, ci_upper (Imbens-Manski CI)
+```
+
 ::: {.callout-note}
 ## Cost
 A *full* nonparametric bootstrap re-runs the entire grid search per replicate and is
