@@ -61,3 +61,25 @@ test_that("bound_ci returns well-formed CI-widened envelopes", {
     expect_gt(v["se_lower"], 0); expect_gt(v["se_upper"], 0)
   }
 })
+
+test_that("bound_ne(ci_method='analytic') attaches @analytic_ci", {
+  skip_on_cran()
+  sim <- simulate_dm_data(n = 3000,
+    true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+    dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+    misclass_type = "exposure", confounders = 1, seed = 7)
+  region <- as_sensitivity_region(list(sn0_range = c(0.85, 0.95),
+    sp0_range = c(0.85, 0.95), psi_sn_range = c(1, 1), psi_sp_range = c(1, 1)))
+  b <- bound_ne(sim@observed, exposure = "A_star", mediator = "M", outcome = "Y",
+    confounders = "C1", misclassified_variable = "exposure", sensitivity_region = region,
+    n_grid = 10, effect_scale = "OR", ci_method = "analytic", ci_n_boot = 50L, verbose = FALSE)
+  expect_true(length(b@analytic_ci) > 0)
+  expect_true(all(c("NIE", "NDE") %in% names(b@analytic_ci)))
+  expect_lte(b@analytic_ci$NDE["ci_lower"], b@NDE_lower)
+  expect_gte(b@analytic_ci$NDE["ci_upper"], b@NDE_upper)
+  # default: no analytic CI computed
+  b0 <- bound_ne(sim@observed, exposure = "A_star", mediator = "M", outcome = "Y",
+    confounders = "C1", misclassified_variable = "exposure", sensitivity_region = region,
+    n_grid = 10, effect_scale = "OR", verbose = FALSE)
+  expect_equal(length(b0@analytic_ci), 0)
+})
