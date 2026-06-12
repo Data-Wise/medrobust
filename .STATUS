@@ -1,8 +1,8 @@
 status: active
 priority: P0
-progress: 90
-next: PR fix/true-effects-estimand -> main. Both correctness bugs fixed + verified (mediator two-2x2 solve; compute_true_effects g-computation). devtools::test() 157 pass/0 fail; check() 0 errors/0 warnings. Then regenerate manuscript illustrative numbers + scale sims (n_grid>=50).
-blocked: none
+progress: 95
+next: PR fix/exposure-nie -> main (exposure NIE assembly fixed: conditional P(A|M,Y,C) -> joint via observed P(M,Y|C); point test recovers 1.480/1.199). All three correctness bugs now fixed (mediator solve, true-effects estimand, exposure NIE). Then M2a/M2b sims + manuscript numbers.
+blocked: none. (Exposure NIE bound fixed 2026-06-11 — was the last open correctness bug.)
 type: r
 last_updated: 2026-06-11
 
