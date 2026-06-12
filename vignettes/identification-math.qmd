@@ -243,6 +243,11 @@ coverage at small $n$:
 | NDE | $0.09$ | $0.95$ |
 | NIE | $0.12$ | $0.93$ |
 
+This pattern holds across the full design: a simulation over **both misclassification
+paths**, $N\in\{100,200,500\}$, and the OR/RR/RD scales finds raw-bound coverage of
+$0.00\text{–}0.42$ versus Imbens–Manski coverage of $0.90\text{–}1.00$ (conservative at the
+smallest $N$).
+
 In the package this is `bound_ci()`, called on a fitted bound:
 
 ```{r bound-ci-usage, eval=FALSE}

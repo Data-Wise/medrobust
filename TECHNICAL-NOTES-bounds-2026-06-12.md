@@ -83,13 +83,35 @@ argmin/argmax $\Psi$ on resampled data (no grid search per replicate) — feasib
 
 ---
 
-## Status & remaining work
-- Correctness: **done** (PRs #2, #4 merged; `main` green; 169 tests pass; CRAN-clean).
-- Inference: **method settled** (IM CI, validated). Remaining = productionize: mediator
-  primitive + `bound_ci_mediator`, wire `ci_method="analytic"` into `bound_ne`, full
-  coverage table $N\in\{100,200,500\}$ both paths OR/RR/RD, tests, CRAN, PR.
+## Status
+- Correctness: **done** (PRs #2, #4 merged; `main` green; CRAN-clean).
+- Inference: **done** — `bound_ci()` (exported) and `bound_ne(ci_method="analytic")`
+  provide Imbens–Manski CIs for both paths; validated across the full design (table below);
+  187 tests pass, `check() --as-cran` clean. In review as PR #6 → `dev`.
 
 ## Key references
 Imbens & Manski (2004, *Econometrica*) — CIs for partially identified parameters;
 Kilian (1998), Schafer (2024), Nakagawa et al. (2025) — bias-corrected bootstrap (scouted,
 not needed here); manuscript §4.2/§5.2 (Tofighi).
+
+---
+
+## Coverage validation — full design (2026-06-12)
+
+Coverage of the true effect (R=60 reps, B=80 endpoint resamples, ψ=1), raw bound vs
+Imbens–Manski CI, both paths × N∈{100,200,500} × OR/RR/RD. Truth = `@true_effects` per
+scale. Script: `dev-diagnostics/coverage_table.R`.
+
+| path | N | scale | NDE raw → IM | NIE raw → IM |
+|------|--:|:-----:|:-----------:|:-----------:|
+| exposure | 100 | OR/RR/RD | 0.00–0.17 → **1.00** | 0.17–0.33 → **1.00** |
+| exposure | 200 | OR/RR/RD | 0.07–0.12 → **0.93–0.95** | 0.05–0.14 → **0.95** |
+| exposure | 500 | OR/RR/RD | 0.17–0.18 → **0.95–0.97** | 0.17–0.20 → **0.95–0.97** |
+| mediator | 100 | OR/RR/RD | 0.13 → **0.96–1.00** | 0.17–0.22 → **0.96** |
+| mediator | 200 | OR/RR/RD | 0.04–0.08 → **0.90–0.96** | 0.18–0.27 → **0.92** |
+| mediator | 500 | OR/RR/RD | 0.13–0.17 → **0.95** | 0.32–0.42 → **0.98** |
+
+**Conclusion:** the raw bound under-covers badly (0.00–0.42); the Imbens–Manski CI
+(`bound_ci()` / `bound_ne(ci_method="analytic")`) restores ≥ nominal coverage everywhere
+(0.90–1.00), conservatively at the smallest N. Confirms the IM CI as the inference fix
+across both misclassification paths and all three effect scales.
