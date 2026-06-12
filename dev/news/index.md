@@ -36,6 +36,18 @@
   estimand, the mediator two-2×2 identification, the exposure closed
   form, and the finite-sample convergence evidence.
 
+### Known issues (open, 2026-06-11)
+
+- **Exposure (A\*) NIE bound is incorrect.** Post-merge smoke testing
+  found that with `misclassified_variable = "exposure"`, the NIE bound
+  does not contain the true NIE even at the population limit with the
+  true Ψ in-region (e.g. true 1.199 vs bound \[0.980, 0.991\]); the
+  exposure NDE bound is fine. The earlier audit verified the exposure
+  *solve* (class-probability inverse) but not the NIE *assembly*.
+  Tracked in `SPEC-fix-exposure-NIE-2026-06-11.md` /
+  `PLAN-fix-exposure-NIE-2026-06-11.md`. Mediator path is unaffected and
+  verified.
+
 ### Ecosystem Notes
 
 - Part of the mediationverse ecosystem for mediation analysis

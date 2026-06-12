@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://data-wise.github.io/medrobust/dev/BOOTSTRAP_IMPROVEMENTS.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/CLAUDE-CODE-PROMPT-exposure-NIE.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/CLAUDE-CODE-PROMPT.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/CLAUDE.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/FINAL_OPTIMIZATION_SUMMARY.html</loc></url>
@@ -10,12 +11,14 @@
 <url><loc>https://data-wise.github.io/medrobust/dev/MEDIATOR_OPTIMIZATION.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/OPTIMIZATION_SUMMARY.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/PLAN-fix-bound_ne-solve-2026-06-11.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/PLAN-fix-exposure-NIE-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/POWER_ANALYSIS_OPTIMIZATIONS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/QUARTO_VIGNETTES_SETUP.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/REGENERATE_DOCS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/RENV_SETUP.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/S7_CONVERSION_GUIDE.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/S7_DOCUMENTATION.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/dev/SPEC-fix-exposure-NIE-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/START-HERE-fix-true-effects.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/VECTORIZATION_IMPROVEMENTS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/dev/VIGNETTE_GRID_SEARCH.html</loc></url>

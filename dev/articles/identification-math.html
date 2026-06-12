@@ -79,7 +79,7 @@
       <h1>Identification Mathematics: Recovering Latent Effects under Differential Misclassification</h1>
 
       <p class="author">Davood Tofighi, Ph.D.</p>
-      <p class="date">2026-06-11</p>
+      <p class="date">2026-06-12</p>
 
       <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/main/vignettes/identification-math.qmd" class="external-link"><code>vignettes/identification-math.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -188,7 +188,7 @@ P(M{=}1,Y{=}0) &amp;= \pi (1-g_1), &amp; P(M{=}0,Y{=}0) &amp;= (1-\pi)(1-g_0).
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"max |recovered - true| (differential case) = %.2e\n"</span>, <span class="va">err</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>max |recovered - true| (differential case) = 1.11e-16</code></pre>
+<pre><code>max |recovered - true| (differential case) = 5.55e-17</code></pre>
 </div>
 </div>
 </section></section><section class="level2"><h2 id="exposure-identification-closed-form-2times2-inverse">Exposure identification: closed-form <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2\times2</annotation></semantics></math> inverse<a class="anchor" aria-label="anchor" href="#exposure-identification-closed-form-2times2-inverse"></a>
@@ -244,6 +244,57 @@ p_0 = \frac{Sn_y\,P^*_0 - (1-Sn_y)\,P^*_1}{Sn_y + Sp_y - 1}.
 <span>              confounders <span class="op">=</span> <span class="st">"C1"</span>, misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
 <span>              sensitivity_region <span class="op">=</span> <span class="va">reg</span>, n_grid <span class="op">=</span> <span class="fl">10</span>, effect_scale <span class="op">=</span> <span class="st">"OR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>NDE <span class="op">=</span> <span class="op">(</span><span class="va">b</span><span class="op">@</span><span class="va">NDE_lower</span> <span class="op">+</span> <span class="va">b</span><span class="op">@</span><span class="va">NDE_upper</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>, NIE <span class="op">=</span> <span class="op">(</span><span class="va">b</span><span class="op">@</span><span class="va">NIE_lower</span> <span class="op">+</span> <span class="va">b</span><span class="op">@</span><span class="va">NIE_upper</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="finite-sample-coverage-and-inference">Finite-sample coverage and inference<a class="anchor" aria-label="anchor" href="#finite-sample-coverage-and-inference"></a>
+</h2>
+<p>The bound is a <strong>consistent</strong> estimator of the identified set, but a <em>point</em> estimate of that set, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mover><mi>L</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>U</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[\hat L, \hat U]</annotation></semantics></math>, is <strong>not</strong> a confidence set: it ignores the sampling uncertainty in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>L</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat L</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>U</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat U</annotation></semantics></math>. Consequently the raw estimated bound <strong>under-covers</strong> the true effect at finite <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> — it only approaches nominal coverage as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow><annotation encoding="application/x-tex">n\to\infty</annotation></semantics></math>. At the true <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math> (mediator, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ψ</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\psi=1</annotation></semantics></math>), simulated coverage of the raw NDE bound climbs steadily with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math></th>
+<th style="text-align: right;">raw-bound NDE coverage</th>
+<th style="text-align: right;">mean bound vs truth <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.480</mn><annotation encoding="application/x-tex">1.480</annotation></semantics></math>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>0.20</mn></mrow><annotation encoding="application/x-tex">\approx 0.20</annotation></semantics></math></td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">2{,}000</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.33</mn><annotation encoding="application/x-tex">0.33</annotation></semantics></math></td>
+<td style="text-align: right;">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>1.276</mn><mo>,</mo><mspace width="0.167em"></mspace><mn>1.436</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[1.276,\,1.436]</annotation></semantics></math> (below truth)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mo>,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">20{,}000</annotation></semantics></math></td>
+<td style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.83</mn><annotation encoding="application/x-tex">0.83</annotation></semantics></math></td>
+<td style="text-align: right;">
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>1.369</mn><mo>,</mo><mspace width="0.167em"></mspace><mn>1.514</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[1.369,\,1.514]</annotation></semantics></math> (truth inside)</td>
+</tr>
+</tbody>
+</table>
+<p>This is the expected behaviour of a plug-in partial-identification set, <strong>not</strong> a bug: the downward finite-sample bias vanishes with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> (the population recovery is exact to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>17</mn></mrow></msup></mrow><annotation encoding="application/x-tex">5\times10^{-17}</annotation></semantics></math>). For valid finite-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math> inference, report a <strong>confidence envelope for the set</strong> rather than the raw bound — the truth is covered when</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">I</mi></mrow><mo accent="true">̂</mo></mover><mtext mathvariant="normal">lo</mtext></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>L</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo><mspace width="0.278em"></mspace><mo>≤</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">truth</mtext><mspace width="0.278em"></mspace><mo>≤</mo><mspace width="0.278em"></mspace><msub><mover><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">I</mi></mrow><mo accent="true">̂</mo></mover><mtext mathvariant="normal">hi</mtext></msub><mo stretchy="false" form="prefix">(</mo><mover><mi>U</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\widehat{\mathrm{CI}}_{\text{lo}}(\hat L) \;\le\; \text{truth} \;\le\;
+\widehat{\mathrm{CI}}_{\text{hi}}(\hat U),
+</annotation></semantics></math></p>
+<p>which <code><a href="../reference/bound_ne.html">bound_ne()</a></code> provides via the bootstrap:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span><span class="va">data</span>, exposure <span class="op">=</span> <span class="st">"A"</span>, mediator <span class="op">=</span> <span class="st">"M_star"</span>, outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
+<span>              confounders <span class="op">=</span> <span class="st">"C1"</span>, misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
+<span>              sensitivity_region <span class="op">=</span> <span class="va">region</span>, n_grid <span class="op">=</span> <span class="fl">50</span>, effect_scale <span class="op">=</span> <span class="st">"OR"</span>,</span>
+<span>              bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, bootstrap_reps <span class="op">=</span> <span class="fl">500</span>, bootstrap_method <span class="op">=</span> <span class="st">"bca"</span><span class="op">)</span></span>
+<span><span class="va">bs</span> <span class="op">&lt;-</span> <span class="va">b</span><span class="op">@</span><span class="va">bootstrap_results</span></span>
+<span><span class="va">ci_envelope</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">bs</span><span class="op">@</span><span class="va">nde_lower_ci</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, upper <span class="op">=</span> <span class="va">bs</span><span class="op">@</span><span class="va">nde_upper_ci</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div>
+<blockquote>
+<p><strong>Computational cost</strong></p>
+<p>The nonparametric bootstrap re-runs the full grid search for <strong>every</strong> replicate, so coverage studies over many design cells and replications are expensive. A fast analytic (delta-method / influence-function) confidence interval for the bound endpoints is a natural future addition for large-scale simulation work.</p>
+</blockquote>
 </div>
 </section><section class="level2"><h2 id="practical-implication-grid-resolution">Practical implication: grid resolution<a class="anchor" aria-label="anchor" href="#practical-implication-grid-resolution"></a>
 </h2>

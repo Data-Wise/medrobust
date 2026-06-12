@@ -142,7 +142,7 @@ for (cc in 0:1) for (a in 0:1) {
 cat(sprintf("max |recovered - true| (differential case) = %.2e\n", err))
 ```
 
-    max |recovered - true| (differential case) = 1.11e-16
+    max |recovered - true| (differential case) = 5.55e-17
 
 ## Exposure identification: closed-form $`2\times2`$ inverse
 
@@ -197,6 +197,55 @@ b <- bound_ne(sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
               sensitivity_region = reg, n_grid = 10, effect_scale = "OR")
 c(NDE = (b@NDE_lower + b@NDE_upper) / 2, NIE = (b@NIE_lower + b@NIE_upper) / 2)
 ```
+
+## Finite-sample coverage and inference
+
+The bound is a **consistent** estimator of the identified set, but a
+*point* estimate of that set, $`[\hat L, \hat U]`$, is **not** a
+confidence set: it ignores the sampling uncertainty in $`\hat L`$ and
+$`\hat U`$. Consequently the raw estimated bound **under-covers** the
+true effect at finite $`n`$ — it only approaches nominal coverage as
+$`n\to\infty`$. At the true $`\Psi`$ (mediator, $`\psi=1`$), simulated
+coverage of the raw NDE bound climbs steadily with $`n`$:
+
+|        $`n`$ | raw-bound NDE coverage |      mean bound vs truth $`1.480`$ |
+|-------------:|-----------------------:|-----------------------------------:|
+|      $`500`$ |       $`\approx 0.20`$ |                                  — |
+|  $`2{,}000`$ |               $`0.33`$ |  $`[1.276,\,1.436]`$ (below truth) |
+| $`20{,}000`$ |               $`0.83`$ | $`[1.369,\,1.514]`$ (truth inside) |
+
+This is the expected behaviour of a plug-in partial-identification set,
+**not** a bug: the downward finite-sample bias vanishes with $`n`$ (the
+population recovery is exact to $`5\times10^{-17}`$). For valid
+finite-$`n`$ inference, report a **confidence envelope for the set**
+rather than the raw bound — the truth is covered when
+
+``` math
+\widehat{\mathrm{CI}}_{\text{lo}}(\hat L) \;\le\; \text{truth} \;\le\;
+\widehat{\mathrm{CI}}_{\text{hi}}(\hat U),
+```
+
+which
+[`bound_ne()`](https://data-wise.github.io/medrobust/dev/reference/bound_ne.md)
+provides via the bootstrap:
+
+``` r
+
+b <- bound_ne(data, exposure = "A", mediator = "M_star", outcome = "Y",
+              confounders = "C1", misclassified_variable = "mediator",
+              sensitivity_region = region, n_grid = 50, effect_scale = "OR",
+              bootstrap = TRUE, bootstrap_reps = 500, bootstrap_method = "bca")
+bs <- b@bootstrap_results
+ci_envelope <- c(lower = bs@nde_lower_ci[1], upper = bs@nde_upper_ci[2])
+```
+
+> **Computational cost**
+>
+> The nonparametric bootstrap re-runs the full grid search for **every**
+> replicate, so coverage studies over many design cells and replications
+> are expensive. A fast analytic (delta-method / influence-function)
+> confidence interval for the bound endpoints is a natural future
+> addition for large-scale simulation work.
 
 ## Practical implication: grid resolution
 

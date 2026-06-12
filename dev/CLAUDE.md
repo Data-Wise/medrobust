@@ -45,7 +45,33 @@ the derivation; registered in `_pkgdown.yml`.
 `dev-diagnostics/` (gitignored). Downstream: regenerate manuscript
 M2a/M2b illustrative numbers and scale sims (`n_grid≥50`) after merge.
 
-**Remaining:** PR `fix/true-effects-estimand` → `main`.
+**Remaining:** PR `fix/true-effects-estimand` → `main`. (Merged via PR
+\#2, 2026-06-11.)
+
+------------------------------------------------------------------------
+
+## 🔴 OPEN — exposure NIE bound appears incorrect (found 2026-06-11, post-merge smoke)
+
+A population-limit smoke check (n=2e5, true Ψ in-region) shows the
+**exposure (A\*) path’s NIE bound misses the truth**, while its NDE
+bound is fine: - exposure NDE: true 1.480 ∈ \[1.424, 1.588\] ✓ -
+exposure **NIE: true 1.199 vs bound \[0.980, 0.991\] ✗** (bound below
+the null, badly off)
+
+The mediator fix did NOT touch `bound_ne_exposure.R`. The earlier audit
+verified the exposure **solve** (2×2 class-probability inverse) is
+correct — but the **NIE assembly / g-computation on the A\* path** was
+not separately validated against an A\*-specific oracle. Mediator-path
+cells (psi=1 and 1.5) DO contain truth at n=2e5, so this is specific to
+exposure NIE.
+
+**ACTION (see `PLAN-fix-exposure-NIE-2026-06-11.md`):** build an A\*
+potential-outcome oracle, feed
+`bound_ne(..., misclassified_variable="exposure")` the true Ψ on
+population data, and locate where the NIE composition diverges. Likely
+an A\*-analogue of the estimand/assembly issues already fixed on the
+mediator side. Until resolved, M2b (`me-exposure-recall`) §6 sims are
+blocked.
 
 ------------------------------------------------------------------------
 
