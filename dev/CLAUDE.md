@@ -50,28 +50,31 @@ M2a/M2b illustrative numbers and scale sims (`n_grid≥50`) after merge.
 
 ------------------------------------------------------------------------
 
-## 🔴 OPEN — exposure NIE bound appears incorrect (found 2026-06-11, post-merge smoke)
+## ✅ RESOLVED — exposure NIE bound fixed (2026-06-11, branch `fix/exposure-nie`)
 
-A population-limit smoke check (n=2e5, true Ψ in-region) shows the
-**exposure (A\*) path’s NIE bound misses the truth**, while its NDE
-bound is fine: - exposure NDE: true 1.480 ∈ \[1.424, 1.588\] ✓ -
-exposure **NIE: true 1.199 vs bound \[0.980, 0.991\] ✗** (bound below
-the null, badly off)
+The **exposure (A\*) path’s NIE bound** missed the truth (true 1.199 vs
+\[0.980, 0.991\]) while its NDE bound was correct. **Root cause:**
+`bound_ne_exposure.R` recovers the **conditional** `P(A=a | M,Y,C)`, but
+[`compute_effects_from_joint_probs()`](https://data-wise.github.io/medrobust/dev/reference/compute_effects_from_joint_probs.md)
+consumed those as the **joint** `P(A,M,Y | C)`, dropping the observed
+`P(M,Y | C)` weight → the M,Y marginal became effectively uniform →
+`P(M|A=1)` and `P(M|A=0)` collapsed toward the same shape → NIE driven
+to the null (NDE survives because it fixes the mediator distribution at
+M(0) in both terms).
 
-The mediator fix did NOT touch `bound_ne_exposure.R`. The earlier audit
-verified the exposure **solve** (2×2 class-probability inverse) is
-correct — but the **NIE assembly / g-computation on the A\* path** was
-not separately validated against an A\*-specific oracle. Mediator-path
-cells (psi=1 and 1.5) DO contain truth at n=2e5, so this is specific to
-exposure NIE.
+**Fix:** multiply the recovered conditional by the observed
+`P(M=m, Y=y | C)` (M and Y are not misclassified in the exposure
+scenario) to form the joint, in `evaluate_param_set()`
+(`R/bound_ne_exposure.R`, shared by the serial and parallel paths). The
+exposure *solve* was already correct; only the NIE *assembly* was wrong.
+[`compute_effects_from_joint_probs()`](https://data-wise.github.io/medrobust/dev/reference/compute_effects_from_joint_probs.md)
+is otherwise correct and was not changed structurally.
 
-**ACTION (see `PLAN-fix-exposure-NIE-2026-06-11.md`):** build an A\*
-potential-outcome oracle, feed
-`bound_ne(..., misclassified_variable="exposure")` the true Ψ on
-population data, and locate where the NIE composition diverges. Likely
-an A\*-analogue of the estimand/assembly issues already fixed on the
-mediator side. Until resolved, M2b (`me-exposure-recall`) §6 sims are
-blocked.
+**Verified:** point test `dev-diagnostics/bne_point_test_exposure.R`
+recovers NDE 1.480 / NIE 1.199 within 0.01 (was NIE ~0.99);
+`smoke2_popcheck_both_paths.R` exposure NIE row now TRUE; new tests
+`test-recovery-exposure.R`, `test-bound-contains-truth-exposure.R` pass;
+mediator path unaffected. Oracle: `dev-diagnostics/oracle_exposure.R`.
 
 ------------------------------------------------------------------------
 

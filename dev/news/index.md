@@ -36,17 +36,25 @@
   estimand, the mediator two-2×2 identification, the exposure closed
   form, and the finite-sample convergence evidence.
 
-### Known issues (open, 2026-06-11)
+### Bug fixes (exposure NIE, 2026-06-11)
 
-- **Exposure (A\*) NIE bound is incorrect.** Post-merge smoke testing
-  found that with `misclassified_variable = "exposure"`, the NIE bound
-  does not contain the true NIE even at the population limit with the
-  true Ψ in-region (e.g. true 1.199 vs bound \[0.980, 0.991\]); the
-  exposure NDE bound is fine. The earlier audit verified the exposure
-  *solve* (class-probability inverse) but not the NIE *assembly*.
-  Tracked in `SPEC-fix-exposure-NIE-2026-06-11.md` /
-  `PLAN-fix-exposure-NIE-2026-06-11.md`. Mediator path is unaffected and
-  verified.
+- **(critical) Exposure (A\*) NIE bound was incorrect — fixed.** With
+  `misclassified_variable = "exposure"`, the NIE bound did not contain
+  the true NIE even at the population limit with the true Ψ in-region
+  (true 1.199 vs bound \[0.980, 0.991\]); the NDE bound was fine. Root
+  cause: `bound_ne_exposure.R` recovers the **conditional**
+  `P(A=a | M,Y,C)`, but the downstream g-computation
+  (`compute_effects_from_joint_probs`) consumed those values as the
+  **joint** `P(A,M,Y | C)`, dropping the observed `P(M,Y | C)` weight.
+  That made the mediator marginal effectively uniform, collapsing
+  `P(M|A=1)` and `P(M|A=0)` toward the same shape and driving NIE toward
+  the null while leaving NDE (which fixes the mediator distribution at
+  M(0)) intact. Fix: multiply the recovered conditional by the observed
+  `P(M=m, Y=y | C)` (M and Y are not misclassified in the exposure
+  scenario) to form the joint. The exposure *solve* (class-probability
+  inverse) was already correct; only the NIE *assembly* was wrong. Point
+  test now recovers NDE 1.480 / NIE 1.199 within 0.01; mediator path
+  unaffected.
 
 ### Ecosystem Notes
 
