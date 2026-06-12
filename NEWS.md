@@ -1,4 +1,7 @@
-# medrobust (development version)
+# medrobust 0.2.0 (2026-06-12)
+
+This release fixes three correctness bugs in the differential-misclassification bounds and
+adds confidence intervals for the partial-identification bounds.
 
 ## New features (2026-06-12)
 
