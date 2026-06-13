@@ -1,10 +1,10 @@
 status: released
 priority: P0
 progress: 100
-next: RELEASED v0.2.0 (2026-06-12). 3 correctness bugs fixed (mediator solve, true-effects estimand, exposure NIE) + new bound_ci()/ci_method="analytic" Imbens-Manski CIs (both paths; coverage raw 0.00-0.42 -> IM 0.90-1.00 over N{100,200,500}xOR/RR/RD). dev->main merged (PR #7), tag v0.2.0 + GitHub release created. r-universe will rebuild 0.2.0 on next sync (currently 0.1.0.9000). Optional next: CRAN submission (cran-comments + revdep + winbuilder); M2a/M2b sims now unblocked.
+next: CRAN-PREP COMPLETE on feature/cran-prep (v0.2.1, pushed). Strict R CMD check --as-cran --run-donttest = 0E/0W/1 NOTE (new submission only; >5s example NOTE cleared by trimming bound_ne to a single ci_method="analytic" solve @ n=8000 + simulate_dm_data n_grid=10). 4 medfit-derived manual-review fixes (46b501f), n=8000/bound_ci examples (63305ca), _freeze cache committed + detritus gitignored (3fe1b43). win-builder 0.2.1 clean. >>> ONLY STEP LEFT: run devtools::submit_cran() (needs TTY) <<<. Prior: RELEASED v0.2.0 (3 bugs fixed + bound_ci IM CIs; PR #7, tag v0.2.0). Sibling: pmed Hopper confirmatory-run SPEC + RUN.md ready (feature/bootstrap-mbco) — author runs on Hopper via ssh.
 blocked: none.
 type: r
-last_updated: 2026-06-12
+last_updated: 2026-06-13
 
 # ═══════════════════════════════════════════════════════════════════
 # Below is the original .STATUS content (preserved for reference)
