@@ -107,7 +107,10 @@
 #'   psi_sp_range = c(0.8, 1.5)
 #' )
 #'
-#' # Compute partial-identification bounds for mediator misclassification
+#' # Compute partial-identification bounds for mediator misclassification.
+#' # The raw bound [L, U] is consistent but is NOT a confidence set; at finite n
+#' # it can under-cover the truth, so we add Imbens-Manski confidence intervals
+#' # in the same fit via ci_method = "analytic".
 #' set.seed(1)
 #' bounds <- bound_ne(
 #'   data = sim@observed,
@@ -117,24 +120,14 @@
 #'   confounders = "C1",
 #'   misclassified_variable = "mediator",
 #'   sensitivity_region = sens_region,
-#'   n_grid = 10
+#'   n_grid = 10,
+#'   ci_method = "analytic", ci_n_boot = 50
 #' )
 #'
 #' # View results
 #' print(bounds)
 #' summary(bounds)
-#'
-#' # The raw estimated bound [L, U] is consistent but is NOT a confidence set;
-#' # at finite n it can under-cover the true effect. For inference, add
-#' # Imbens-Manski confidence intervals via ci_method = "analytic":
-#' set.seed(1)
-#' bounds_ci <- bound_ne(
-#'   data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
-#'   confounders = "C1", misclassified_variable = "mediator",
-#'   sensitivity_region = sens_region, n_grid = 10,
-#'   ci_method = "analytic", ci_n_boot = 100
-#' )
-#' bounds_ci@analytic_ci$NDE   # lower/upper bound + IM confidence interval
+#' bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
 #'
 #' # Visualize
 #' sensitivity_plot(bounds, param = "psi_sn")
