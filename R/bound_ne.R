@@ -313,6 +313,25 @@ bound_ne <- function(data,
     )
   }
 
+  # Signal an infeasible condition when no compatible parameter sets were
+  # found. This degrades gracefully (NA bounds + machine-readable reason)
+  # instead of aborting, so simulations can record the rep rather than lose it.
+  if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+    signalCondition(
+      structure(
+        list(
+          message = "No compatible parameter sets found. Consider widening sensitivity_region.",
+          call = match.call()
+        ),
+        class = c("medrobust_infeasible", "condition")
+      )
+    )
+  }
+
+  # Reason is only set by dispatchers on the infeasible path; default to NULL
+  # safely so feasible runs (which never set `reason`) are unaffected.
+  bounds_reason <- if (is.null(bounds_result$reason)) NULL else bounds_result$reason
+
   # Construct S7 output object
   output <- medrobust_bounds(
     NIE_lower = bounds_result$NIE_lower,
@@ -327,6 +346,7 @@ bound_ne <- function(data,
     misclassified_variable = misclassified_variable,
     sensitivity_region = sens_region_s7,
     naive_estimates = bounds_result$naive_estimates,
+    reason = bounds_reason,
     bootstrap_results = bootstrap_s7,
     data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
     call = match.call()

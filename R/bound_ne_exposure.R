@@ -246,7 +246,20 @@ bound_ne_exposure <- function(data,
 
       # Check if any compatible sets were found
       if (length(results) == 0) {
-        stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+        # Graceful infeasible result: NA bounds + machine-readable reason
+        # rather than stop(); bound_ne() signals 'medrobust_infeasible'.
+        return(list(
+          NIE_lower = NA_real_,
+          NIE_upper = NA_real_,
+          NDE_lower = NA_real_,
+          NDE_upper = NA_real_,
+          compatible_sets = data.frame(),
+          n_compatible = 0L,
+          n_evaluated = n_total_evaluated,
+          falsified_proportion = 1.0,
+          naive_estimates = naive_estimates,
+          reason = "infeasible_no_compatible_sets"
+        ))
       }
     }
   }
@@ -308,7 +321,20 @@ bound_ne_exposure <- function(data,
     n_total_evaluated <- n_total
 
     if (length(results) == 0) {
-      stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+      # Graceful infeasible result: NA bounds + machine-readable reason
+      # rather than stop(); bound_ne() signals 'medrobust_infeasible'.
+      return(list(
+        NIE_lower = NA_real_,
+        NIE_upper = NA_real_,
+        NDE_lower = NA_real_,
+        NDE_upper = NA_real_,
+        compatible_sets = data.frame(),
+        n_compatible = 0L,
+        n_evaluated = n_total_evaluated,
+        falsified_proportion = 1.0,
+        naive_estimates = naive_estimates,
+        reason = "infeasible_no_compatible_sets"
+      ))
     }
   }
 

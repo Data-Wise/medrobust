@@ -273,6 +273,7 @@ medrobust_bounds <- new_class(
     ),
     naive_estimates = new_property(class = class_list, default = NULL),
     analytic_ci = new_property(class = class_list, default = NULL),
+    reason = new_property(class = class_any, default = NULL),
     bootstrap_results = new_property(
       class = class_any,
       default = NULL,
@@ -289,14 +290,17 @@ medrobust_bounds <- new_class(
     call = new_property(class = class_any, default = NULL)
   ),
   validator = function(self) {
-    # Validate bound ordering
-    if (self@NIE_lower > self@NIE_upper) {
+    # Validate bound ordering. NA bounds are permitted: the graceful infeasible
+    # path (no compatible parameter sets) returns NA_real_ bounds. `NA > NA` is
+    # NA, not FALSE, and `if (NA)` errors, so guard the ordering checks with
+    # isTRUE() so an NA comparison is treated as "no ordering violation".
+    if (isTRUE(self@NIE_lower > self@NIE_upper)) {
       "@NIE_lower must be <= @NIE_upper"
-    } else if (self@NDE_lower > self@NDE_upper) {
+    } else if (isTRUE(self@NDE_lower > self@NDE_upper)) {
       "@NDE_lower must be <= @NDE_upper"
-    } else if (self@n_compatible > self@n_evaluated) {
+    } else if (isTRUE(self@n_compatible > self@n_evaluated)) {
       "@n_compatible cannot exceed @n_evaluated"
-    } else if (self@n_compatible < 0 || self@n_evaluated < 0) {
+    } else if (isTRUE(self@n_compatible < 0) || isTRUE(self@n_evaluated < 0)) {
       "@n_compatible and @n_evaluated must be non-negative"
     }
   }
