@@ -66,23 +66,36 @@ as a function of two sensitivity parameters simultaneously.
 \strong{Contour plot}: Shows contour lines of the bounds in 2D parameter space.
 }
 \examples{
-\dontrun{
+\donttest{
+# Compute bounds to plot (see ?bound_ne)
+sim <- simulate_dm_data(
+  n = 8000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
+set.seed(1)
+bounds <- bound_ne(
+  data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+  confounders = "C1", misclassified_variable = "mediator",
+  sensitivity_region = list(
+    sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+    psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)
+  ),
+  n_grid = 10
+)
+
 # Basic bounds plot
 sensitivity_plot(bounds, param = "psi_sn", effect = "NIE")
 
 # Show both effects
 sensitivity_plot(bounds, param = "psi_sn", effect = "both")
 
-# Heatmap of bound width
-sensitivity_plot(bounds,
-                param = c("psi_sn", "sn0"),
-                plot_type = "heatmap")
-
-# Customize and save
+# Customize the returned ggplot object
 p <- sensitivity_plot(bounds, param = "psi_sn") +
-  labs(title = "My Custom Title") +
-  theme(legend.position = "bottom")
-ggsave("sensitivity_plot.pdf", p, width = 8, height = 6)
+  ggplot2::labs(title = "My Custom Title") +
+  ggplot2::theme(legend.position = "bottom")
+p
 }
 
 }

@@ -30,6 +30,12 @@ method(print, medrobust_bounds) <- function(x, ...) {
   cat("Effect Scale:", x@effect_scale, "\n")
   cat("Misclassified Variable:", x@misclassified_variable, "\n\n")
 
+  # Infeasible banner: no compatible parameter sets were found.
+  if (isTRUE(x@n_compatible == 0)) {
+    reason_txt <- if (is.null(x@reason)) "no compatible parameter sets" else x@reason
+    cat(sprintf("Infeasible: no compatible parameter sets (reason: %s)\n\n", reason_txt))
+  }
+
   # Bounds
   cat(strrep("-", 70), "\n")
   cat("NATURAL INDIRECT EFFECT (NIE)\n")

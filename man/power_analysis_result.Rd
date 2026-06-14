@@ -18,6 +18,11 @@
 
 \item{simulation_params}{List of simulation parameters used}
 }
+\value{
+An S7 object of class `power_analysis_result` holding the power and
+  bound-width curves across sample sizes and the recommended sample sizes for
+  the target power and width.
+}
 \description{
 S7 class for storing power analysis results for partial identification bounds.
 }

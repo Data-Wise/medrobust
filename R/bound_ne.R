@@ -90,33 +90,44 @@
 #' Non-differential misclassification corresponds to psi_sn = psi_sp = 1.
 #'
 #' @examples
-#' \dontrun{
-#' # Load example data
-#' data("heals_data")
-#'
-#' # Define sensitivity region
-#' sens_region <- list(
-#'   sn0_range = c(0.55, 0.65),
-#'   sp0_range = c(0.85, 0.95),
-#'   psi_sn_range = c(1.0, 2.0),
-#'   psi_sp_range = c(0.5, 1.0)
+#' \donttest{
+#' # Simulate data with a known mediator-misclassification mechanism
+#' sim <- simulate_dm_data(
+#'   n = 8000,
+#'   true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+#'   dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+#'   misclass_type = "mediator", confounders = 1, seed = 1
 #' )
 #'
-#' # Compute bounds for exposure misclassification
+#' # Sensitivity region containing the (here non-differential) truth
+#' sens_region <- list(
+#'   sn0_range = c(0.80, 0.99),
+#'   sp0_range = c(0.80, 0.99),
+#'   psi_sn_range = c(0.8, 1.5),
+#'   psi_sp_range = c(0.8, 1.5)
+#' )
+#'
+#' # Compute partial-identification bounds for mediator misclassification.
+#' # The raw bound [L, U] is consistent but is NOT a confidence set; at finite n
+#' # it can under-cover the truth, so we add Imbens-Manski confidence intervals
+#' # in the same fit via ci_method = "analytic".
+#' set.seed(1)
 #' bounds <- bound_ne(
-#'   data = heals_data,
-#'   exposure = "A_star",
-#'   mediator = "M",
+#'   data = sim@observed,
+#'   exposure = "A",
+#'   mediator = "M_star",
 #'   outcome = "Y",
-#'   confounders = c("age", "male", "smoking", "bmi"),
-#'   misclassified_variable = "exposure",
+#'   confounders = "C1",
+#'   misclassified_variable = "mediator",
 #'   sensitivity_region = sens_region,
-#'   n_grid = 50
+#'   n_grid = 10,
+#'   ci_method = "analytic", ci_n_boot = 50
 #' )
 #'
 #' # View results
 #' print(bounds)
 #' summary(bounds)
+#' bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
 #'
 #' # Visualize
 #' sensitivity_plot(bounds, param = "psi_sn")
@@ -302,6 +313,25 @@ bound_ne <- function(data,
     )
   }
 
+  # Signal an infeasible condition when no compatible parameter sets were
+  # found. This degrades gracefully (NA bounds + machine-readable reason)
+  # instead of aborting, so simulations can record the rep rather than lose it.
+  if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+    signalCondition(
+      structure(
+        list(
+          message = "No compatible parameter sets found. Consider widening sensitivity_region.",
+          call = match.call()
+        ),
+        class = c("medrobust_infeasible", "condition")
+      )
+    )
+  }
+
+  # Reason is only set by dispatchers on the infeasible path; default to NULL
+  # safely so feasible runs (which never set `reason`) are unaffected.
+  bounds_reason <- if (is.null(bounds_result$reason)) NULL else bounds_result$reason
+
   # Construct S7 output object
   output <- medrobust_bounds(
     NIE_lower = bounds_result$NIE_lower,
@@ -316,6 +346,7 @@ bound_ne <- function(data,
     misclassified_variable = misclassified_variable,
     sensitivity_region = sens_region_s7,
     naive_estimates = bounds_result$naive_estimates,
+    reason = bounds_reason,
     bootstrap_results = bootstrap_s7,
     data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
     call = match.call()
@@ -336,15 +367,23 @@ bound_ne <- function(data,
     cat("COMPUTATION COMPLETE\n")
     cat(strrep("=", 60), "\n")
     cat("Time elapsed:", round(computation_time, 2), "seconds\n")
-    cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
-        bounds_result$n_evaluated,
-        sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
-    cat("\nNIE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NIE_lower), ", ",
-        sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
-    cat("NDE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NDE_lower), ", ",
-        sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+      # Infeasible path: avoid a NaN% (0/0) and "NA" bound lines.
+      cat("Compatible parameter sets: 0 /", bounds_result$n_evaluated, "\n")
+      cat("Infeasible: no compatible parameter sets (reason: ",
+          if (is.null(bounds_result$reason)) "unknown" else bounds_result$reason,
+          ")\n", sep = "")
+    } else {
+      cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
+          bounds_result$n_evaluated,
+          sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
+      cat("\nNIE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NIE_lower), ", ",
+          sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
+      cat("NDE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NDE_lower), ", ",
+          sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    }
     cat(strrep("=", 60), "\n\n")
   }
 

@@ -328,7 +328,28 @@ bound_ne_mediator <- function(data,
   }
 
   if (length(results) == 0) {
-    stop("No compatible parameter sets found. Consider widening sensitivity_region.")
+    # Graceful infeasible result: no compatible parameter sets in the grid.
+    # Return NA bounds with a machine-readable reason rather than stop();
+    # bound_ne() signals a 'medrobust_infeasible' condition for callers.
+    n_eval_infeasible <- if (exists("n_total", inherits = FALSE)) {
+      n_total
+    } else if (exists("target_samples", inherits = FALSE)) {
+      target_samples
+    } else {
+      0L
+    }
+    return(list(
+      NIE_lower = NA_real_,
+      NIE_upper = NA_real_,
+      NDE_lower = NA_real_,
+      NDE_upper = NA_real_,
+      compatible_sets = data.frame(),
+      n_compatible = 0L,
+      n_evaluated = n_eval_infeasible,
+      falsified_proportion = 1.0,
+      naive_estimates = naive_estimates,
+      reason = "infeasible_no_compatible_sets"
+    ))
   }
 
   # Extract bounds

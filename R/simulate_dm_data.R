@@ -50,7 +50,7 @@
 #'   \item{misclassification_applied}{Summary of applied misclassification}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Basic simulation with moderate effects and mild DM
 #' sim_data <- simulate_dm_data(
 #'   n = 500,
@@ -70,6 +70,7 @@
 #' )
 #'
 #' # Use in analysis
+#' set.seed(1)
 #' bounds <- bound_ne(
 #'   data = sim_data@observed,
 #'   exposure = "A_star",
@@ -82,7 +83,8 @@
 #'     sp0_range = c(0.80, 0.90),
 #'     psi_sn_range = c(1.0, 2.0),
 #'     psi_sp_range = c(1.0, 1.0)
-#'   )
+#'   ),
+#'   n_grid = 10
 #' )
 #' }
 #'
