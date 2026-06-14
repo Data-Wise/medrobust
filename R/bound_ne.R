@@ -367,15 +367,23 @@ bound_ne <- function(data,
     cat("COMPUTATION COMPLETE\n")
     cat(strrep("=", 60), "\n")
     cat("Time elapsed:", round(computation_time, 2), "seconds\n")
-    cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
-        bounds_result$n_evaluated,
-        sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
-    cat("\nNIE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NIE_lower), ", ",
-        sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
-    cat("NDE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NDE_lower), ", ",
-        sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+      # Infeasible path: avoid a NaN% (0/0) and "NA" bound lines.
+      cat("Compatible parameter sets: 0 /", bounds_result$n_evaluated, "\n")
+      cat("Infeasible: no compatible parameter sets (reason: ",
+          if (is.null(bounds_result$reason)) "unknown" else bounds_result$reason,
+          ")\n", sep = "")
+    } else {
+      cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
+          bounds_result$n_evaluated,
+          sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
+      cat("\nNIE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NIE_lower), ", ",
+          sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
+      cat("NDE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NDE_lower), ", ",
+          sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    }
     cat(strrep("=", 60), "\n\n")
   }
 
