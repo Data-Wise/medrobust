@@ -64,3 +64,9 @@ renv/library/
 renv/local/
 renv/staging/
 renv/.cache/dev-diagnostics/
+
+# R CMD check / example detritus
+Rplots.pdf
+
+# Claude Code / craft guard local artifacts
+.claude/

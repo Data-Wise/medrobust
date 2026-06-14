@@ -20,10 +20,25 @@ Compare partial identification bounds from multiple analyses (e.g., different
 sensitivity regions, different datasets, different assumptions).
 }
 \examples{
-\dontrun{
+\donttest{
 # Compare bounds under different sensitivity assumptions
-bounds1 <- bound_ne(data, ..., sensitivity_region = region1)
-bounds2 <- bound_ne(data, ..., sensitivity_region = region2)
+sim <- simulate_dm_data(
+  n = 8000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
+args0 <- list(
+  data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+  confounders = "C1", misclassified_variable = "mediator", n_grid = 10
+)
+set.seed(1)
+bounds1 <- do.call(bound_ne, c(args0, list(sensitivity_region = list(
+  sn0_range = c(0.82, 0.97), sp0_range = c(0.82, 0.97),
+  psi_sn_range = c(0.85, 1.3), psi_sp_range = c(0.85, 1.3)))))
+bounds2 <- do.call(bound_ne, c(args0, list(sensitivity_region = list(
+  sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+  psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)))))
 
 comparison <- compare_bounds(
   list(conservative = bounds1, liberal = bounds2)

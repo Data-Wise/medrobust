@@ -34,6 +34,12 @@
 
 \item{call}{The function call that created this object}
 }
+\value{
+An S7 object of class `medrobust_bounds` containing the partial
+  identification bounds for the natural direct and indirect effects, the
+  parameter sets compatible with the data, and the associated inference and
+  diagnostic summaries.
+}
 \description{
 S7 class for storing partial identification bounds for natural direct
 and indirect effects under differential misclassification.

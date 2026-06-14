@@ -70,23 +70,9 @@
 #' cat("Naive NDE:", round(exp(coef(naive_mod)["A_star"]), 2), "\n")
 #' cat("True NDE:", round(exp(coef(true_mod)["A_true"]), 2), "\n")
 #'
-#' \dontrun{
-#' # Use with medrobust bounds
-#' bounds <- bound_ne(
-#'   data = heals_data,
-#'   exposure = "A_star",
-#'   mediator = "M",
-#'   outcome = "Y",
-#'   confounders = c("age", "male", "smoking", "bmi"),
-#'   misclassified_variable = "exposure",
-#'   sensitivity_region = list(
-#'     sn0_range = c(0.55, 0.65),
-#'     sp0_range = c(0.85, 0.95),
-#'     psi_sn_range = c(1.0, 2.0),
-#'     psi_sp_range = c(0.5, 1.0)
-#'   )
-#' )
-#' }
+#' # To compute partial-identification bounds for the (potentially
+#' # misclassified) exposure A_star, pass this data to bound_ne();
+#' # see ?bound_ne for a complete, runnable example.
 #'
 #' @keywords datasets
 "heals_data"

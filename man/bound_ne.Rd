@@ -144,33 +144,44 @@ The sensitivity region Theta_Psi is defined by four parameters:
 Non-differential misclassification corresponds to psi_sn = psi_sp = 1.
 }
 \examples{
-\dontrun{
-# Load example data
-data("heals_data")
-
-# Define sensitivity region
-sens_region <- list(
-  sn0_range = c(0.55, 0.65),
-  sp0_range = c(0.85, 0.95),
-  psi_sn_range = c(1.0, 2.0),
-  psi_sp_range = c(0.5, 1.0)
+\donttest{
+# Simulate data with a known mediator-misclassification mechanism
+sim <- simulate_dm_data(
+  n = 8000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
 )
 
-# Compute bounds for exposure misclassification
+# Sensitivity region containing the (here non-differential) truth
+sens_region <- list(
+  sn0_range = c(0.80, 0.99),
+  sp0_range = c(0.80, 0.99),
+  psi_sn_range = c(0.8, 1.5),
+  psi_sp_range = c(0.8, 1.5)
+)
+
+# Compute partial-identification bounds for mediator misclassification.
+# The raw bound [L, U] is consistent but is NOT a confidence set; at finite n
+# it can under-cover the truth, so we add Imbens-Manski confidence intervals
+# in the same fit via ci_method = "analytic".
+set.seed(1)
 bounds <- bound_ne(
-  data = heals_data,
-  exposure = "A_star",
-  mediator = "M",
+  data = sim@observed,
+  exposure = "A",
+  mediator = "M_star",
   outcome = "Y",
-  confounders = c("age", "male", "smoking", "bmi"),
-  misclassified_variable = "exposure",
+  confounders = "C1",
+  misclassified_variable = "mediator",
   sensitivity_region = sens_region,
-  n_grid = 50
+  n_grid = 10,
+  ci_method = "analytic", ci_n_boot = 50
 )
 
 # View results
 print(bounds)
 summary(bounds)
+bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
 
 # Visualize
 sensitivity_plot(bounds, param = "psi_sn")
