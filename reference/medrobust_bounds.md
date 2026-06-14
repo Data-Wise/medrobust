@@ -64,3 +64,10 @@ and indirect effects under differential misclassification.
 - call:
 
   The function call that created this object
+
+## Value
+
+An S7 object of class \`medrobust_bounds\` containing the partial
+identification bounds for the natural direct and indirect effects, the
+parameter sets compatible with the data, and the associated inference
+and diagnostic summaries.

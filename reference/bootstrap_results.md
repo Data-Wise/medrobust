@@ -80,3 +80,9 @@ bootstrap_results(
 - acceleration:
 
   BCa acceleration parameter
+
+## Value
+
+An S7 object of class \`bootstrap_results\` holding bootstrap confidence
+intervals and the replicate samples for the lower and upper bound
+endpoints of the natural direct and indirect effects.

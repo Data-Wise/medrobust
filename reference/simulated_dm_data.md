@@ -24,3 +24,9 @@ misclassification, used for power analysis and methods validation.
 - misclassification_applied:
 
   List of misclassification parameters applied
+
+## Value
+
+An S7 object of class \`simulated_dm_data\` holding the simulated
+observed data together with the true (unobserved) values, the true
+causal effects, and the data-generating parameters.

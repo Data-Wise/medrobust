@@ -138,6 +138,9 @@ An S7 object of class `power_analysis_result` containing:
 ## Examples
 
 ``` r
+# A power analysis runs many bootstrap-bound replications across several
+# sample sizes, so it is computationally intensive; it is wrapped in
+# \dontrun{} to keep checks fast. Reduce sample_sizes / n_sim to run quickly.
 if (FALSE) { # \dontrun{
 # Power analysis for exposure DM with moderate effects
 power_result <- power_analysis(

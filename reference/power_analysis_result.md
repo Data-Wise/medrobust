@@ -32,3 +32,9 @@ bounds.
 - simulation_params:
 
   List of simulation parameters used
+
+## Value
+
+An S7 object of class \`power_analysis_result\` holding the power and
+bound-width curves across sample sizes and the recommended sample sizes
+for the target power and width.

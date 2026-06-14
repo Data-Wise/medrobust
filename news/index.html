@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,12 +20,16 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/introduction.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/gesthtn-bounds.html">Worked Example: Gestational Hypertension</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methods &amp; Theory</h6></li>
     <li><a class="dropdown-item" href="../articles/identification-math.html">Identification Mathematics</a></li>
-    <li><a class="dropdown-item" href="../articles/mediator_misclass.html">Mediator Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/exposure_misclass.html">Exposure Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/interpretation.html">Interpretation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/methodology.html">Methodology</a></li>
+    <li><a class="dropdown-item" href="../articles/heals-synthetic-data.html">Synthetic HEALS Data</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Computational</h6></li>
+    <li><a class="dropdown-item" href="../articles/grid-search-algorithms.html">Advanced Grid Search Algorithms</a></li>
+    <li><a class="dropdown-item" href="../articles/s7-documentation.html">S7 Class System</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -43,6 +47,31 @@
       <small>Source: <a href="https://github.com/data-wise/medrobust/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="medrobust-030-2026-06-14">medrobust 0.3.0 (2026-06-14)<a class="anchor" aria-label="anchor" href="#medrobust-030-2026-06-14"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li>New example dataset <code>gesthtn</code>: a 5,000-row public-domain sample (NCHS Natality
+<ol start="2021" style="list-style-type: decimal"><li>illustrating partial-identification bounds for a differentially misclassified binary mediator (gestational hypertension on the birth certificate). See <code><a href="../reference/gesthtn.html">?gesthtn</a></code> and <code><a href="../articles/gesthtn-bounds.html">vignette("gesthtn-bounds")</a></code>.</li>
+</ol></li>
+</ul></div>
+<div class="section level3">
+<h3 id="robustness-0-3-0">Robustness<a class="anchor" aria-label="anchor" href="#robustness-0-3-0"></a></h3>
+<ul><li>
+<code><a href="../reference/bound_ne.html">bound_ne()</a></code> now <strong>degrades gracefully</strong> when no compatible parameter sets are found under severe misclassification. Instead of aborting with an error, it returns a <code>medrobust_bounds</code> object with <code>NA</code> bounds and a machine-readable <code>@reason</code> (<code>"infeasible_no_compatible_sets"</code>), and signals a <code>medrobust_infeasible</code> condition that callers (e.g. simulations) can capture — so an infeasible replicate is recorded rather than lost.</li>
+<li>New <code>@reason</code> property on <code>medrobust_bounds</code>; <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows an infeasible banner when applicable.</li>
+<li>
+<code><a href="../reference/bound_ci.html">bound_ci()</a></code> (analytic Imbens–Manski CIs) no longer returns <strong>silent</strong> <code>NA</code> endpoints: a non-finite endpoint standard error (too few feasible bootstrap resamples) now yields documented <code>NA</code> CI endpoints with a per-effect reason, and <code>.imbens_manski_ci()</code> is NA-safe. Confidence intervals for feasible inputs are unchanged.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="medrobust-021-2026-06-12">medrobust 0.2.1 (2026-06-12)<a class="anchor" aria-label="anchor" href="#medrobust-021-2026-06-12"></a></h2>
+<p>CRAN-preparation release (documentation only; no change to computed results).</p>
+<ul><li>
+<code>DESCRIPTION</code>: explained the <code>BCa</code> acronym and added method references in the <code>authors (year) &lt;doi:...&gt;</code> / <code>&lt;ISBN:...&gt;</code> form (Manski, 2003; Imbens &amp; Manski, 2004).</li>
+<li>Added <code>\value</code> documentation to all exported S7 classes (<code>medrobust_bounds</code>, <code>bootstrap_results</code>, <code>compatibility_test</code>, <code>power_analysis_result</code>, <code>simulated_dm_data</code>).</li>
+<li>Replaced <code>\dontrun{}</code> with <code>\donttest{}</code> for runnable examples and rewrote the example code so each executes against small simulated data; the computationally intensive <code><a href="../reference/power_analysis.html">power_analysis()</a></code> example remains in <code>\dontrun{}</code>. Removed an example that wrote a file to the working directory.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="medrobust-020-2026-06-12">medrobust 0.2.0 (2026-06-12)<a class="anchor" aria-label="anchor" href="#medrobust-020-2026-06-12"></a></h2>
 <p>This release fixes three correctness bugs in the differential-misclassification bounds and adds confidence intervals for the partial-identification bounds.</p>

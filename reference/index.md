@@ -98,6 +98,9 @@ S3 methods and effect-formatting helpers
 
 Example and synthetic datasets
 
+- [`gesthtn`](https://data-wise.github.io/medrobust/reference/gesthtn.md)
+  : Gestational Hypertension as a Differentially Misclassified Binary
+  Mediator
 - [`heals_data`](https://data-wise.github.io/medrobust/reference/heals_data.md)
   : Synthetic HEALS Data with Differential Measurement Error
 - [`simulated_dm_data`](https://data-wise.github.io/medrobust/reference/simulated_dm_data.md)

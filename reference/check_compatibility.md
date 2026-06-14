@@ -132,7 +132,7 @@ The function is useful for:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 data("heals_data")
 
 # Test non-differential misclassification with high accuracy
@@ -147,6 +147,30 @@ test_ndm <- check_compatibility(
 )
 
 print(test_ndm)
+#> 
+#> ====================================================================== 
+#> COMPATIBILITY TEST
+#> ====================================================================== 
+#> 
+#> Tested Parameters:
+#>   Sn0: 0.900 
+#>   Sp0: 0.900 
+#>   psi_Sn: 1.000 
+#>   psi_Sp: 1.000 
+#>   -> Sn1: 0.900 
+#>   -> Sp1: 0.900 
+#> 
+#> ---------------------------------------------------------------------- 
+#> RESULT: Compatible [PASS]
+#> ---------------------------------------------------------------------- 
+#> 
+#> The specified misclassification parameters are consistent with
+#> the observed data. All testable implications are satisfied.
+#> 
+#> Implied true causal parameters have been successfully solved.
+#> Use summary() to see detailed results.
+#> ====================================================================== 
+#> 
 
 # Test strong differential misclassification
 test_strong_dm <- check_compatibility(
@@ -160,5 +184,29 @@ test_strong_dm <- check_compatibility(
 )
 
 print(test_strong_dm)
-} # }
+#> 
+#> ====================================================================== 
+#> COMPATIBILITY TEST
+#> ====================================================================== 
+#> 
+#> Tested Parameters:
+#>   Sn0: 0.850 
+#>   Sp0: 0.850 
+#>   psi_Sn: 3.000 
+#>   psi_Sp: 1.000 
+#>   -> Sn1: 0.944 
+#>   -> Sp1: 0.850 
+#> 
+#> ---------------------------------------------------------------------- 
+#> RESULT: Compatible [PASS]
+#> ---------------------------------------------------------------------- 
+#> 
+#> The specified misclassification parameters are consistent with
+#> the observed data. All testable implications are satisfied.
+#> 
+#> Implied true causal parameters have been successfully solved.
+#> Use summary() to see detailed results.
+#> ====================================================================== 
+#> 
+# }
 ```

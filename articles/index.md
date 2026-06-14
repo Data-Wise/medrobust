@@ -2,6 +2,9 @@
 
 ### All vignettes
 
+- [Worked example: bounds for a differentially misclassified mediator
+  (gestational
+  hypertension)](https://data-wise.github.io/medrobust/articles/gesthtn-bounds.md):
 - [Advanced Grid Search
   Algorithms](https://data-wise.github.io/medrobust/articles/grid-search-algorithms.md):
 - [Synthetic HEALS Data: Ground Truth with Differential Measurement

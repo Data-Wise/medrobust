@@ -264,35 +264,164 @@ Mathematical Physics*, 7(4), 86-112.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Load example data
-data("heals_data")
+# \donttest{
+# Simulate data with a known mediator-misclassification mechanism
+sim <- simulate_dm_data(
+  n = 8000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
 
-# Define sensitivity region
+# Sensitivity region containing the (here non-differential) truth
 sens_region <- list(
-  sn0_range = c(0.55, 0.65),
-  sp0_range = c(0.85, 0.95),
-  psi_sn_range = c(1.0, 2.0),
-  psi_sp_range = c(0.5, 1.0)
+  sn0_range = c(0.80, 0.99),
+  sp0_range = c(0.80, 0.99),
+  psi_sn_range = c(0.8, 1.5),
+  psi_sp_range = c(0.8, 1.5)
 )
 
-# Compute bounds for exposure misclassification
+# Compute partial-identification bounds for mediator misclassification.
+# The raw bound [L, U] is consistent but is NOT a confidence set; at finite n
+# it can under-cover the truth, so we add Imbens-Manski confidence intervals
+# in the same fit via ci_method = "analytic".
+set.seed(1)
 bounds <- bound_ne(
-  data = heals_data,
-  exposure = "A_star",
-  mediator = "M",
+  data = sim@observed,
+  exposure = "A",
+  mediator = "M_star",
   outcome = "Y",
-  confounders = c("age", "male", "smoking", "bmi"),
-  misclassified_variable = "exposure",
+  confounders = "C1",
+  misclassified_variable = "mediator",
   sensitivity_region = sens_region,
-  n_grid = 50
+  n_grid = 10,
+  ci_method = "analytic", ci_n_boot = 50
 )
+#> Validating inputs...
+#> Preparing data...
+#> 
+#> Computing bounds for mediator misclassification...
+#> Grid resolution: 10 points per dimension
+#> Total parameter sets to evaluate: 10000 
+#> 
+#> Using advanced grid search method: lhs 
+#> 
+#> === Latin Hypercube Sampling ===
+#> Samples: 100 
+#>   |                                                                              |                                                                      |   0%  |                                                                              |====                                                                  |   5%  |                                                                              |=======                                                               |  10%  |                                                                              |==========                                                            |  15%  |                                                                              |==============                                                        |  20%  |                                                                              |==================                                                    |  25%  |                                                                              |=====================                                                 |  30%  |                                                                              |========================                                              |  35%  |                                                                              |============================                                          |  40%  |                                                                              |================================                                      |  45%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================                                |  55%  |                                                                              |==========================================                            |  60%  |                                                                              |==============================================                        |  65%  |                                                                              |=================================================                     |  70%  |                                                                              |====================================================                  |  75%  |                                                                              |========================================================              |  80%  |                                                                              |============================================================          |  85%  |                                                                              |===============================================================       |  90%  |                                                                              |==================================================================    |  95%  |                                                                              |======================================================================| 100%
+#> Compatible: 100/100 (100.0%)
+#> 
+#> Computing analytic (Imbens-Manski) confidence intervals...
+#> 
+#>  ============================================================ 
+#> COMPUTATION COMPLETE
+#> ============================================================ 
+#> Time elapsed: 3.83 seconds
+#> Compatible parameter sets: 100 / 100 (100.0%)
+#> 
+#> NIE Bounds (OR scale): [1.148, 1.457]
+#> NDE Bounds (OR scale): [1.271, 1.613]
+#> ============================================================ 
+#> 
 
 # View results
 print(bounds)
+#> 
+#> ====================================================================== 
+#> PARTIAL IDENTIFICATION BOUNDS
+#> ====================================================================== 
+#> 
+#> Effect Scale: OR 
+#> Misclassified Variable: mediator 
+#> 
+#> ---------------------------------------------------------------------- 
+#> NATURAL INDIRECT EFFECT (NIE)
+#> ---------------------------------------------------------------------- 
+#>   Lower Bound: 1.1483
+#>   Upper Bound: 1.4575
+#>   Width:       0.3092
+#> 
+#> ---------------------------------------------------------------------- 
+#> NATURAL DIRECT EFFECT (NDE)
+#> ---------------------------------------------------------------------- 
+#>   Lower Bound: 1.2709
+#>   Upper Bound: 1.6130
+#>   Width:       0.3421
+#> 
+#> ---------------------------------------------------------------------- 
+#> SENSITIVITY ANALYSIS
+#> ---------------------------------------------------------------------- 
+#>   Parameter sets evaluated: 100
+#>   Compatible sets:          100 (100.0%)
+#>   Falsified sets:           0 (0.0%)
+#> 
+#> ====================================================================== 
+#> Use summary() for detailed diagnostics
+#> ====================================================================== 
+#> 
 summary(bounds)
+#> 
+#> ====================================================================== 
+#> PARTIAL IDENTIFICATION BOUNDS
+#> ====================================================================== 
+#> 
+#> Effect Scale: OR 
+#> Misclassified Variable: mediator 
+#> 
+#> ---------------------------------------------------------------------- 
+#> NATURAL INDIRECT EFFECT (NIE)
+#> ---------------------------------------------------------------------- 
+#>   Lower Bound: 1.1483
+#>   Upper Bound: 1.4575
+#>   Width:       0.3092
+#> 
+#> ---------------------------------------------------------------------- 
+#> NATURAL DIRECT EFFECT (NDE)
+#> ---------------------------------------------------------------------- 
+#>   Lower Bound: 1.2709
+#>   Upper Bound: 1.6130
+#>   Width:       0.3421
+#> 
+#> ---------------------------------------------------------------------- 
+#> SENSITIVITY ANALYSIS
+#> ---------------------------------------------------------------------- 
+#>   Parameter sets evaluated: 100
+#>   Compatible sets:          100 (100.0%)
+#>   Falsified sets:           0 (0.0%)
+#> 
+#> ====================================================================== 
+#> Use summary() for detailed diagnostics
+#> ====================================================================== 
+#> 
+#> 
+#> ====================================================================== 
+#> DETAILED SUMMARY
+#> ====================================================================== 
+#> 
+#> Sensitivity Region:
+#>   Sn0:     [0.800, 0.990]
+#>   Sp0:     [0.800, 0.990]
+#>   psi_Sn:    [0.800, 1.500]
+#>   psi_Sp:    [0.800, 1.500]
+#> 
+#> Naive Estimates (no measurement error correction):
+#> Data Summary:
+#>   Sample size: 8000
+#> 
+#> Compatible Parameter Sets (first 5):
+#>         sn0       sp0    psi_sn    psi_sp      NIE      NDE
+#> 1 0.9542000 0.9348607 1.3537490 0.9619354 1.160986 1.595467
+#> 2 0.8454987 0.8497896 1.4162717 1.0896619 1.265177 1.464075
+#> 3 0.8325232 0.9779831 0.9926369 1.0026117 1.201886 1.541173
+#> 4 0.9305171 0.8085158 0.8983405 1.0358055 1.313987 1.409690
+#> 5 0.9026740 0.9621810 0.9561360 0.9497378 1.177392 1.573235
+#> 
+bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
+#>      lower      upper   se_lower   se_upper   ci_lower   ci_upper 
+#> 1.27088581 1.61302492 0.09792204 0.09375258 1.10981848 1.76723410 
 
 # Visualize
 sensitivity_plot(bounds, param = "psi_sn")
-} # }
+
+# }
 ```

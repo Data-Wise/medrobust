@@ -5,6 +5,7 @@
 <url><loc>https://data-wise.github.io/medrobust/CLAUDE-CODE-PROMPT.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/CLAUDE.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/FINAL_OPTIMIZATION_SUMMARY.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/FORMULA_INTERFACE_FEASIBILITY.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/GRID_SEARCH_ALGORITHMS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/ISSUE-true-effects-estimand-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/LHS_DEFAULT_CHANGES.html</loc></url>
@@ -21,12 +22,14 @@
 <url><loc>https://data-wise.github.io/medrobust/S7_CONVERSION_GUIDE.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/S7_DOCUMENTATION.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/SPEC-analytic-ci-2026-06-11.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/SPEC-bound-ne-robust-2026-06-14.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/SPEC-fix-exposure-NIE-2026-06-11.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/START-HERE-fix-true-effects.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/TECHNICAL-NOTES-bounds-2026-06-12.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/VECTORIZATION_IMPROVEMENTS.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/VIGNETTE_GRID_SEARCH.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/WORKFLOW.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/articles/gesthtn-bounds.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/grid-search-algorithms.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/heals-synthetic-data.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/identification-math.html</loc></url>
@@ -68,6 +71,7 @@
 <url><loc>https://data-wise.github.io/medrobust/reference/extract_falsified_region.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/falsification_summary.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/format_effect.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/reference/gesthtn.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/get_data_summary.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/get_default_sensitivity_region.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/globals.html</loc></url>

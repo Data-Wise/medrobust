@@ -36,7 +36,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,12 +51,16 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
 <li><a class="dropdown-item" href="../articles/introduction.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/gesthtn-bounds.html">Worked Example: Gestational Hypertension</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methods &amp; Theory</h6></li>
     <li><a class="dropdown-item" href="../articles/identification-math.html">Identification Mathematics</a></li>
-    <li><a class="dropdown-item" href="../articles/mediator_misclass.html">Mediator Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/exposure_misclass.html">Exposure Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/interpretation.html">Interpretation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/methodology.html">Methodology</a></li>
+    <li><a class="dropdown-item" href="../articles/heals-synthetic-data.html">Synthetic HEALS Data</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Computational</h6></li>
+    <li><a class="dropdown-item" href="../articles/grid-search-algorithms.html">Advanced Grid Search Algorithms</a></li>
+    <li><a class="dropdown-item" href="../articles/s7-documentation.html">S7 Class System</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
@@ -78,7 +82,7 @@
       <h1>Identification Mathematics: Recovering Latent Effects under Differential Misclassification</h1>
 
       <p class="author">Davood Tofighi, Ph.D.</p>
-      <p class="date">2026-06-12</p>
+      <p class="date">2026-06-14</p>
 
       <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/vignettes/identification-math.qmd" class="external-link"><code>vignettes/identification-math.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -187,7 +191,7 @@ P(M{=}1,Y{=}0) &amp;= \pi (1-g_1), &amp; P(M{=}0,Y{=}0) &amp;= (1-\pi)(1-g_0).
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"max |recovered - true| (differential case) = %.2e\n"</span>, <span class="va">err</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>max |recovered - true| (differential case) = 5.55e-17</code></pre>
+<pre><code>max |recovered - true| (differential case) = 1.11e-16</code></pre>
 </div>
 </div>
 </section></section><section class="level2"><h2 id="exposure-identification-closed-form-2times2-inverse">Exposure identification: closed-form <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2\times2</annotation></semantics></math> inverse<a class="anchor" aria-label="anchor" href="#exposure-identification-closed-form-2times2-inverse"></a>

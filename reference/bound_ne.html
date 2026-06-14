@@ -11,7 +11,7 @@ to differential misclassification. The method does not require validation data."
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,12 +24,16 @@ to differential misclassification. The method does not require validation data."
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/introduction.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/gesthtn-bounds.html">Worked Example: Gestational Hypertension</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methods &amp; Theory</h6></li>
     <li><a class="dropdown-item" href="../articles/identification-math.html">Identification Mathematics</a></li>
-    <li><a class="dropdown-item" href="../articles/mediator_misclass.html">Mediator Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/exposure_misclass.html">Exposure Misclassification</a></li>
-    <li><a class="dropdown-item" href="../articles/interpretation.html">Interpretation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/methodology.html">Methodology</a></li>
+    <li><a class="dropdown-item" href="../articles/heals-synthetic-data.html">Synthetic HEALS Data</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Computational</h6></li>
+    <li><a class="dropdown-item" href="../articles/grid-search-algorithms.html">Advanced Grid Search Algorithms</a></li>
+    <li><a class="dropdown-item" href="../articles/s7-documentation.html">S7 Class System</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -280,37 +284,166 @@ Physics</em>, 7(4), 86-112.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Load example data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"heals_data"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Simulate data with a known mediator-misclassification mechanism</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_dm_data.html">simulate_dm_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">8000</span>,</span></span>
+<span class="r-in"><span>  true_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta_AM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span>, theta_AY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1.5</span><span class="op">)</span>, theta_MY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  dm_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sn0 <span class="op">=</span> <span class="fl">0.9</span>, sp0 <span class="op">=</span> <span class="fl">0.9</span>, psi_sn <span class="op">=</span> <span class="fl">1</span>, psi_sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  misclass_type <span class="op">=</span> <span class="st">"mediator"</span>, confounders <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Define sensitivity region</span></span></span>
+<span class="r-in"><span><span class="co"># Sensitivity region containing the (here non-differential) truth</span></span></span>
 <span class="r-in"><span><span class="va">sens_region</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.55</span>, <span class="fl">0.65</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fl">0.95</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.0</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Compute bounds for exposure misclassification</span></span></span>
+<span class="r-in"><span><span class="co"># Compute partial-identification bounds for mediator misclassification.</span></span></span>
+<span class="r-in"><span><span class="co"># The raw bound [L, U] is consistent but is NOT a confidence set; at finite n</span></span></span>
+<span class="r-in"><span><span class="co"># it can under-cover the truth, so we add Imbens-Manski confidence intervals</span></span></span>
+<span class="r-in"><span><span class="co"># in the same fit via ci_method = "analytic".</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu">bound_ne</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">heals_data</span>,</span></span>
-<span class="r-in"><span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span></span>
-<span class="r-in"><span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">sim</span><span class="op">@</span><span class="va">observed</span>,</span></span>
+<span class="r-in"><span>  exposure <span class="op">=</span> <span class="st">"A"</span>,</span></span>
+<span class="r-in"><span>  mediator <span class="op">=</span> <span class="st">"M_star"</span>,</span></span>
 <span class="r-in"><span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
-<span class="r-in"><span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"male"</span>, <span class="st">"smoking"</span>, <span class="st">"bmi"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span></span>
+<span class="r-in"><span>  confounders <span class="op">=</span> <span class="st">"C1"</span>,</span></span>
+<span class="r-in"><span>  misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span></span>
 <span class="r-in"><span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span></span>
-<span class="r-in"><span>  n_grid <span class="op">=</span> <span class="fl">50</span></span></span>
+<span class="r-in"><span>  n_grid <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  ci_method <span class="op">=</span> <span class="st">"analytic"</span>, ci_n_boot <span class="op">=</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Validating inputs...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Preparing data...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computing bounds for mediator misclassification...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Grid resolution: 10 points per dimension</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total parameter sets to evaluate: 10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using advanced grid search method: lhs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> === Latin Hypercube Sampling ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Samples: 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |====                                                                  |   5%  |                                                                              |=======                                                               |  10%  |                                                                              |==========                                                            |  15%  |                                                                              |==============                                                        |  20%  |                                                                              |==================                                                    |  25%  |                                                                              |=====================                                                 |  30%  |                                                                              |========================                                              |  35%  |                                                                              |============================                                          |  40%  |                                                                              |================================                                      |  45%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================                                |  55%  |                                                                              |==========================================                            |  60%  |                                                                              |==============================================                        |  65%  |                                                                              |=================================================                     |  70%  |                                                                              |====================================================                  |  75%  |                                                                              |========================================================              |  80%  |                                                                              |============================================================          |  85%  |                                                                              |===============================================================       |  90%  |                                                                              |==================================================================    |  95%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Compatible: 100/100 (100.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computing analytic (Imbens-Manski) confidence intervals...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ============================================================ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> COMPUTATION COMPLETE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 3.83 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Compatible parameter sets: 100 / 100 (100.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NIE Bounds (OR scale): [1.148, 1.457]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NDE Bounds (OR scale): [1.271, 1.613]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View results</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PARTIAL IDENTIFICATION BOUNDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Effect Scale: OR </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Misclassified Variable: mediator </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NATURAL INDIRECT EFFECT (NIE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lower Bound: 1.1483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Upper Bound: 1.4575</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Width:       0.3092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NATURAL DIRECT EFFECT (NDE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lower Bound: 1.2709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Upper Bound: 1.6130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Width:       0.3421</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SENSITIVITY ANALYSIS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Parameter sets evaluated: 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compatible sets:          100 (100.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Falsified sets:           0 (0.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Use summary() for detailed diagnostics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PARTIAL IDENTIFICATION BOUNDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Effect Scale: OR </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Misclassified Variable: mediator </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NATURAL INDIRECT EFFECT (NIE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lower Bound: 1.1483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Upper Bound: 1.4575</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Width:       0.3092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NATURAL DIRECT EFFECT (NDE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lower Bound: 1.2709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Upper Bound: 1.6130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Width:       0.3421</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SENSITIVITY ANALYSIS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Parameter sets evaluated: 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compatible sets:          100 (100.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Falsified sets:           0 (0.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Use summary() for detailed diagnostics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DETAILED SUMMARY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sensitivity Region:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sn0:     [0.800, 0.990]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sp0:     [0.800, 0.990]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   psi_Sn:    [0.800, 1.500]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   psi_Sp:    [0.800, 1.500]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Naive Estimates (no measurement error correction):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Data Summary:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sample size: 8000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Compatible Parameter Sets (first 5):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         sn0       sp0    psi_sn    psi_sp      NIE      NDE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.9542000 0.9348607 1.3537490 0.9619354 1.160986 1.595467</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.8454987 0.8497896 1.4162717 1.0896619 1.265177 1.464075</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.8325232 0.9779831 0.9926369 1.0026117 1.201886 1.541173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.9305171 0.8085158 0.8983405 1.0358055 1.313987 1.409690</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.9026740 0.9621810 0.9561360 0.9497378 1.177392 1.573235</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">bounds</span><span class="op">@</span><span class="va">analytic_ci</span><span class="op">$</span><span class="va">NDE</span>   <span class="co"># raw [L, U] plus Imbens-Manski confidence interval</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      lower      upper   se_lower   se_upper   ci_lower   ci_upper </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.27088581 1.61302492 0.09792204 0.09375258 1.10981848 1.76723410 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Visualize</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span><span class="va">bounds</span>, param <span class="op">=</span> <span class="st">"psi_sn"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-plt img"><img src="bound_ne-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
