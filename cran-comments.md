@@ -1,6 +1,6 @@
 ## Submission summary
 
-This is a new submission of **medrobust** (version 0.2.1). The package has not
+This is a new submission of **medrobust** (version 0.3.0). The package has not
 previously been on CRAN.
 
 medrobust provides partial-identification sensitivity analysis for causal mediation
