@@ -62,16 +62,22 @@ navbar:
       menu:
       - text: "Getting Started"
         href: articles/introduction.html
+      - text: "Worked Example: Gestational Hypertension"
+        href: articles/gesthtn-bounds.html
       - text: "─────────────"
-      - text: "Advanced Topics"
+      - text: "Methods & Theory"
       - text: "Identification Mathematics"
         href: articles/identification-math.html
-      - text: "Mediator Misclassification"
-        href: articles/mediator_misclass.html
-      - text: "Exposure Misclassification"
-        href: articles/exposure_misclass.html
-      - text: "Interpretation Guide"
-        href: articles/interpretation.html
+      - text: "Methodology"
+        href: articles/methodology.html
+      - text: "Synthetic HEALS Data"
+        href: articles/heals-synthetic-data.html
+      - text: "─────────────"
+      - text: "Computational"
+      - text: "Advanced Grid Search Algorithms"
+        href: articles/grid-search-algorithms.html
+      - text: "S7 Class System"
+        href: articles/s7-documentation.html
     news:
       text: News
       href: news/index.html
@@ -142,6 +148,7 @@ reference:
 - title: Datasets
   desc: Example and synthetic datasets
   contents:
+  - gesthtn
   - heals_data
   - simulated_dm_data
 
