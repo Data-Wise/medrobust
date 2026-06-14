@@ -313,6 +313,25 @@ bound_ne <- function(data,
     )
   }
 
+  # Signal an infeasible condition when no compatible parameter sets were
+  # found. This degrades gracefully (NA bounds + machine-readable reason)
+  # instead of aborting, so simulations can record the rep rather than lose it.
+  if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+    signalCondition(
+      structure(
+        list(
+          message = "No compatible parameter sets found. Consider widening sensitivity_region.",
+          call = match.call()
+        ),
+        class = c("medrobust_infeasible", "condition")
+      )
+    )
+  }
+
+  # Reason is only set by dispatchers on the infeasible path; default to NULL
+  # safely so feasible runs (which never set `reason`) are unaffected.
+  bounds_reason <- if (is.null(bounds_result$reason)) NULL else bounds_result$reason
+
   # Construct S7 output object
   output <- medrobust_bounds(
     NIE_lower = bounds_result$NIE_lower,
@@ -327,6 +346,7 @@ bound_ne <- function(data,
     misclassified_variable = misclassified_variable,
     sensitivity_region = sens_region_s7,
     naive_estimates = bounds_result$naive_estimates,
+    reason = bounds_reason,
     bootstrap_results = bootstrap_s7,
     data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
     call = match.call()
@@ -347,15 +367,23 @@ bound_ne <- function(data,
     cat("COMPUTATION COMPLETE\n")
     cat(strrep("=", 60), "\n")
     cat("Time elapsed:", round(computation_time, 2), "seconds\n")
-    cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
-        bounds_result$n_evaluated,
-        sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
-    cat("\nNIE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NIE_lower), ", ",
-        sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
-    cat("NDE Bounds (", effect_scale, " scale): [",
-        sprintf("%.3f", bounds_result$NDE_lower), ", ",
-        sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    if (isTRUE(as.integer(bounds_result$n_compatible) == 0)) {
+      # Infeasible path: avoid a NaN% (0/0) and "NA" bound lines.
+      cat("Compatible parameter sets: 0 /", bounds_result$n_evaluated, "\n")
+      cat("Infeasible: no compatible parameter sets (reason: ",
+          if (is.null(bounds_result$reason)) "unknown" else bounds_result$reason,
+          ")\n", sep = "")
+    } else {
+      cat("Compatible parameter sets:", bounds_result$n_compatible, "/",
+          bounds_result$n_evaluated,
+          sprintf("(%.1f%%)\n", 100 * bounds_result$n_compatible / bounds_result$n_evaluated))
+      cat("\nNIE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NIE_lower), ", ",
+          sprintf("%.3f", bounds_result$NIE_upper), "]\n", sep = "")
+      cat("NDE Bounds (", effect_scale, " scale): [",
+          sprintf("%.3f", bounds_result$NDE_lower), ", ",
+          sprintf("%.3f", bounds_result$NDE_upper), "]\n", sep = "")
+    }
     cat(strrep("=", 60), "\n\n")
   }
 

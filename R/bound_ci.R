@@ -61,6 +61,12 @@
 #   Phi(c + Delta / max(seL,seU)) - Phi(-c) = level,   Delta = max(0, U - L).
 # c -> z_{level} (one-sided) when Delta >> se; c -> z_{(1+level)/2} when Delta = 0.
 .imbens_manski_ci <- function(L, U, seL, seU, level = 0.95) {
+  # NA-safe: a non-finite endpoint SE means the resamples were infeasible.
+  # Returning NA endpoints here avoids max(NA, ...) -> NaN and uniroot on a
+  # NaN-valued function. The caller documents the reason separately.
+  if (!is.finite(seL) || !is.finite(seU)) {
+    return(c(lower = NA_real_, upper = NA_real_))
+  }
   smax <- max(seL, seU, .Machine$double.eps)
   Delta <- max(0, U - L)
   f <- function(c) stats::pnorm(c + Delta / smax) - stats::pnorm(-c) - level
@@ -167,7 +173,14 @@ bound_ci_exposure <- function(bounds, data, exposure, mediator, outcome,
                   error = function(err) NULL)
     if (is.null(e)) NA_real_ else e[[which]]
   }, numeric(1))
-  stats::sd(vals, na.rm = TRUE)
+  # An endpoint SE needs at least two finite resamples; otherwise sd() is NA or
+  # degenerate. Return NA_real_ and expose the count of failed (non-finite)
+  # resamples so the caller can build a reason string.
+  finite_vals <- vals[is.finite(vals)]
+  n_failed <- n_boot - length(finite_vals)
+  se <- if (length(finite_vals) < 2L) NA_real_ else stats::sd(finite_vals)
+  attr(se, "n_failed") <- n_failed
+  se
 }
 
 #' Confidence intervals for partial-identification bounds (Imbens-Manski)
@@ -207,6 +220,24 @@ bound_ci <- function(bounds, data, exposure, mediator, outcome, confounders,
                      n_boot = 200L, level = 0.95, seed = NULL) {
   misclassified_variable <- match.arg(misclassified_variable)
   scale <- bounds@effect_scale
+
+  # Short-circuit: an infeasible bounds object (no compatible parameter sets, so
+  # NA bounds) has nothing to resample. Return NA endpoints with a reason and
+  # skip all bootstrap work. Access the property defensively in case an older
+  # object predates the n_compatible property.
+  n_compatible <- tryCatch(bounds@n_compatible, error = function(e) NA_integer_)
+  if (!is.na(n_compatible) && n_compatible == 0) {
+    na_eff <- c(lower = NA_real_, upper = NA_real_,
+                se_lower = NA_real_, se_upper = NA_real_,
+                ci_lower = NA_real_, ci_upper = NA_real_)
+    out <- list(
+      NIE = na_eff, NDE = na_eff,
+      NIE_reason = "infeasible_no_compatible_sets",
+      NDE_reason = "infeasible_no_compatible_sets"
+    )
+    return(out)
+  }
+
   primitive <- if (misclassified_variable == "exposure")
     function(d, psi) .effect_at_psi_exposure(d, exposure, mediator, outcome, confounders,
                                              psi$sn0, psi$sp0, psi$psi_sn, psi$psi_sp, scale)
@@ -222,8 +253,22 @@ bound_ci <- function(bounds, data, exposure, mediator, outcome, confounders,
     seL <- .endpoint_se(function(d) primitive(d, lo_psi), data, w, n_boot, seed)
     seU <- .endpoint_se(function(d) primitive(d, hi_psi), data, w, n_boot, seed)
     L <- min(cs[[eff]]); U <- max(cs[[eff]])
+    if (!is.finite(seL) || !is.finite(seU)) {
+      # At least one endpoint SE is non-finite (resamples infeasible). Emit a
+      # documented NA confidence interval with a reason rather than letting NA
+      # propagate silently through the Imbens-Manski construction.
+      fL <- attr(seL, "n_failed"); fU <- attr(seU, "n_failed")
+      n_failed <- sum(if (is.null(fL)) 0L else fL, if (is.null(fU)) 0L else fU)
+      out[[eff]] <- c(lower = L, upper = U,
+                      se_lower = as.numeric(seL), se_upper = as.numeric(seU),
+                      ci_lower = NA_real_, ci_upper = NA_real_)
+      out[[paste0(eff, "_reason")]] <-
+        sprintf("endpoint_se_na: resamples infeasible (%d failed)", n_failed)
+      next
+    }
     ci <- .imbens_manski_ci(L, U, seL, seU, level)
-    out[[eff]] <- c(lower = L, upper = U, se_lower = seL, se_upper = seU,
+    out[[eff]] <- c(lower = L, upper = U,
+                    se_lower = as.numeric(seL), se_upper = as.numeric(seU),
                     ci_lower = unname(ci["lower"]), ci_upper = unname(ci["upper"]))
   }
   out
