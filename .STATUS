@@ -1,10 +1,11 @@
-status: active
+status: released
 priority: P0
-progress: 96
-next: PRODUCTIONIZE the Imbens-Manski CI (branch feature/analytic-ci). Bias investigation RESOLVED: NO material finite-sample bias (single-Psi ~unbiased; population bound contains truth; earlier "[1.06,1.07]" was one unlucky sample). Under-coverage is the IM narrow-set-vs-noise problem; IM CI (built in R/bound_ci.R) achieves nominal coverage at n=500 (NIE 0.12->0.93, NDE 0.09->0.95). Remaining: mediator primitive + bound_ci_mediator, wire ci_method="analytic" into bound_ne, full coverage table N{100,200,500} both paths OR/RR/RD, tests, CRAN. See PLAN-bias-investigation-2026-06-12.md.
-blocked: none. (All 3 correctness bugs fixed+merged PRs #2,#4. Methods question resolved: IM CI, no bias correction.)
+progress: 100
+next: v0.3.0 on feature/cran-prep — MERGED PR #9 (bound_ne robustness: graceful infeasible NA-result + medrobust_infeasible condition + @reason; analytic-CI is.finite guard) and PR #10 (gesthtn example dataset + vignette + man/gesthtn.Rd). Bumped 0.2.1→0.3.0, NEWS + cran-comments updated. >>> NEXT: re-run R CMD check --as-cran on merged 0.3.0 (verify still 0E/0W), then devtools::submit_cran() (needs TTY) <<<. Prior 0.2.1 CRAN-prep was clean (new-submission NOTE only); 0.2.0 RELEASED (PR #7, tag v0.2.0). Sibling: pmed Hopper confirmatory-run SPEC + RUN.md ready (feature/bootstrap-mbco). Downstream TODO (M2a repo): wire medrobust_infeasible / @reason into pilot driver + combine_chunks.R (na.rm/report NA-CI counts).
+blocked: none.
+worktrees: (2026-06-14) feature branches feature/bound-ne-robust + feature/gesthtn-example MERGED to feature/cran-prep (PRs #9/#10); worktrees removed. NOTE (optional polish): gesthtn vignette bound_ne chunk ~40s = grid g-computation on 5000 rows (NOT the analytic CI; profiled). It is a VIGNETTE not an Rd example, so no >5s NOTE and --as-cran is clean; a quarto _freeze entry for gesthtn-bounds can be committed during the next full pkgdown/project render (single-file `quarto render` won't write _freeze — no `project:` type in vignettes/_quarto.yml).
 type: r
-last_updated: 2026-06-12
+last_updated: 2026-06-14
 
 # ═══════════════════════════════════════════════════════════════════
 # Below is the original .STATUS content (preserved for reference)

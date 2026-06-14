@@ -1,3 +1,41 @@
+# medrobust 0.3.0 (2026-06-14)
+
+## New features
+
+* New example dataset `gesthtn`: a 5,000-row public-domain sample (NCHS Natality
+  2021) illustrating partial-identification bounds for a differentially
+  misclassified binary mediator (gestational hypertension on the birth
+  certificate). See `?gesthtn` and `vignette("gesthtn-bounds")`.
+
+## Robustness
+
+* `bound_ne()` now **degrades gracefully** when no compatible parameter sets are
+  found under severe misclassification. Instead of aborting with an error, it
+  returns a `medrobust_bounds` object with `NA` bounds and a machine-readable
+  `@reason` (`"infeasible_no_compatible_sets"`), and signals a
+  `medrobust_infeasible` condition that callers (e.g. simulations) can capture —
+  so an infeasible replicate is recorded rather than lost.
+* New `@reason` property on `medrobust_bounds`; `print()` shows an infeasible
+  banner when applicable.
+* `bound_ci()` (analytic Imbens–Manski CIs) no longer returns **silent** `NA`
+  endpoints: a non-finite endpoint standard error (too few feasible bootstrap
+  resamples) now yields documented `NA` CI endpoints with a per-effect reason,
+  and `.imbens_manski_ci()` is NA-safe. Confidence intervals for feasible inputs
+  are unchanged.
+
+# medrobust 0.2.1 (2026-06-12)
+
+CRAN-preparation release (documentation only; no change to computed results).
+
+* `DESCRIPTION`: explained the `BCa` acronym and added method references in the
+  `authors (year) <doi:...>` / `<ISBN:...>` form (Manski, 2003; Imbens & Manski, 2004).
+* Added `\value` documentation to all exported S7 classes (`medrobust_bounds`,
+  `bootstrap_results`, `compatibility_test`, `power_analysis_result`, `simulated_dm_data`).
+* Replaced `\dontrun{}` with `\donttest{}` for runnable examples and rewrote the example
+  code so each executes against small simulated data; the computationally intensive
+  `power_analysis()` example remains in `\dontrun{}`. Removed an example that wrote a file
+  to the working directory.
+
 # medrobust 0.2.0 (2026-06-12)
 
 This release fixes three correctness bugs in the differential-misclassification bounds and

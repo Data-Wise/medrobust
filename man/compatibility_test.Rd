@@ -28,6 +28,11 @@
 
 \item{reason}{Character describing reason for incompatibility (if any)}
 }
+\value{
+An S7 object of class `compatibility_test` holding the outcome of the
+  data-compatibility (falsification) test, including the satisfied and
+  violated testable constraints.
+}
 \description{
 S7 class for storing results of compatibility tests for specific
 misclassification parameter values.
