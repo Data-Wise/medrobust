@@ -1,3 +1,17 @@
+# medrobust 0.4.0 (2026-06-15)
+
+## New features
+
+* New example dataset `nhanes_pa`: the exposure-side mirror of `gesthtn` — a
+  pooled public-domain NHANES 2015–2018 sample (N = 9,906) illustrating
+  partial-identification bounds when the **exposure** is differentially
+  misclassified (self-reported physical inactivity) while the mediator
+  (laboratory-measured hs-CRP) is error-free. The headline finding mirrors
+  `gesthtn` from the other side: the natural direct effect is robust to mild
+  differential reporting but its Imbens–Manski interval covers the null once
+  reporting accuracy is allowed to depend strongly on the outcome. See
+  `?nhanes_pa` and `vignette("nhanes_pa-bounds")`.
+
 # medrobust 0.3.0 (2026-06-14)
 
 ## New features
