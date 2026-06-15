@@ -47,3 +47,48 @@ test_that("exposure-path bound_ne() runs and returns a sane identified set (psi_
   expect_lte(b@NDE_lower, b@naive_estimates$nde + slack)
   expect_gte(b@NDE_upper, b@naive_estimates$nde - slack)
 })
+
+test_that("the headline robustness finding holds: NDE CI crosses the null between psi_sn 1.5 and 2", {
+  skip_on_cran()
+  skip_if_not(have_data, "nhanes_pa not built (run inst/scripts/prepare_nhanes_pa.R)")
+  # Pins the vignette narrative on the EXACT settings it renders: the Imbens--Manski
+  # CI for the NDE excludes 1 under non-differential-to-mild reporting error
+  # (psi_sn = 1.5) but covers 1 once differential reporting is allowed to grow
+  # (psi_sn = 2). Asserted as a qualitative crossover with wide margins so the test
+  # tracks the *finding*, not brittle decimals (measured 2026-06-15:
+  # CI_lower 1.082 at psi=1.5, 0.872 at psi=2).
+  Cnames <- c("C1", "C2", "C3")
+  fit <- function(psi) {
+    region <- sensitivity_region(
+      sn0_range    = c(0.80, 0.95), sp0_range    = c(0.80, 0.95),
+      psi_sn_range = c(1.0, psi),   psi_sp_range = c(1.0, 1.0)
+    )
+    bound_ne(
+      data = nhanes_pa, exposure = "A_star", mediator = "M", outcome = "Y",
+      confounders = Cnames, misclassified_variable = "exposure",
+      sensitivity_region = region, n_grid = 50, effect_scale = "OR",
+      ci_method = "analytic", use_adaptive_grid = TRUE, verbose = FALSE
+    )
+  }
+  nde_ci <- function(b, k) as.numeric(b@analytic_ci[["NDE"]][[k]][[1]])
+
+  b_mild <- fit(1.5)
+  b_diff <- fit(2.0)
+
+  # Robust to mild misclassification: NDE CI strictly excludes the null (OR = 1).
+  expect_gt(nde_ci(b_mild, "ci_lower"), 1.0)
+  # Not robust once reporting error is allowed to depend strongly on the outcome:
+  # the NDE CI now brackets the null.
+  expect_lt(nde_ci(b_diff, "ci_lower"), 1.0)
+  expect_gt(nde_ci(b_diff, "ci_upper"), 1.0)
+
+  # NIE is small and tight throughout -- inflammation carries little of the
+  # association; the identified set sits in a narrow band just above the null.
+  expect_lt(b_mild@NIE_upper - b_mild@NIE_lower, 0.05)
+  expect_lt(b_diff@NIE_upper - b_diff@NIE_lower, 0.05)
+  expect_true(all(c(b_mild@NIE_lower, b_diff@NIE_lower) > 0.95))
+  expect_true(all(c(b_mild@NIE_upper, b_diff@NIE_upper) < 1.10))
+
+  # Identified-set lower bound erodes monotonically toward the null as psi_sn grows.
+  expect_gt(b_mild@NDE_lower, b_diff@NDE_lower)
+})
