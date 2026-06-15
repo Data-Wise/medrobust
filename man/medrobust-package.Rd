@@ -12,6 +12,7 @@ Provides tools for conducting sensitivity analysis for causal mediation effects 
 Useful links:
 \itemize{
   \item \url{https://github.com/data-wise/medrobust}
+  \item \url{https://data-wise.github.io/medrobust}
   \item Report bugs at \url{https://github.com/data-wise/medrobust/issues}
 }
 

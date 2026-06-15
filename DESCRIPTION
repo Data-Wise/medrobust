@@ -50,6 +50,7 @@ Suggests:
     doParallel,
     boot,
     data.table,
+    nhanesA,
     mediation (>= 4.5.0),
     EValue (>= 4.1.0),
     covr,
