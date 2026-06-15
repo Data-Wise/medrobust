@@ -25,7 +25,7 @@
 suppressPackageStartupMessages(library(nhanesA))
 
 # numeric-code pull (translated = FALSE) so we can compute on 1/2 (Yes/No) codes
-get <- function(nm) {
+fetch_nhanes <- function(nm) {
   d <- tryCatch(nhanes(nm, translated = FALSE), error = function(e) {
     message("fetch failed: ", nm, " (", conditionMessage(e), ")"); NULL })
   if (is.null(d)) stop("could not fetch ", nm)
@@ -34,21 +34,24 @@ get <- function(nm) {
 
 # Yes/No (1/2) NHANES code -> 1/0, with 7/9 (refused/don't know) -> NA
 yn <- function(x) { x[x %in% c(7, 9)] <- NA; ifelse(x == 1, 1L, ifelse(x == 2, 0L, NA_integer_)) }
-# numeric field: blank out refused/dk sentinels (7777/9999/7/9 on count fields)
+# wide numeric field (minutes/day): blank out the 4-/5-digit refused/dk sentinels.
+# NB: do NOT mask 77/99 here -- 77 or 99 minutes/day is a legitimate value.
 num <- function(x) { x[x %in% c(7777, 9999, 77777, 99999)] <- NA; suppressWarnings(as.numeric(x)) }
+# bounded day-count field (valid 1-7): refused 77 / don't-know 99 are the sentinels here.
+days <- function(x) { x[x %in% c(77, 99)] <- NA; suppressWarnings(as.numeric(x)) }
 
 build_cycle <- function(suf) {                  # suf = "I" (2015-16) or "J" (2017-18)
-  demo <- get(paste0("DEMO_",  suf))[, c("SEQN", "RIDAGEYR", "RIAGENDR")]
-  crp  <- get(paste0("HSCRP_", suf))[, c("SEQN", "LBXHSCRP")]
-  bmx  <- get(paste0("BMX_",   suf))[, c("SEQN", "BMXBMI")]
-  mcq  <- get(paste0("MCQ_",   suf))
-  paq  <- get(paste0("PAQ_",   suf))
+  demo <- fetch_nhanes(paste0("DEMO_",  suf))[, c("SEQN", "RIDAGEYR", "RIAGENDR")]
+  crp  <- fetch_nhanes(paste0("HSCRP_", suf))[, c("SEQN", "LBXHSCRP")]
+  bmx  <- fetch_nhanes(paste0("BMX_",   suf))[, c("SEQN", "BMXBMI")]
+  mcq  <- fetch_nhanes(paste0("MCQ_",   suf))
+  paq  <- fetch_nhanes(paste0("PAQ_",   suf))
 
   # --- A_star: leisure-time aerobic activity, moderate-equivalent min/wk ---
   # vigorous recreational: PAQ650 (did any) -> PAQ655 (days) x PAD660 (min/day)
   # moderate recreational: PAQ665 (did any) -> PAQ670 (days) x PAD675 (min/day)
-  vig <- ifelse(yn(paq$PAQ650) == 1, num(paq$PAQ655) * num(paq$PAD660), 0)
-  mod <- ifelse(yn(paq$PAQ665) == 1, num(paq$PAQ670) * num(paq$PAD675), 0)
+  vig <- ifelse(yn(paq$PAQ650) == 1, days(paq$PAQ655) * num(paq$PAD660), 0)
+  mod <- ifelse(yn(paq$PAQ665) == 1, days(paq$PAQ670) * num(paq$PAD675), 0)
   vig[is.na(vig)] <- 0; mod[is.na(mod)] <- 0
   equiv_mod_min <- mod + 2 * vig                 # 2018 PAG: vigorous counts double
   # inactive iff a valid gate answer exists and equiv < 150
