@@ -2,8 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | draft |
+| **Status** | archived — implemented & shipped in PR #13 (feature/nhanes-pa-example → dev) |
 | **Created** | 2026-06-15 |
+| **Archived** | 2026-06-15 |
 | **Branch** | `feature/nhanes-pa-example` (worktree off `dev`) |
 | **Closes** | GitHub issue #12 |
 | **From** | `/workflow:brainstorm` (feature focus) → this spec |
@@ -211,3 +212,8 @@ devtools::check(args = "--as-cran")  # expect 0E / 0W / benign NOTEs only
 - **2026-06-15** — Initial draft from `/workflow:brainstorm` (feature focus). Decisions locked:
   full N (no sampling/seed), `usethis::use_data`, vignette via quarto `freeze`, `nhanesA` →
   Suggests. Worktree `feature/nhanes-pa-example` created off `dev`.
+- **2026-06-15** — All deliverables implemented; opened PR #13. Post-review fixes: corrected
+  NHANES day-count sentinels (`days()` helper; `.rda` byte-identical, N = 9906), renamed
+  `get()` → `fetch_nhanes()`, dropped inert `ci_n_boot`, added a headline-finding regression
+  test (NDE CI crosses the null between ψ_Sn = 1.5 and 2). Suite 20/20. **Archived** to
+  `archive/` (moved out of the repo root prior to integration to `dev`).
