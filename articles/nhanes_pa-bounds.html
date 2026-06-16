@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Synthetic HEALS Data: Ground Truth with Differential Measurement Error • medrobust</title>
+<title>Worked example: bounds for a differentially misclassified exposure (physical inactivity) • medrobust</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -1172,7 +1172,7 @@ var PagedTableDoc;
 window.onload = function() {
   PagedTableDoc.initAll();
 };
-</script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Synthetic HEALS Data: Ground Truth with Differential Measurement Error">
+</script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Worked example: bounds for a differentially misclassified exposure (physical inactivity)">
 <meta property="og:image" content="https://data-wise.github.io/medrobust/reference/figures/logo.png">
 <meta property="og:image:alt" content="medrobust: Robust Causal Mediation Analysis">
 <meta name="twitter:card" content="summary_large_image">
@@ -1231,12 +1231,12 @@ window.onload = function() {
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Synthetic HEALS Data: Ground Truth with Differential Measurement Error</h1>
+      <h1>Worked example: bounds for a differentially misclassified exposure (physical inactivity)</h1>
 
       <p class="author">Davood Tofighi, Ph.D.</p>
       <p class="date">2026-06-16</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/v0.4.0/vignettes/heals-synthetic-data.qmd" class="external-link"><code>vignettes/heals-synthetic-data.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/v0.4.0/vignettes/nhanes_pa-bounds.qmd" class="external-link"><code>vignettes/nhanes_pa-bounds.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -1245,357 +1245,101 @@ window.onload = function() {
 
 
 
-    <section class="section level2"><h2 id="synthetic-heals-data-ground-truth-with-differential-measurement-error">Synthetic HEALS Data: Ground Truth with Differential Measurement Error<a class="anchor" aria-label="anchor" href="#synthetic-heals-data-ground-truth-with-differential-measurement-error"></a>
+    <section class="level2"><h2 id="the-question">The question<a class="anchor" aria-label="anchor" href="#the-question"></a>
 </h2>
-<section class="level2"><h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h3>
-<p>The <code>medrobust</code> package provides tools for bounding causal mediation effects when variables are mismeasured. To demonstrate these methods, the package includes (or allows you to generate) a synthetic dataset based on the <strong>Health Effects of Arsenic Longitudinal Study (HEALS)</strong>.</p>
-<p>This vignette explains the logic, sources, and code used to generate this dataset. It serves as a “ground truth” simulation where we know the true effects, allowing users to verify that <code>medrobust</code> bounds contain the true parameter estimates even under severe differential measurement error.</p>
-</section><section class="level2"><h3 id="data-logic-and-sources">Data Logic and Sources<a class="anchor" aria-label="anchor" href="#data-logic-and-sources"></a>
-</h3>
-<p>Because individual-level data from the original HEALS cohort are protected, we reconstruct the data statistically. We use a “Hybrid” approach that combines demographic profiles and effect sizes from three key publications:</p>
-<ol type="1">
-<li>
-<p><strong>Demographics (Base Population):</strong></p>
-<ul>
-<li>
-<strong>Source:</strong> <a href="https://www.google.com/search?q=https://doi.org/10.1093/aje/kwj206" class="external-link">Ahsan et al. (2006)</a> - <em>Baseline Characteristics of the HEALS Cohort</em>.</li>
-<li>
-<strong>Logic:</strong> We model a sub-cohort (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>450</mn></mrow><annotation encoding="application/x-tex">N=450</annotation></semantics></math>) that is relatively young (mean age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>43</mn></mrow><annotation encoding="application/x-tex">\approx 43</annotation></semantics></math>), lean (mean BMI <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>19.7</mn></mrow><annotation encoding="application/x-tex">\approx 19.7</annotation></semantics></math>), and exhibits strong gender-stratified smoking patterns (common in men, rare in women).</li>
-</ul>
-</li>
-<li>
-<p><strong>The Mediator (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>): Inflammation (sVCAM-1)</strong></p>
-<ul>
-<li>
-<strong>Source:</strong> <a href="https://doi.org/10.1289/ehp.9961" class="external-link">Chen et al. (2007)</a> - <em>Arsenic and Soluble Cell Adhesion Molecules</em>.</li>
-<li>
-<strong>Logic:</strong> This study established a biological link where arsenic exposure increases soluble Vascular Cell Adhesion Molecule-1 (sVCAM-1). We simulate a positive association (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mrow><mi>t</mi><mi>r</mi><mi>u</mi><mi>e</mi></mrow></msub><mo>→</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">A_{true} \to M</annotation></semantics></math>) corresponding to a partial mediation pathway.</li>
-</ul>
-</li>
-<li>
-<p><strong>The Outcome (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>): Cardiovascular Disease (CVD)</strong></p>
-<ul>
-<li>
-<strong>Source:</strong> <a href="https://doi.org/10.1093/ije/dyq095" class="external-link">Argos et al. (2010)</a> - <em>Arsenic Exposure and CVD Mortality</em>.</li>
-<li>
-<strong>Logic:</strong> This study reported a Hazard Ratio (HR) of approximately <strong>1.92</strong> for high arsenic exposure. We calibrate our “True” Natural Direct Effect (NDE) to match this magnitude (OR <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math> 1.68).</li>
-</ul>
-</li>
-<li>
-<p><strong>The Misclassification Mechanism (The Twist)</strong></p>
-<ul>
-<li>
-<strong>Logic:</strong> In many occupational and environmental studies, exposure is self-reported. We simulate <strong>Differential Measurement Error</strong> where cases (individuals with CVD) are more likely to recall/report exposure than healthy controls (Recall Bias).</li>
-<li>
-<strong>Result:</strong> This creates a dataset where the <em>Observed</em> effect (Naive NDE <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math> 2.85) is massive compared to the <em>True</em> effect (True NDE <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≈</mo><annotation encoding="application/x-tex">\approx</annotation></semantics></math> 1.68). This is the problem <code>medrobust</code> is designed to solve.</li>
-</ul>
-</li>
-</ol></section><section class="level2"><h3 id="variable-dictionary">Variable Dictionary<a class="anchor" aria-label="anchor" href="#variable-dictionary"></a>
-</h3>
-<p>The generated dataset contains the following variables:</p>
-<table class="table caption-top">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead><tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Label</th>
-<th style="text-align: left;">Definition</th>
-<th style="text-align: left;">Role</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>id</code></td>
-<td style="text-align: left;">Subject ID</td>
-<td style="text-align: left;">Unique identifier (1 to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>)</td>
-<td style="text-align: left;">ID</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>Y</code></td>
-<td style="text-align: left;">Outcome</td>
-<td style="text-align: left;">Cardiovascular Disease (1 = Yes, 0 = No)</td>
-<td style="text-align: left;">Outcome</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>M</code></td>
-<td style="text-align: left;">Mediator</td>
-<td style="text-align: left;">Elevated sVCAM-1 Inflammation (1 = High, 0 = Low)</td>
-<td style="text-align: left;">Mediator</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>A_star</code></td>
-<td style="text-align: left;">
-<strong>Observed</strong> Exposure</td>
-<td style="text-align: left;">Self-reported High Arsenic Exposure (1 = Yes, 0 = No)</td>
-<td style="text-align: left;">Exposure (Biased)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>A_true</code></td>
-<td style="text-align: left;">
-<strong>True</strong> Exposure</td>
-<td style="text-align: left;">Actual High Arsenic Exposure (Unobserved in real studies)</td>
-<td style="text-align: left;">Ground Truth</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>age</code></td>
-<td style="text-align: left;">Age</td>
-<td style="text-align: left;">Age in years (Mean ~42.8)</td>
-<td style="text-align: left;">Confounder</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>male</code></td>
-<td style="text-align: left;">Sex</td>
-<td style="text-align: left;">Biological Sex (1 = Male, 0 = Female)</td>
-<td style="text-align: left;">Confounder</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>smoking</code></td>
-<td style="text-align: left;">Smoking Status</td>
-<td style="text-align: left;">Ever Smoker (1 = Yes, 0 = No)</td>
-<td style="text-align: left;">Confounder</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>bmi</code></td>
-<td style="text-align: left;">Body Mass Index</td>
-<td style="text-align: left;">
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>g</mi><mi>/</mi><msup><mi>m</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">kg/m^2</annotation></semantics></math> (Mean ~19.7)</td>
-<td style="text-align: left;">Confounder</td>
-</tr>
-</tbody>
-</table></section><section class="level2"><h3 id="r-code-for-data-generation">R Code for Data Generation<a class="anchor" aria-label="anchor" href="#r-code-for-data-generation"></a>
-</h3>
-<p>Users can reproduce the dataset using the following code. Note that we set a fixed seed (<code>2025</code>) to ensure reproducibility.</p>
+<p>Does <strong>systemic inflammation</strong> mediate the association between <strong>physical inactivity</strong> and <strong>prevalent cardiovascular disease (CVD)</strong>? Here the <em>exposure</em> is the problem variable: self-reported physical inactivity has no biomarker, relies on participant report, and its reporting accuracy plausibly depends on health status — a <em>differentially misclassified</em> binary exposure. The mediator (laboratory hs-CRP) is, by contrast, measured without error. With no validation data, the natural direct (NDE) and indirect (NIE) effects are not point-identified — but <code>medrobust</code> returns a <strong>sharp identified set</strong> over a transparent sensitivity region, plus an Imbens–Manski confidence interval.</p>
+<p>This is the exposure-side mirror of <code><a href="../articles/gesthtn-bounds.html">vignette("gesthtn-bounds")</a></code>, which instead misclassifies the <em>mediator</em>. The only structural change to the estimator call is <code>misclassified_variable = "exposure"</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-wise/medrobust" class="external-link">medrobust</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"nhanes_pa"</span><span class="op">)</span></span>
+<span><span class="co"># A_star: self-reported inactivity (misclassified) | M: hs-CRP &gt;= 3 mg/L (lab, error-free)</span></span>
+<span><span class="co"># Y: prevalent CVD                                  | C1/C2/C3: age&gt;=50, female, obese</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>A_star <span class="op">=</span> <span class="va">nhanes_pa</span><span class="op">$</span><span class="va">A_star</span>, Y <span class="op">=</span> <span class="va">nhanes_pa</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Y
+A_star    0    1
+     0 3146  204
+     1 5737  819</code></pre>
+</div>
+</div>
+</section><section class="level2"><h2 id="a-naive-analysis-treats-the-surrogate-as-truth">A naive analysis (treats the surrogate as truth)<a class="anchor" aria-label="anchor" href="#a-naive-analysis-treats-the-surrogate-as-truth"></a>
+</h2>
+<p>We compute the OR-scale natural effects from a no-interaction logistic specification, treating self-reported inactivity <code>A_star</code> as if it were the true exposure (the VanderWeele closed form, evaluated across the three confounders).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Cnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span><span class="op">)</span></span>
+<span><span class="va">fM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/delete.response.html" class="external-link">reformulate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A_star"</span>, <span class="va">Cnames</span><span class="op">)</span>, <span class="st">"M"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">nhanes_pa</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fY</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/delete.response.html" class="external-link">reformulate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A_star"</span>, <span class="st">"M"</span>, <span class="va">Cnames</span><span class="op">)</span>, <span class="st">"Y"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">nhanes_pa</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">generate_heals_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">N</span> <span class="op">=</span> <span class="fl">450</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">2025</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># --- 1. Generate Covariates (Based on Ahsan et al. 2006) ---</span></span>
-<span>  <span class="co"># Age: Mean 42.8, SD 10.3, bounded to realistic adult range</span></span>
-<span>  <span class="va">age</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">42.8</span>, sd <span class="op">=</span> <span class="fl">10.3</span><span class="op">)</span>, <span class="fl">18</span><span class="op">)</span>, <span class="fl">75</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Sex: 42.5% Male</span></span>
-<span>  <span class="va">male</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.425</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># BMI: Lean population, Mean 19.7</span></span>
-<span>  <span class="va">bmi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">19.7</span>, sd <span class="op">=</span> <span class="fl">3.0</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Smoking: Strongly gender-stratified (60% of men, 1% of women)</span></span>
-<span>  <span class="va">smoking</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
-<span>  <span class="va">smoking</span><span class="op">[</span><span class="va">male</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">male</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0.60</span><span class="op">)</span></span>
-<span>  <span class="va">smoking</span><span class="op">[</span><span class="va">male</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">male</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0.01</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># --- 2. Generate TRUE Exposure (Unobserved Truth) ---</span></span>
-<span>  <span class="co"># High Arsenic (&gt;50 ug/L). Prevalence approx 40-50%.</span></span>
-<span>  <span class="co"># Older men slightly more likely to use contaminated wells.</span></span>
-<span>  <span class="va">logits_A_true</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">male</span></span>
-<span>  <span class="va">probs_A_true</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">logits_A_true</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">A_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">probs_A_true</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># --- 3. Generate Mediator &amp; Outcome (Biological Truth) ---</span></span>
-<span>  <span class="co"># Mediator (M): Inflammation (sVCAM-1)</span></span>
-<span>  <span class="co"># Linked to True Arsenic (Chen et al. 2007)</span></span>
-<span>  <span class="va">logits_M</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">2.8</span> <span class="op">+</span> <span class="fl">0.9</span> <span class="op">*</span> <span class="va">A_true</span> <span class="op">+</span> <span class="fl">0.4</span> <span class="op">*</span> <span class="va">smoking</span> <span class="op">-</span> <span class="fl">0.05</span> <span class="op">*</span> <span class="va">bmi</span> <span class="op">+</span> <span class="fl">0.02</span> <span class="op">*</span> <span class="va">age</span></span>
-<span>  <span class="va">probs_M</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">logits_M</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">probs_M</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Outcome (Y): CVD</span></span>
-<span>  <span class="co"># Linked to True Arsenic (Argos et al. 2010) and Mediator</span></span>
-<span>  <span class="co"># True NDE target OR approx 1.68</span></span>
-<span>  <span class="va">logits_Y</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">5.8</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">A_true</span> <span class="op">+</span> <span class="fl">0.6</span> <span class="op">*</span> <span class="va">M</span> <span class="op">+</span> <span class="fl">0.08</span> <span class="op">*</span> <span class="va">age</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">smoking</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">male</span></span>
-<span>  <span class="va">probs_Y</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">logits_Y</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">probs_Y</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># --- 4. Generate OBSERVED Exposure (Differential Misclassification) ---</span></span>
-<span>  <span class="co"># Scenario: Severe Recall Bias</span></span>
-<span>  <span class="co"># Cases (Y=1) have high sensitivity (0.90) but low specificity (0.55) (Over-reporting)</span></span>
-<span>  <span class="co"># Controls (Y=0) have lower sensitivity (0.60) but high specificity (0.90)</span></span>
-<span></span>
-<span>  <span class="va">probs_A_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Case Probabilities</span></span>
-<span>  <span class="va">probs_A_star</span><span class="op">[</span><span class="va">Y</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">A_true</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.90</span>       <span class="co"># Sensitivity (Cases)</span></span>
-<span>  <span class="va">probs_A_star</span><span class="op">[</span><span class="va">Y</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">A_true</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">0.55</span>   <span class="co"># 1 - Specificity (Cases)</span></span>
-<span></span>
-<span>  <span class="co"># Control Probabilities</span></span>
-<span>  <span class="va">probs_A_star</span><span class="op">[</span><span class="va">Y</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">A_true</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.60</span>       <span class="co"># Sensitivity (Controls)</span></span>
-<span>  <span class="va">probs_A_star</span><span class="op">[</span><span class="va">Y</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">A_true</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">0.90</span>   <span class="co"># 1 - Specificity (Controls)</span></span>
-<span></span>
-<span>  <span class="va">A_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">probs_A_star</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># --- 5. Assemble Dataset ---</span></span>
-<span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span>,</span>
-<span>    Y <span class="op">=</span> <span class="va">Y</span>,</span>
-<span>    M <span class="op">=</span> <span class="va">M</span>,</span>
-<span>    A_star <span class="op">=</span> <span class="va">A_star</span>,</span>
-<span>    A_true <span class="op">=</span> <span class="va">A_true</span>, <span class="co"># Keep for validation, drop for analysis</span></span>
-<span>    age <span class="op">=</span> <span class="va">age</span>,</span>
-<span>    male <span class="op">=</span> <span class="va">male</span>,</span>
-<span>    smoking <span class="op">=</span> <span class="va">smoking</span>,</span>
-<span>    bmi <span class="op">=</span> <span class="va">bmi</span></span>
+<span><span class="va">bA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fM</span><span class="op">)</span><span class="op">[[</span><span class="st">"A_star"</span><span class="op">]</span><span class="op">]</span>; <span class="va">b0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fM</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">tA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fY</span><span class="op">)</span><span class="op">[[</span><span class="st">"A_star"</span><span class="op">]</span><span class="op">]</span>; <span class="va">tM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fY</span><span class="op">)</span><span class="op">[[</span><span class="st">"M"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">base</span> <span class="op">&lt;-</span> <span class="va">b0</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fM</span><span class="op">)</span><span class="op">[</span><span class="va">Cnames</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">nhanes_pa</span><span class="op">[</span><span class="va">Cnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>   <span class="co"># b0 + bC . Cbar</span></span>
+<span><span class="va">lin</span>  <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">+</span> <span class="va">bA</span></span>
+<span><span class="va">naive_NDE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">tA</span><span class="op">)</span></span>
+<span><span class="va">naive_NIE</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">tM</span> <span class="op">+</span> <span class="va">lin</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span></span>
+<span>             <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lin</span><span class="op">)</span><span class="op">)</span>  <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">tM</span> <span class="op">+</span> <span class="va">base</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>naive_NDE_OR <span class="op">=</span> <span class="va">naive_NDE</span>, naive_NIE_OR <span class="op">=</span> <span class="va">naive_NIE</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>naive_NDE_OR naive_NIE_OR
+       1.629        1.014 </code></pre>
+</div>
+</div>
+</section><section class="level2"><h2 id="the-sensitivity-region">The sensitivity region<a class="anchor" aria-label="anchor" href="#the-sensitivity-region"></a>
+</h2>
+<p>With no validation data we posit <em>plausible</em> accuracy for self-reported inactivity: sensitivity and specificity each in <code>[0.80, 0.95]</code>. The differential parameter <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><mo>&gt;</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\psi_{Sn} &gt; 1</annotation></semantics></math> allows reporting accuracy to depend on the outcome (respondents with CVD may report activity differently). We sweep the differential ceiling <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>1.5</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\psi_{Sn} \in \{1, 1.5, 2, 3\}</annotation></semantics></math> — non-differential through moderate differential reporting.</p>
+</section><section class="level2"><h2 id="partial-identification-bounds-as-psi_sn-grows">Partial-identification bounds as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">\psi_{Sn}</annotation></semantics></math> grows<a class="anchor" aria-label="anchor" href="#partial-identification-bounds-as-psi_sn-grows"></a>
+</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fmt</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.3f"</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">psi</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.5</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">region</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
+<span>    sn0_range    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
+<span>    sp0_range    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
+<span>    psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="va">psi</span><span class="op">)</span>,</span>
+<span>    psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="va">b</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">nhanes_pa</span>, exposure <span class="op">=</span> <span class="st">"A_star"</span>, mediator <span class="op">=</span> <span class="st">"M"</span>, outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
+<span>    confounders <span class="op">=</span> <span class="va">Cnames</span>, misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
+<span>    sensitivity_region <span class="op">=</span> <span class="va">region</span>, n_grid <span class="op">=</span> <span class="fl">50</span>, effect_scale <span class="op">=</span> <span class="st">"OR"</span>,</span>
+<span>    confidence_level <span class="op">=</span> <span class="fl">0.95</span>, ci_method <span class="op">=</span> <span class="st">"analytic"</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="cn">FALSE</span>, use_adaptive_grid <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"psi "</span>, <span class="va">psi</span>, <span class="st">" failed: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">)</span>; <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">)</span> <span class="kw">next</span></span>
+<span>  <span class="va">ci</span>  <span class="op">&lt;-</span> <span class="va">b</span><span class="op">@</span><span class="va">analytic_ci</span></span>
+<span>  <span class="va">cig</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">eff</span>, <span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">v</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="va">ci</span><span class="op">[[</span><span class="va">eff</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span>, error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">||</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span> <span class="cn">NA_real_</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">v</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">rows</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">rows</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    psi_sn <span class="op">=</span> <span class="va">psi</span>,</span>
+<span>    NDE_L <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">NDE_lower</span>, NDE_U <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">NDE_upper</span>,</span>
+<span>    NDE_ciL <span class="op">=</span> <span class="fu">cig</span><span class="op">(</span><span class="st">"NDE"</span>, <span class="st">"ci_lower"</span><span class="op">)</span>, NDE_ciU <span class="op">=</span> <span class="fu">cig</span><span class="op">(</span><span class="st">"NDE"</span>, <span class="st">"ci_upper"</span><span class="op">)</span>,</span>
+<span>    NIE_L <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">NIE_lower</span>, NIE_U <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">NIE_upper</span>,</span>
+<span>    NIE_ciL <span class="op">=</span> <span class="fu">cig</span><span class="op">(</span><span class="st">"NIE"</span>, <span class="st">"ci_lower"</span><span class="op">)</span>, NIE_ciU <span class="op">=</span> <span class="fu">cig</span><span class="op">(</span><span class="st">"NIE"</span>, <span class="st">"ci_upper"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Generate the data</span></span>
-<span><span class="va">heals_data</span> <span class="op">&lt;-</span> <span class="fu">generate_heals_data</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">rows</span><span class="op">)</span></span>
+<span><span class="va">res</span></span></code></pre></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["id"],"name":[1],"type":["int"],"align":["right"]},{"label":["Y"],"name":[2],"type":["int"],"align":["right"]},{"label":["M"],"name":[3],"type":["int"],"align":["right"]},{"label":["A_star"],"name":[4],"type":["int"],"align":["right"]},{"label":["A_true"],"name":[5],"type":["int"],"align":["right"]},{"label":["age"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["male"],"name":[7],"type":["int"],"align":["right"]},{"label":["smoking"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["bmi"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"0","4":"0","5":"1","6":"49.19379","7":"0","8":"0","9":"25.88480","_rn_":"1"},{"1":"2","2":"0","3":"0","4":"0","5":"1","6":"43.16711","7":"0","8":"0","9":"21.37929","_rn_":"2"},{"1":"3","2":"1","3":"0","4":"0","5":"0","6":"50.76349","7":"1","8":"1","9":"19.28013","_rn_":"3"},{"1":"4","2":"0","3":"0","4":"0","5":"0","6":"55.90664","7":"1","8":"1","9":"18.37267","_rn_":"4"},{"1":"5","2":"1","3":"0","4":"0","5":"1","6":"46.62105","7":"0","8":"0","9":"17.11476","_rn_":"5"},{"1":"6","2":"0","3":"0","4":"0","5":"0","6":"41.12260","7":"0","8":"0","9":"14.18120","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["psi_sn"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["NDE_L"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NDE_U"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["NDE_ciL"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NDE_ciU"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["NIE_L"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["NIE_U"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["NIE_ciL"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["NIE_ciU"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1.0","2":"1.6784086","3":"1.934963","4":"1.3637970","5":"2.414400","6":"1.015510","7":"1.018215","8":"0.9948214","9":"1.033470"},{"1":"1.5","2":"1.4379649","3":"1.909667","4":"1.0815533","5":"2.367451","6":"1.015381","7":"1.020203","8":"0.9954082","9":"1.040547"},{"1":"2.0","2":"1.0012902","3":"1.881616","4":"0.8717392","5":"2.326037","6":"1.015299","7":"1.023259","8":"0.9962427","9":"1.038905"},{"1":"3.0","2":"0.8229165","3":"1.867128","4":"0.6055981","5":"2.300797","6":"1.015212","7":"1.023229","8":"0.9963162","9":"1.029655"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 </div>
-</section><section class="level2"><h3 id="verifying-the-bias">Verifying the Bias<a class="anchor" aria-label="anchor" href="#verifying-the-bias"></a>
-</h3>
-<p>Before applying <code>medrobust</code>, we can verify the extent of the bias introduced by the simulation.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Naive Model (Using Observed A_star)</span></span>
-<span><span class="va">naive_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A_star</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">male</span> <span class="op">+</span> <span class="va">smoking</span> <span class="op">+</span> <span class="va">bmi</span>,</span>
-<span>                 data <span class="op">=</span> <span class="va">heals_data</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
-<span><span class="va">naive_nde</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">naive_mod</span><span class="op">)</span><span class="op">[</span><span class="st">"A_star"</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># True Model (Using Unobserved A_true)</span></span>
-<span><span class="va">true_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A_true</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">male</span> <span class="op">+</span> <span class="va">smoking</span> <span class="op">+</span> <span class="va">bmi</span>,</span>
-<span>                data <span class="op">=</span> <span class="va">heals_data</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
-<span><span class="va">true_nde</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">true_mod</span><span class="op">)</span><span class="op">[</span><span class="st">"A_true"</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"True NDE (Hidden): %.2f\n"</span>, <span class="va">true_nde</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>True NDE (Hidden): 1.69</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Naive NDE (Observed): %.2f\n"</span>, <span class="va">naive_nde</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Naive NDE (Observed): 4.82</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Bias Amplification: %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">naive_nde</span> <span class="op">-</span> <span class="va">true_nde</span><span class="op">)</span> <span class="op">/</span> <span class="va">true_nde</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Bias Amplification: 184.3%</code></pre>
-</div>
-</div>
-<p><strong>Expected Results:</strong></p>
-<ul>
-<li>
-<strong>True NDE:</strong> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>1.68</mn></mrow><annotation encoding="application/x-tex">\approx 1.68</annotation></semantics></math> (Consistent with Argos et al., 2010)</li>
-<li>
-<strong>Naive NDE:</strong> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>2.85</mn></mrow><annotation encoding="application/x-tex">\approx 2.85</annotation></semantics></math> (Inflated due to differential recall bias)</li>
-<li>
-<strong>Bias Amplification:</strong> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>70</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\approx 70\%</annotation></semantics></math> (Massive overestimation)</li>
-</ul></section><section class="level2"><h3 id="descriptive-statistics">Descriptive Statistics<a class="anchor" aria-label="anchor" href="#descriptive-statistics"></a>
-</h3>
-<p>Let’s examine the data characteristics:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Summary statistics</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       id              Y                M               A_star
- Min.   :  1.0   Min.   :0.0000   Min.   :0.00000   Min.   :0.00
- 1st Qu.:113.2   1st Qu.:0.0000   1st Qu.:0.00000   1st Qu.:0.00
- Median :225.5   Median :0.0000   Median :0.00000   Median :0.00
- Mean   :225.5   Mean   :0.1222   Mean   :0.09333   Mean   :0.36
- 3rd Qu.:337.8   3rd Qu.:0.0000   3rd Qu.:0.00000   3rd Qu.:1.00
- Max.   :450.0   Max.   :1.0000   Max.   :1.00000   Max.   :1.00
-     A_true            age             male           smoking
- Min.   :0.0000   Min.   :18.00   Min.   :0.0000   Min.   :0.0000
- 1st Qu.:0.0000   1st Qu.:35.69   1st Qu.:0.0000   1st Qu.:0.0000
- Median :0.0000   Median :42.83   Median :0.0000   Median :0.0000
- Mean   :0.4844   Mean   :42.80   Mean   :0.4133   Mean   :0.2689
- 3rd Qu.:1.0000   3rd Qu.:49.38   3rd Qu.:1.0000   3rd Qu.:1.0000
- Max.   :1.0000   Max.   :72.18   Max.   :1.0000   Max.   :1.0000
-      bmi
- Min.   :10.88
- 1st Qu.:17.58
- Median :19.68
- Mean   :19.60
- 3rd Qu.:21.61
- Max.   :28.07  </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Cross-tabulation of exposure and outcome</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">$</span><span class="va">A_star</span>, <span class="va">heals_data</span><span class="op">$</span><span class="va">Y</span>, dnn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Observed Exposure"</span>, <span class="st">"CVD"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                 CVD
-Observed Exposure   0   1
-                0 273  15
-                1 122  40</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Prevalence estimates</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"CVD Prevalence: %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>CVD Prevalence: 12.2%</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Observed Arsenic Exposure: %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">$</span><span class="va">A_star</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Observed Arsenic Exposure: 36.0%</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"True Arsenic Exposure: %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">$</span><span class="va">A_true</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>True Arsenic Exposure: 48.4%</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Inflammation (sVCAM-1): %.1f%%\n"</span>, <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">heals_data</span><span class="op">$</span><span class="va">M</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Inflammation (sVCAM-1): 9.3%</code></pre>
-</div>
-</div>
-</section><section class="level2"><h3 id="using-with-medrobust">Using with <code>medrobust</code>
-<a class="anchor" aria-label="anchor" href="#using-with-medrobust"></a>
-</h3>
-<p>When using this data with <code>medrobust</code> functions like <code><a href="../reference/bound_ne.html">bound_ne()</a></code>, you should use <code>A_star</code> as the exposure variable. The <code>A_true</code> variable is provided only to validate whether the calculated bounds successfully capture the true effect.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-wise/medrobust" class="external-link">medrobust</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Example: Computing bounds for Natural Direct Effect</span></span>
-<span><span class="co"># Assuming sensitivity parameters based on validation studies</span></span>
-<span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">heals_data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"male"</span>, <span class="st">"smoking"</span>, <span class="st">"bmi"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.55</span>, <span class="fl">0.65</span><span class="op">)</span>,  <span class="co"># Baseline sensitivity</span></span>
-<span>    sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fl">0.95</span><span class="op">)</span>,  <span class="co"># Baseline specificity</span></span>
-<span>    psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>, <span class="co"># Differential sensitivity</span></span>
-<span>    psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.0</span><span class="op">)</span>  <span class="co"># Differential specificity</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View results</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level2"><h3 id="saving-the-dataset">Saving the Dataset<a class="anchor" aria-label="anchor" href="#saving-the-dataset"></a>
-</h3>
-<p>To include this dataset in the package, we save it as an <code>.rda</code> file:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Save the dataset for package use</span></span>
-<span><span class="co"># Note: In package development, this would be saved to data/heals_data.rda</span></span>
-<span><span class="co"># usethis::use_data(heals_data, overwrite = TRUE)</span></span>
-<span></span>
-<span><span class="co"># For manual saving:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">heals_data</span>, file <span class="op">=</span> <span class="st">"../data/heals_data.rda"</span>, compress <span class="op">=</span> <span class="st">"bzip2"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</section></section><script id="quarto-html-after-body" type="application/javascript">
+</section><section class="level2"><h2 id="reading-the-result">Reading the result<a class="anchor" aria-label="anchor" href="#reading-the-result"></a>
+</h2>
+<p>Read down the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">\psi_{Sn}</annotation></semantics></math> column. At <strong>non-differential to mild</strong> reporting error (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><mo>≤</mo><mn>1.5</mn></mrow><annotation encoding="application/x-tex">\psi_{Sn} \le 1.5</annotation></semantics></math>) the NDE identified set (and its Imbens–Manski interval) excludes 1 — the direct effect of inactivity on CVD is <strong>robust</strong> to that much misclassification. As the differential ceiling rises to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\psi_{Sn} \ge 2</annotation></semantics></math>, the NDE set widens to <strong>cover 1</strong>: once reporting accuracy is allowed to depend strongly on the outcome, the data can no longer rule out a null direct effect. The NIE (mediated through hs-CRP) is <strong>small and not distinguishable from the null</strong> throughout — inflammation carries little of the total association in this cross-section.</p>
+<p>The lesson mirrors <code>gesthtn</code> from the other side: a naive point estimate that treats the self-report as truth overstates certainty, while the bounds make the robustness-to-misclassification claim explicit and falsifiable.</p>
+<blockquote>
+<p>Note: <code>nhanes_pa</code> ships the full pooled complete-case sample (no random subsampling), regenerate it from <code>system.file("scripts", "prepare_nhanes_pa.R", package = "medrobust")</code>. The full <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>S</mi><mi>n</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>1.5</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\psi_{Sn} \in \{1, 1.5, 2, 3\}</annotation></semantics></math> sweep here matches the manuscript application; widen <code>sn0_range</code>/<code>sp0_range</code> to probe less certainty about the reporting mechanism.</p>
+</blockquote>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

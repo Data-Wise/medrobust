@@ -16,5 +16,8 @@
   medrobust](https://data-wise.github.io/medrobust/articles/introduction.md):
 - [Methodological Details of
   medrobust](https://data-wise.github.io/medrobust/articles/methodology.md):
+- [Worked example: bounds for a differentially misclassified exposure
+  (physical
+  inactivity)](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.md):
 - [S7 Class Design and Usage in
   \`medrobust\`](https://data-wise.github.io/medrobust/articles/s7-documentation.md):

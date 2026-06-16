@@ -101,6 +101,9 @@ Example and synthetic datasets
 - [`gesthtn`](https://data-wise.github.io/medrobust/reference/gesthtn.md)
   : Gestational Hypertension as a Differentially Misclassified Binary
   Mediator
+- [`nhanes_pa`](https://data-wise.github.io/medrobust/reference/nhanes_pa.md)
+  : Physical Inactivity as a Differentially Misclassified Binary
+  Exposure
 - [`heals_data`](https://data-wise.github.io/medrobust/reference/heals_data.md)
   : Synthetic HEALS Data with Differential Measurement Error
 - [`simulated_dm_data`](https://data-wise.github.io/medrobust/reference/simulated_dm_data.md)

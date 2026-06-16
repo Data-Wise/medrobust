@@ -36,6 +36,7 @@
 <url><loc>https://data-wise.github.io/medrobust/articles/index.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/introduction.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/methodology.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/articles/s7-documentation.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/authors.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/index.html</loc></url>
@@ -80,6 +81,7 @@
 <url><loc>https://data-wise.github.io/medrobust/reference/medrobust-package.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/medrobust_bounds.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/new_falsification_summary.html</loc></url>
+<url><loc>https://data-wise.github.io/medrobust/reference/nhanes_pa.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/plot_bootstrap_distribution.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/power_analysis.html</loc></url>
 <url><loc>https://data-wise.github.io/medrobust/reference/power_analysis_result.html</loc></url>

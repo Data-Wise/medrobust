@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/introduction.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/gesthtn-bounds.html">Worked Example: Gestational Hypertension</a></li>
+    <li><a class="dropdown-item" href="../articles/nhanes_pa-bounds.html">Worked Example: Physical Inactivity (NHANES)</a></li>
     <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
     <li><h6 class="dropdown-header" data-toc-skip>Methods &amp; Theory</h6></li>
     <li><a class="dropdown-item" href="../articles/identification-math.html">Identification Mathematics</a></li>
@@ -44,9 +45,16 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/v0.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="medrobust-040-2026-06-15">medrobust 0.4.0 (2026-06-15)<a class="anchor" aria-label="anchor" href="#medrobust-040-2026-06-15"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>
+<ul><li>New example dataset <code>nhanes_pa</code>: the exposure-side mirror of <code>gesthtn</code> — a pooled public-domain NHANES 2015–2018 sample (N = 9,906) illustrating partial-identification bounds when the <strong>exposure</strong> is differentially misclassified (self-reported physical inactivity) while the mediator (laboratory-measured hs-CRP) is error-free. The headline finding mirrors <code>gesthtn</code> from the other side: the natural direct effect is robust to mild differential reporting but its Imbens–Manski interval covers the null once reporting accuracy is allowed to depend strongly on the outcome. See <code><a href="../reference/nhanes_pa.html">?nhanes_pa</a></code> and <code><a href="../articles/nhanes_pa-bounds.html">vignette("nhanes_pa-bounds")</a></code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="medrobust-030-2026-06-14">medrobust 0.3.0 (2026-06-14)<a class="anchor" aria-label="anchor" href="#medrobust-030-2026-06-14"></a></h2>
 <div class="section level3">
