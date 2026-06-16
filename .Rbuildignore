@@ -51,6 +51,7 @@
 ^SPEC-.*\.md$
 ^ISSUE-.*\.md$
 ^START-HERE.*\.md$
+^archive$
 ^dev-diagnostics$
 ^\.STATUS
 ^TECHNICAL-NOTES.*\.md$

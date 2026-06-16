@@ -1,7 +1,7 @@
 Package: medrobust
 Type: Package
 Title: Robust Causal Mediation Analysis Under Differential Misclassification
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person("Davood", "Tofighi",
            email = "dtofighi@gmail.com",
@@ -50,6 +50,7 @@ Suggests:
     doParallel,
     boot,
     data.table,
+    nhanesA,
     mediation (>= 4.5.0),
     EValue (>= 4.1.0),
     covr,

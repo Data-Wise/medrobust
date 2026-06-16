@@ -64,6 +64,8 @@ navbar:
         href: articles/introduction.html
       - text: "Worked Example: Gestational Hypertension"
         href: articles/gesthtn-bounds.html
+      - text: "Worked Example: Physical Inactivity (NHANES)"
+        href: articles/nhanes_pa-bounds.html
       - text: "─────────────"
       - text: "Methods & Theory"
       - text: "Identification Mathematics"
@@ -149,6 +151,7 @@ reference:
   desc: Example and synthetic datasets
   contents:
   - gesthtn
+  - nhanes_pa
   - heals_data
   - simulated_dm_data
 
