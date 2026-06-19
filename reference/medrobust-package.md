@@ -28,7 +28,7 @@ Useful links:
 
 - <https://github.com/data-wise/medrobust>
 
-- <https://data-wise.github.io/medrobust>
+- <https://data-wise.github.io/medrobust/>
 
 - Report bugs at <https://github.com/data-wise/medrobust/issues>
 
