@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "medrobust: Robust Causal Mediation Analysis Under Differential Misclassification"
+version: 0.4.0
+date-released: "2026-06-16"
+authors:
+  - family-names: Tofighi
+    given-names: Davood
+    email: dtofighi@gmail.com
+    orcid: "https://orcid.org/0000-0001-8523-7776"
+repository-code: "https://github.com/data-wise/medrobust"
+url: "https://data-wise.github.io/medrobust/"
+license: MIT
+abstract: >-
+  Provides tools for conducting sensitivity analysis for causal mediation
+  effects when the exposure or mediator is measured with differential
+  misclassification. Derives partial identification bounds for Natural Direct
+  Effects (NDE) and Natural Indirect Effects (NIE) that remain valid without
+  gold-standard measurements, implements the Imbens-Manski confidence interval
+  construction, and provides diagnostic tools, bootstrap inference, and
+  publication-quality visualizations.
+preferred-citation:
+  type: article
+  title: "Partial Identification of Causal Mediation Effects Under Differential Misclassification"
+  authors:
+    - family-names: Tofighi
+      given-names: Davood
+  journal: "Biostatistics"
+  year: 2025
+references:
+  - type: book
+    title: "Partial Identification of Treatment Effects"
+    authors:
+      - family-names: Manski
+        given-names: Charles F.
+    year: 2003
+    isbn: "978-0387004549"
+  - type: article
+    title: "Confidence intervals for partially identified parameters"
+    authors:
+      - family-names: Imbens
+        given-names: Guido W.
+      - family-names: Manski
+        given-names: Charles F.
+    journal: "Econometrica"
+    year: 2004
+    volume: 72
+    issue: 6
+    start: 1845
+    end: 1857
+    doi: "10.1111/j.1468-0262.2004.00549.x"
