@@ -56,3 +56,4 @@
 ^\.STATUS
 ^TECHNICAL-NOTES.*\.md$
 ^Rplots\.pdf$
+^vignettes/articles$

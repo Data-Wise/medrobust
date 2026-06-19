@@ -1,0 +1,29 @@
+{
+  "introduction.qmd": {
+    "introduction.html": "d94a403b"
+  },
+  "grid-search-algorithms.qmd": {
+    "grid-search-algorithms.html": "0efbb861"
+  },
+  "s7-documentation.qmd": {
+    "s7-documentation.html": "4ad845f0"
+  },
+  "data_generation.qmd": {
+    "data_generation.html": "99a3ce13"
+  },
+  "heals-synthetic-data.qmd": {
+    "heals-synthetic-data.html": "b7584c6f"
+  },
+  "identification-math.qmd": {
+    "identification-math.html": "2704f651"
+  },
+  "methodology.qmd": {
+    "methodology.html": "41284b23"
+  },
+  "gesthtn-bounds.qmd": {
+    "gesthtn-bounds.html": "1f8720f8"
+  },
+  "nhanes_pa-bounds.qmd": {
+    "nhanes_pa-bounds.html": "06af04cb"
+  }
+}

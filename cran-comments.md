@@ -31,19 +31,17 @@ words" entry flagging the author surnames *Manski* and *Imbens* and domain terms
 
 ## Notes for the CRAN team
 
-* **Vignettes use Quarto** (`VignetteBuilder: quarto`). They re-execute and render
-  cleanly under `R CMD check --as-cran`
-  (`checking re-building of vignette outputs ... OK`). Quarto is listed in `Suggests`.
+* **No vignettes in the built package.** All documentation articles (`.qmd` Quarto
+  files) are placed in `vignettes/articles/`, which is listed in `.Rbuildignore`. They
+  are served only on the pkgdown site (`https://data-wise.github.io/medrobust/`). There
+  is no `VignetteBuilder` entry in `DESCRIPTION`, so `R CMD check` does not attempt to
+  build any vignettes and the `checking re-building of vignette outputs` step is skipped.
 * The `Description` explains all acronyms and gives method references in the requested
   `authors (year) <doi:...>` / `<ISBN:...>` form.
 * All exported objects document their return value via `\value`. Examples use
   `\donttest{}` and execute against small simulated data. The single example for
   `power_analysis()` remains in `\dontrun{}`: it runs many bootstrap-bound replications
   across several sample sizes and is genuinely too slow to execute during checks.
-* **DOI URLs returning 403:** Two DOIs cited in `vignettes/heals-synthetic-data.qmd`
-  (`doi.org/10.1093/ije/dyq095` and `doi.org/10.1289/ehp.9961`) return HTTP 403 to
-  automated URL checkers. Both resolve correctly in a browser. This is a known doi.org
-  bot-protection behavior; the DOIs are valid.
 
 ## Downstream dependencies
 
