@@ -6,7 +6,7 @@
 [![R-CMD-check](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml)
 [![Website Status](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml)
 [![R-hub](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml)
-[![Codecov](https://codecov.io/gh/data-wise/medrobust/graph/badge.svg)](https://codecov.io/gh/data-wise/medrobust)
+[![Codecov](https://codecov.io/gh/data-wise/medrobust/graph/badge.svg)](https://app.codecov.io/gh/data-wise/medrobust)
 [![r-universe](https://data-wise.r-universe.dev/badges/medrobust)](https://data-wise.r-universe.dev/medrobust)
 <!-- badges: end -->
 
