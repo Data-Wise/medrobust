@@ -14,10 +14,9 @@ point-identified — but `medrobust` returns a **sharp identified set**
 over a transparent sensitivity region, plus an Imbens–Manski confidence
 interval.
 
-This is the exposure-side mirror of
-[`vignette("gesthtn-bounds")`](https://data-wise.github.io/medrobust/articles/gesthtn-bounds.md),
-which instead misclassifies the *mediator*. The only structural change
-to the estimator call is `misclassified_variable = "exposure"`.
+This is the exposure-side mirror of `vignette("gesthtn-bounds")`, which
+instead misclassifies the *mediator*. The only structural change to the
+estimator call is `misclassified_variable = "exposure"`.
 
 ``` r
 

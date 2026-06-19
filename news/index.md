@@ -14,8 +14,7 @@
   interval covers the null once reporting accuracy is allowed to depend
   strongly on the outcome. See
   [`?nhanes_pa`](https://data-wise.github.io/medrobust/reference/nhanes_pa.md)
-  and
-  [`vignette("nhanes_pa-bounds")`](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.md).
+  and `vignette("nhanes_pa-bounds")`.
 
 ## medrobust 0.3.0 (2026-06-14)
 
@@ -27,8 +26,7 @@
         misclassified binary mediator (gestational hypertension on the
         birth certificate). See
         [`?gesthtn`](https://data-wise.github.io/medrobust/reference/gesthtn.md)
-        and
-        [`vignette("gesthtn-bounds")`](https://data-wise.github.io/medrobust/articles/gesthtn-bounds.md).
+        and `vignette("gesthtn-bounds")`.
 
 ### Robustness
 
