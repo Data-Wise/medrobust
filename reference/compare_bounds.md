@@ -61,7 +61,7 @@ bounds1 <- do.call(bound_ne, c(args0, list(sensitivity_region = list(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 3.72 seconds
+#> Time elapsed: 3.55 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.161, 1.381]
@@ -88,7 +88,7 @@ bounds2 <- do.call(bound_ne, c(args0, list(sensitivity_region = list(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 3.74 seconds
+#> Time elapsed: 3.54 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.148, 1.457]
