@@ -62,6 +62,8 @@ tests/testthat/_snaps/
 # renv (not used in this package — untracked to avoid r-hub setup-deps conflict)
 renv.lock
 renv/
+.Rprofile
+RENV_SETUP.md
 
 # R CMD check / example detritus
 Rplots.pdf
