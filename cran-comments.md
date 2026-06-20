@@ -14,6 +14,11 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 * win-builder R-release (R 4.6.0): token 0pY8ajL2oIoD — **Status: 1 NOTE (new submission)**
 * win-builder R-oldrelease (R 4.5.3): token d0MT9b7E7wFP — **Status: 1 NOTE (new submission)**
 * GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release + oldrel-1
+* r-hub (kaleidoscopic-bubblefish, run 27853569154, on dev/v0.4.0):
+  - `ubuntu-clang`: OK
+  - `ubuntu-gcc12`: OK
+  - `nosuggests`: FAILED — infrastructure issue (see Notes below)
+  - `gcc-asan`: FAILED — infrastructure issue (see Notes below)
 
 ## R CMD check results
 
@@ -30,6 +35,16 @@ words" entry flagging the author surnames *Manski* and *Imbens* and domain terms
 ```
 
 ## Notes for the CRAN team
+
+* **r-hub `nosuggests` and `gcc-asan` failures**: Both containers failed at the
+  dependency-installation step with `Error in loadNamespace(x) : there is no package called 'pak'`
+  immediately after pak was successfully installed. This is a known regression in pak devel
+  version 0.10.0.9000 (r-lib/pak issue #887, filed 2026-06-13): the binary installs but the
+  namespace cannot be loaded due to a broken bootstrap routine in that pre-release build. The
+  `r-hub/actions/setup-deps@v1` action defaults to installing the devel pak stream. This is an
+  r-hub infrastructure issue, not caused by any medrobust code. The two passing Linux containers
+  (`ubuntu-clang`, `ubuntu-gcc12`) confirm 0 errors, 0 warnings, 0 notes from this package's
+  own code.
 
 * **No vignettes in the built package.** All documentation articles (`.qmd` Quarto
   files) are placed in `vignettes/articles/`, which is listed in `.Rbuildignore`. They
