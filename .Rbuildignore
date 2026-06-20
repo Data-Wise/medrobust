@@ -17,6 +17,8 @@
 ^\.vscode$
 ^\.DS_Store$
 ^cran-comments\.md$
+^CITATION\.cff$
+^DEBUG-REPORT-.*\.md$
 ^CRAN-RELEASE$
 ^revdep$
 ^\.claude$
