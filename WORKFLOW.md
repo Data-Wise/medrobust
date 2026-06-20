@@ -986,8 +986,7 @@ git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
 
 - ✅ **Commit frequently** with clear messages
 - ✅ **Test before committing** (`test()` and `check()`)
-- ✅ **Update renv.lock** after installing packages
-  ([`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html))
+- ✅ **Update renv.lock** after installing packages (`renv::snapshot()`)
 - ✅ **Pull before editing** to get latest changes
 - ✅ **Push regularly** to backup your work
 - ✅ **Use descriptive commit messages** explaining why, not just what
@@ -1427,10 +1426,8 @@ workflow) - `RENV_SETUP.md` - Reproducible environment setup -
 `QUARTO_VIGNETTES_SETUP.md` - Modern vignette creation
 
 **Configuration:** - `DESCRIPTION` - Package metadata and dependencies -
-`renv.lock` - Package versions (created after
-[`renv::init()`](https://rstudio.github.io/renv/reference/init.html)) -
-`.Rprofile` - Activates renv (created after
-[`renv::init()`](https://rstudio.github.io/renv/reference/init.html))
+`renv.lock` - Package versions (created after `renv::init()`) -
+`.Rprofile` - Activates renv (created after `renv::init()`)
 
 ------------------------------------------------------------------------
 
@@ -1449,8 +1446,7 @@ workflow) - `RENV_SETUP.md` - Reproducible environment setup -
 
 **Next Steps:**
 
-1.  Initialize renv:
-    [`renv::init()`](https://rstudio.github.io/renv/reference/init.html)
+1.  Initialize renv: `renv::init()`
 2.  Create Quarto vignettes (see `QUARTO_VIGNETTES_SETUP.md`)
 3.  Test all functionality locally
 4.  Merge to main when ready

@@ -78,7 +78,7 @@
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">git</span> pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 2. Restore packages (if renv.lock changed)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 3. Load package for development</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -98,7 +98,7 @@
 <span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 9. Update renv if you installed packages</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># 10. Commit and push</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">git</span> add .</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Your descriptive message"</span></span>
@@ -177,7 +177,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"path/to/medrobust"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize renv (creates renv/ directory and renv.lock)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">init</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">init</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># This will:</span></span>
 <span><span class="co"># - Create renv/library/ (project-specific packages)</span></span>
@@ -191,7 +191,7 @@
 <code class="sourceCode R"><span><span class="co"># When you open the project, renv activates automatically</span></span>
 <span><span class="co"># If packages are out of sync with renv.lock:</span></span>
 <span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># This installs all packages from renv.lock to match other developers</span></span></code></pre></div>
 </div>
@@ -199,10 +199,10 @@
 <h3 id="daily-renv-usage">Daily renv Usage<a class="anchor" aria-label="anchor" href="#daily-renv-usage"></a></h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check status (compares installed vs. renv.lock)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># After installing new packages, update renv.lock</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Commit renv.lock to git after snapshot</span></span></code></pre></div>
 <hr></div>
@@ -216,10 +216,10 @@
 <span><span class="co"># when you run renv::init() or renv::restore()</span></span>
 <span></span>
 <span><span class="co"># Check what's installed</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install additional development tools</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"devtools"</span>,</span>
 <span>  <span class="st">"testthat"</span>,</span>
 <span>  <span class="st">"roxygen2"</span>,</span>
@@ -229,7 +229,7 @@
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Update renv.lock after installing</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="option-b-manual-installation-without-renv">Option B: Manual Installation (Without renv)<a class="anchor" aria-label="anchor" href="#option-b-manual-installation-without-renv"></a></h3>
@@ -260,7 +260,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"S7"</span><span class="op">)</span>  <span class="co"># Should be &gt;= 0.1.0</span></span>
 <span></span>
 <span><span class="co"># Check renv status (if using renv)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">status</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Should show "No issues found"</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span>  <span class="co"># Should show "No issues found"</span></span></code></pre></div>
 <hr></div>
 </div>
 <div class="section level2">
@@ -644,10 +644,10 @@
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Start R session - renv activates automatically</span></span>
 <span><span class="co"># 2. Check environment is in sync</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 3. If needed, restore packages</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 4. Load package for development</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -670,7 +670,7 @@
 <span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 11. If you installed new packages, update renv.lock</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 12. Commit changes (done in terminal - see next section)</span></span></code></pre></div>
 </div>
@@ -699,7 +699,7 @@
 <span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 5. renv.lock up to date (if you installed packages)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 6. Check git status</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"git status"</span><span class="op">)</span></span></code></pre></div>
@@ -814,7 +814,7 @@
 <span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a></span>
 <span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a><span class="co"># 2. In R, restore packages if renv.lock changed</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Install packages from updated renv.lock</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span>  <span class="co"># Install packages from updated renv.lock</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="complete-example-adding-a-new-feature">Complete Example: Adding a New Feature<a class="anchor" aria-label="anchor" href="#complete-example-adding-a-new-feature"></a></h3>
@@ -824,7 +824,7 @@
 <span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a><span class="fu">git</span> pull origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im</span></code></pre></div>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In R: Make sure environment is current</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Step 1: Edit</strong> <code>R/s7-methods.R</code> and add:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
@@ -898,7 +898,7 @@
 <h3 id="best-practices">Best Practices<a class="anchor" aria-label="anchor" href="#best-practices"></a></h3>
 <ul><li>✅ <strong>Commit frequently</strong> with clear messages</li>
 <li>✅ <strong>Test before committing</strong> (<code>test()</code> and <code>check()</code>)</li>
-<li>✅ <strong>Update renv.lock</strong> after installing packages (<code><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">renv::snapshot()</a></code>)</li>
+<li>✅ <strong>Update renv.lock</strong> after installing packages (<code>renv::snapshot()</code>)</li>
 <li>✅ <strong>Pull before editing</strong> to get latest changes</li>
 <li>✅ <strong>Push regularly</strong> to backup your work</li>
 <li>✅ <strong>Use descriptive commit messages</strong> explaining why, not just what</li>
@@ -1063,36 +1063,36 @@
 <p><strong>renv not activating:</strong></p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Manually activate</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">activate</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or rebuild .Rprofile</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">init</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">init</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Packages out of sync:</strong></p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check status</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Restore from renv.lock</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or sync with DESCRIPTION</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/hydrate.html" class="external-link">hydrate</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">hydrate</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Package installation fails:</strong></p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Clear cache and retry</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/purge.html" class="external-link">purge</a></span><span class="op">(</span><span class="st">"packagename"</span><span class="op">)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"packagename"</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">purge</span><span class="op">(</span><span class="st">"packagename"</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"packagename"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or restore from clean state</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span>clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span>clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><strong>After pulling git changes, packages don’t work:</strong></p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Restore packages from updated renv.lock</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># If problems persist, clean install</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span>clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span>clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><strong>📖 See <code>RENV_SETUP.md</code> for more renv troubleshooting.</strong></p>
 <hr></div>
 </div>
@@ -1103,8 +1103,8 @@
 <ol style="list-style-type: decimal"><li>
 <p><strong>Initialize renv</strong> (if not already done)</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">init</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu">init</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>See <code>RENV_SETUP.md</code> for detailed instructions.</strong></p>
 </li>
 <li><p><strong>Clone and test locally</strong> (follow sections 1-5)</p></li>
@@ -1124,8 +1124,8 @@
 <span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a><span class="co"># Linux: see QUARTO_VIGNETTES_SETUP.md</span></span></code></pre></div>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add quarto to dependencies</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"quarto"</span><span class="op">)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">snapshot</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"quarto"</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">snapshot</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create vignettes/ directory</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"vignettes"</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -1228,10 +1228,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"path/to/medrobust"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Initialize renv (first time only)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">init</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">init</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or restore environment (subsequent times)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">renv</span><span class="fu">::</span><span class="fu">restore</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load and test</span></span>
 <span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
@@ -1246,7 +1246,7 @@
 <h3 id="key-files-to-review">Key Files to Review<a class="anchor" aria-label="anchor" href="#key-files-to-review"></a></h3>
 <p><strong>Core Implementation:</strong> - <code>R/s7-classes.R</code> - S7 class definitions - <code>R/s7-methods.R</code> - S7 method implementations - <code>R/simulate_dm_data.R</code> - Data simulation - <code>R/power_analysis.R</code> - Power analysis - <code>tests/testthat/test-s7-classes.R</code> - S7 tests - <code>NAMESPACE</code> - Exported functions/classes</p>
 <p><strong>Setup Guides:</strong> - <code>WORKFLOW.md</code> - This file (local development workflow) - <code>RENV_SETUP.md</code> - Reproducible environment setup - <code>QUARTO_VIGNETTES_SETUP.md</code> - Modern vignette creation</p>
-<p><strong>Configuration:</strong> - <code>DESCRIPTION</code> - Package metadata and dependencies - <code>renv.lock</code> - Package versions (created after <code><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">renv::init()</a></code>) - <code>.Rprofile</code> - Activates renv (created after <code><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">renv::init()</a></code>)</p>
+<p><strong>Configuration:</strong> - <code>DESCRIPTION</code> - Package metadata and dependencies - <code>renv.lock</code> - Package versions (created after <code>renv::init()</code>) - <code>.Rprofile</code> - Activates renv (created after <code>renv::init()</code>)</p>
 <hr><p><strong>Questions or Issues?</strong></p>
 <ul><li>Check <a href="#id_13-troubleshooting">Troubleshooting</a> section above</li>
 <li>Review test files for usage examples</li>
@@ -1256,7 +1256,7 @@
 <li>Consult <code>QUARTO_VIGNETTES_SETUP.md</code> for vignette help</li>
 </ul><p><strong>The package is ready for local testing and use!</strong> 🎉</p>
 <hr><p><strong>Next Steps:</strong></p>
-<ol style="list-style-type: decimal"><li>Initialize renv: <code><a href="https://rstudio.github.io/renv/reference/init.html" class="external-link">renv::init()</a></code>
+<ol style="list-style-type: decimal"><li>Initialize renv: <code>renv::init()</code>
 </li>
 <li>Create Quarto vignettes (see <code>QUARTO_VIGNETTES_SETUP.md</code>)</li>
 <li>Test all functionality locally</li>
