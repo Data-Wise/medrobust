@@ -5,6 +5,17 @@ with code in this repository.
 
 ------------------------------------------------------------------------
 
+## 📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)
+
+`dev`/`main` synced at **0.4.0** (release PR \#21, `a3aff0e`). Strict
+incoming check (`R CMD check --run-donttest --as-cran`) clean:
+**0E/0W/1N** (new-submission only). `nhanes_pa` exposure dataset +
+vignette shipped (v0.4.0). NEXT (maintainer-manual):
+`devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
+Authoritative state lives in `.STATUS`.
+
+------------------------------------------------------------------------
+
 ## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
 
 Smoke-testing the differential-misclassification simulations surfaced
@@ -252,5 +263,5 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`: -
 
 ------------------------------------------------------------------------
 
-**Last Updated**: 2026-06-11 (added ACTIVE FIX section; corrected R/
-file listing)
+**Last Updated**: 2026-06-21 (added v0.4.0 CRAN-ready status banner; see
+`.STATUS`)
