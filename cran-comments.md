@@ -14,6 +14,11 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 * win-builder R-release (R 4.6.0): token 0pY8ajL2oIoD — **Status: 1 NOTE (new submission)**
 * win-builder R-oldrelease (R 4.5.3): token d0MT9b7E7wFP — **Status: 1 NOTE (new submission)**
 * GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release + oldrel-1
+* r-hub (twill-brownbutterfly, run 27854775371, on dev/v0.4.0):
+  - `ubuntu-clang`: OK
+  - `ubuntu-gcc12`: OK
+  - `nosuggests`: OK
+  - `gcc-asan`: OK
 
 ## R CMD check results
 

@@ -57,3 +57,5 @@
 ^TECHNICAL-NOTES.*\.md$
 ^Rplots\.pdf$
 ^vignettes/articles$
+^DEBUG-REPORT.*\.md$
+^CITATION\.cff$
