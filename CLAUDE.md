@@ -50,10 +50,12 @@ errors / 0 warnings / 2 benign NOTEs (new submission, dev-version
 string). - New vignette `vignettes/identification-math.qmd` documents
 the derivation; registered in `_pkgdown.yml`.
 
-**Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
-`ISSUE-true-effects-estimand-2026-06-11.md`,
-`START-HERE-fix-true-effects.md`; reference oracles in
-`dev-diagnostics/` (gitignored). Downstream: regenerate manuscript
+**Authoritative docs:** the original fix-planning notes
+(`PLAN-fix-bound_ne-solve`, `ISSUE-true-effects-estimand`,
+`START-HERE-fix-true-effects`, etc.) were **removed from the repo on
+2026-06-21** — they were tracked in the package root, which pkgdown
+renders to public HTML; see git history for their content. Reference
+oracles live in `dev-diagnostics/`. Downstream: regenerate manuscript
 M2a/M2b illustrative numbers and scale sims (`n_grid≥50`) after merge.
 
 **Remaining:** PR `fix/true-effects-estimand` → `main`. (Merged via PR
