@@ -91,7 +91,7 @@ navbar:
       - text: "probmed (P_med Effect Size)"
         href: https://Data-Wise.github.io/probmed/
       - text: "RMediation (Confidence Intervals)"
-        href: https://Data-Wise.github.io/RMediation/
+        href: https://data-wise.github.io/rmediation/
       - text: "─────────────"
       - text: "Support Packages"
       - text: "medsim (Simulation Infrastructure)"
