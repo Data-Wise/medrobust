@@ -47,7 +47,7 @@ logo:
 
 navbar:
   structure:
-    left:  [home, reference, articles, news]
+    left:  [home, reference, articles, ecosystem, news]
     right: [search, github]
   components:
     home:
@@ -80,6 +80,23 @@ navbar:
         href: articles/grid-search-algorithms.html
       - text: "S7 Class System"
         href: articles/s7-documentation.html
+    ecosystem:
+      text: Ecosystem
+      menu:
+      - text: "Core Packages"
+      - text: "medfit (Foundation)"
+        href: https://Data-Wise.github.io/medfit/
+      - text: "probmed (P_med Effect Size)"
+        href: https://Data-Wise.github.io/probmed/
+      - text: "RMediation (Confidence Intervals)"
+        href: https://Data-Wise.github.io/RMediation/
+      - text: "─────────────"
+      - text: "Support Packages"
+      - text: "medsim (Simulation Infrastructure)"
+        href: https://Data-Wise.github.io/medsim/
+      - text: "─────────────"
+      - text: "mediationverse (Umbrella)"
+        href: https://Data-Wise.github.io/mediationverse/
     news:
       text: News
       href: news/index.html
