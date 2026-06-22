@@ -711,7 +711,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 58.06 seconds
+    Time elapsed: 64.32 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
