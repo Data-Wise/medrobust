@@ -15,7 +15,7 @@ gold-standard measurements.
 > **Where this fits.** In the mediationverse pipeline you *fit* a
 > mediation model with [medfit](https://data-wise.github.io/medfit/),
 > quantify effects with [probmed](https://data-wise.github.io/probmed/)
-> / [RMediation](https://data-wise.github.io/RMediation/), and then use
+> / [RMediation](https://data-wise.github.io/rmediation/), and then use
 > **medrobust** to stress-test those conclusions against differential
 > misclassification — the “how fragile is my estimate?” step. The whole
 > stack loads together via the
