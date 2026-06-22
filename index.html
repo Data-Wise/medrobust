@@ -60,6 +60,30 @@
     <li><a class="dropdown-item" href="articles/s7-documentation.html">S7 Class System</a></li>
   </ul>
 </li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-ecosystem" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Ecosystem</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-ecosystem">
+<li><h6 class="dropdown-header" data-toc-skip>Core Packages</h6></li>
+    <li><a class="external-link dropdown-item" href="https://Data-Wise.github.io/medfit/">medfit (Foundation)</a></li>
+    <li><a class="external-link dropdown-item" href="https://Data-Wise.github.io/probmed/">probmed (P_med Effect Size)</a></li>
+    <li><a class="external-link dropdown-item" href="https://Data-Wise.github.io/RMediation/">RMediation (Confidence Intervals)</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Support Packages</h6></li>
+    <li><a class="external-link dropdown-item" href="https://Data-Wise.github.io/medsim/">medsim (Simulation Infrastructure)</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><a class="external-link dropdown-item" href="https://Data-Wise.github.io/mediationverse/">mediationverse (Umbrella)</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-status" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fas fa-chart-line"></span> Status</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-status">
+<li><a class="external-link dropdown-item" href="https://github.com/data-wise/medrobust/blob/main/.STATUS">📊 Package Status (.STATUS)</a></li>
+    <li><a class="dropdown-item" href="news/index.html">📝 Changelog</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>─────────────</h6></li>
+    <li><a class="external-link dropdown-item" href="https://github.com/Data-Wise/mediation-planning/blob/main/PROJECT-HUB.md">🧭 Planning Hub</a></li>
+    <li><a class="external-link dropdown-item" href="https://github.com/Data-Wise/mediation-planning/blob/main/docs/ECOSYSTEM-COORDINATION.md">📋 Ecosystem Coordination</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -84,6 +108,9 @@
 </h2>
 <p>The <code>medrobust</code> package provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with <strong>differential misclassification</strong> (e.g., recall bias, outcome-dependent measurement error).</p>
 <p>Unlike existing measurement error correction methods that assume non-differential error or require validation data, <code>medrobust</code> derives <strong>partial identification bounds</strong> that remain valid without gold-standard measurements.</p>
+<blockquote>
+<p><strong>Where this fits.</strong> In the mediationverse pipeline you <em>fit</em> a mediation model with <a href="https://data-wise.github.io/medfit/" class="external-link">medfit</a>, quantify effects with <a href="https://data-wise.github.io/probmed/" class="external-link">probmed</a> / <a href="https://data-wise.github.io/RMediation/" class="external-link">RMediation</a>, and then use <strong>medrobust</strong> to stress-test those conclusions against differential misclassification — the “how fragile is my estimate?” step. The whole stack loads together via the <a href="https://data-wise.github.io/mediationverse/" class="external-link">mediationverse</a> umbrella package.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
@@ -162,7 +189,7 @@
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install medrobust</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"data-wise/medrobust"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"data-wise/medrobust"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-r-universe-pre-built-binaries">From r-universe (pre-built binaries)<a class="anchor" aria-label="anchor" href="#from-r-universe-pre-built-binaries"></a>
@@ -400,6 +427,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/data-wise/medrobust/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/data-wise/medrobust/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://data-wise.r-universe.dev/medrobust" class="external-link">r-universe (binaries)</a></li>
 <li><a href="https://github.com/data-wise/medrobust" class="external-link">Source Code</a></li>
 <li><a href="https://github.com/data-wise/medrobust/issues" class="external-link">Report Issues</a></li>
 <li><a href="https://github.com/data-wise/medrobust/issues/new" class="external-link">Request Feature</a></li>

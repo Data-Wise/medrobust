@@ -51,7 +51,8 @@ rows).
 4.  **Regression tests** — add exposure analogues of `test-recovery.R` /
     `test-bound-contains-truth.R` (NDE *and* NIE, OR/RR/RD), including a
     differential case.
-5.  `devtools::test()` + `check()` clean before merge.
+5.  [`devtools::test()`](https://devtools.r-lib.org/reference/test.html) +
+    `check()` clean before merge.
 
 ## Gate / downstream
 

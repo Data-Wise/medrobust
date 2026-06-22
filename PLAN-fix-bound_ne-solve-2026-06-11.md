@@ -121,10 +121,11 @@ pass, then fix \#1.
 
 ## Gates before merge
 
-`devtools::test()` green incl. the 4 new tests
+[`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
+green incl. the 4 new tests
 
-`devtools::check()` clean — **CRAN compliance is standing P0 for this
-package**
+[`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
+clean — **CRAN compliance is standing P0 for this package**
 
 `bne_point_test.R` returns oracle on both OR and RD scales
 

@@ -12,6 +12,16 @@ non-differential error or require validation data, `medrobust` derives
 **partial identification bounds** that remain valid without
 gold-standard measurements.
 
+> **Where this fits.** In the mediationverse pipeline you *fit* a
+> mediation model with [medfit](https://data-wise.github.io/medfit/),
+> quantify effects with [probmed](https://data-wise.github.io/probmed/)
+> / [RMediation](https://data-wise.github.io/RMediation/), and then use
+> **medrobust** to stress-test those conclusions against differential
+> misclassification — the “how fragile is my estimate?” step. The whole
+> stack loads together via the
+> [mediationverse](https://data-wise.github.io/mediationverse/) umbrella
+> package.
+
 ## Key Features
 
 - **Partial identification bounds** for Natural Direct Effects (NDE) and

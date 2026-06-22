@@ -75,9 +75,10 @@ true effect from the oracles.
 
 ## 7. Gates (CRAN P0)
 
-- `devtools::test()` + `check() --as-cran` clean; mediator/exposure
-  **point bounds unchanged** (regression guard); new tests for
-  bias-correction + IM behaviour.
+- [`devtools::test()`](https://devtools.r-lib.org/reference/test.html) +
+  `check() --as-cran` clean; mediator/exposure **point bounds
+  unchanged** (regression guard); new tests for bias-correction + IM
+  behaviour.
 
 ## 8. Risks / diagnostics
 

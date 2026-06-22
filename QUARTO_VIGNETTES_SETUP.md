@@ -143,7 +143,6 @@ devtools::install_github("username/medrobust")
 
 data(“arsenic_synthetic”) head(arsenic_synthetic)
 
-
     ## Basic Analysis
 
     ### Define Sensitivity Region
@@ -179,7 +178,6 @@ With S7 objects, use the `@` operator:
 
 <bounds@falsified>\_proportion
 
-
     ## Using Pre-defined Grids
 
     ```{r}
@@ -200,7 +198,6 @@ With S7 objects, use the `@` operator:
 ## Session Info
 
 `{r} sessionInfo()`
-
 
     ### Template 2: Simulation Studies Vignette
 
@@ -248,7 +245,6 @@ Generate data with known differential misclassification:
 <sim_data@true>\_effects$`NIE_OR
 sim_data@true_effects`$NDE_OR
 
-
     ### Visualize Misclassification
 
     ```{r}
@@ -278,7 +274,6 @@ nde_covered \<- (<sim_data@true>\_effects\$NDE \>= bounds@NDE_lower) &&
 
 cat(“NIE Coverage:”, nie_covered, “”) cat(“NDE Coverage:”, nde_covered,
 “”)
-
 
     ## Monte Carlo Simulation
 
@@ -336,7 +331,6 @@ cat(“NIE Coverage:”, nie_covered, “”) cat(“NDE Coverage:”, nde_cover
 
 `{r} sessionInfo()`
 
-
     ### Template 3: Power Analysis Vignette
 
     Create `vignettes/power-analysis.qmd`:
@@ -389,7 +383,6 @@ analyses.
 
 <power_result@recommended>\_n_width
 
-
     ## Visualization
 
     ```{r}
@@ -413,7 +406,6 @@ analyses.
 ## Session Info
 
 `{r} sessionInfo()`
-
 
     ---
 
@@ -487,7 +479,6 @@ Quarto uses `#|` for chunk options:
 message: false \#\| cache: true \#\| fig-width: 8 \#\| fig-height: 6
 
 # Your code here
-
 
     ### 3. Use Callouts
 

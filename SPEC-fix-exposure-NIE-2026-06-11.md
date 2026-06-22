@@ -74,8 +74,11 @@ formula. This is the authoritative target (mirrors
   (`tests/testthat/test-bound-contains-truth-exposure.R`): large-n, true
   Ψ interior, dense grid → NDE & NIE bounds contain the oracle on
   OR/RR/RD.
-- A4. `devtools::test()` all green (existing 157 + new);
-  `devtools::check()` clean.
+- A4.
+  [`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
+  all green (existing 157 + new);
+  [`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
+  clean.
 - A5. Re-running `dev-diagnostics/smoke2_popcheck_both_paths.R` shows
   the exposure NIE row TRUE.
 

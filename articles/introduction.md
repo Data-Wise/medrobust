@@ -168,7 +168,6 @@ sim_data <- simulate_dm_data(
 print(sim_data)
 ```
 
-
     ======================================================================
     SIMULATED DATA WITH DIFFERENTIAL MISCLASSIFICATION
     ======================================================================
@@ -246,7 +245,6 @@ print(sim_data)
 cat("\nClass of sim_data:", class(sim_data), "\n")
 ```
 
-
     Class of sim_data: medrobust::simulated_dm_data S7_object 
 
 The simulated data object is an S7 object that contains:
@@ -278,7 +276,6 @@ sens_region <- sensitivity_region(
 
 print(sens_region)
 ```
-
 
     Sensitivity Region (Theta_psi):
     ----------------------------------------
@@ -321,7 +318,6 @@ bounds <- bound_ne(
 # View results
 print(bounds)
 ```
-
 
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
@@ -371,7 +367,6 @@ The output shows:
 # Get more detailed summary
 summary(bounds)
 ```
-
 
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
@@ -478,7 +473,6 @@ compatibility <- check_compatibility(
 
 print(compatibility)
 ```
-
 
     ======================================================================
     COMPATIBILITY TEST
@@ -711,7 +705,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 64.17 seconds
+    Time elapsed: 38.57 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -722,7 +716,6 @@ bounds_with_ci <- bound_ne(
 
 print(bounds_with_ci)
 ```
-
 
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
@@ -777,7 +770,6 @@ The package provides standard S7 generic methods for all result objects:
 # Summary method provides detailed statistics
 summary(bounds)
 ```
-
 
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
@@ -936,7 +928,6 @@ power_result <- power_analysis(
 print(power_result)
 ```
 
-
     ======================================================================
     POWER ANALYSIS RESULTS
     ======================================================================
@@ -976,7 +967,6 @@ print(power_result)
 # Detailed summary
 summary(power_result)
 ```
-
 
     ======================================================================
     POWER ANALYSIS RESULTS
@@ -1121,7 +1111,6 @@ bounds_med <- bound_ne(
 print(bounds_med)
 ```
 
-
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
     ======================================================================
@@ -1186,7 +1175,6 @@ bounds_nondiff <- bound_ne(
 
 print(bounds_nondiff)
 ```
-
 
     ======================================================================
     PARTIAL IDENTIFICATION BOUNDS
@@ -1322,7 +1310,6 @@ falsif_summary <- falsification_summary(bounds)
 print(falsif_summary)
 ```
 
-
     ======================================================================
     FALSIFICATION SUMMARY
     ======================================================================
@@ -1345,7 +1332,7 @@ print(falsif_summary)
         psi_sn              0.220             0.000             0.500
         psi_sp              0.900             0.000             1.000
 
-    Most constrained parameters: psi_sp, sn0
+    Most constrained parameters: psi_sp, sp0
     Least constrained parameters: psi_sn, sn0
 
     ====================================================================== 
@@ -1668,21 +1655,18 @@ sessionInfo()
 ```
 
     R version 4.6.0 (2026-04-24)
-    Platform: x86_64-pc-linux-gnu
-    Running under: Ubuntu 24.04.4 LTS
+    Platform: aarch64-apple-darwin25.4.0
+    Running under: macOS Tahoe 26.5.1
 
     Matrix products: default
-    BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
-    LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+    BLAS:   /opt/homebrew/Cellar/openblas/0.3.33/lib/libopenblasp-r0.3.33.dylib
+    LAPACK: /opt/homebrew/Cellar/r/4.6.0_1/lib/R/lib/libRlapack.dylib;  LAPACK version 3.12.1
 
     locale:
-     [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8
-     [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8
-     [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C
-    [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C
+    [1] en_US/en_US/en_US/C/en_US/en_US
 
-    time zone: UTC
-    tzcode source: system (glibc)
+    time zone: America/Los_Angeles
+    tzcode source: internal
 
     attached base packages:
     [1] parallel  stats     graphics  grDevices utils     datasets  methods
@@ -1693,11 +1677,11 @@ sessionInfo()
 
     loaded via a namespace (and not attached):
      [1] vctrs_0.7.3        cli_3.6.6          knitr_1.51         rlang_1.2.0
-     [5] xfun_0.59          otel_0.2.0         generics_0.1.4     S7_0.2.2
+     [5] xfun_0.58          otel_0.2.0         generics_0.1.4     S7_0.2.2
      [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9
     [13] gridExtra_2.3      scales_1.4.0       rmarkdown_2.31     grid_4.6.0
     [17] evaluate_1.0.5     tibble_3.3.1       fastmap_1.2.0      yaml_2.3.12
     [21] lifecycle_1.0.5    compiler_4.6.0     dplyr_1.2.1        RColorBrewer_1.1-3
     [25] pkgconfig_2.0.3    farver_2.1.2       digest_0.6.39      R6_2.6.1
-    [29] tidyselect_1.2.1   pillar_1.11.1      magrittr_2.0.5     withr_3.0.3
+    [29] tidyselect_1.2.1   pillar_1.11.1      magrittr_2.0.5     withr_3.0.2
     [33] tools_4.6.0        gtable_0.3.6       ggplot2_4.0.3     

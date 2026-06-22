@@ -24,7 +24,8 @@ an S7 method, but NAMESPACE hasn’t been regenerated yet.
 - **Classes**: 7 S7 classes implemented
 - **Methods**: 13 S7 methods implemented
 - **Tests**: 127/132 passing (96% pass rate)
-- **Documentation needs**: Run `devtools::document()`
+- **Documentation needs**: Run
+  [`devtools::document()`](https://devtools.r-lib.org/reference/document.html)
 
 ## After Regenerating Docs
 

@@ -11,8 +11,9 @@ with code in this repository.
 incoming check (`R CMD check --run-donttest --as-cran`) clean:
 **0E/0W/1N** (new-submission only). `nhanes_pa` exposure dataset +
 vignette shipped (v0.4.0). NEXT (maintainer-manual):
-`devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
-Authoritative state lives in `.STATUS`.
+[`devtools::submit_cran()`](https://devtools.r-lib.org/reference/submit_cran.html)
+from `main`. Acceptance unblocks **medsim**. Authoritative state lives
+in `.STATUS`.
 
 ------------------------------------------------------------------------
 
@@ -43,12 +44,14 @@ were in the implementation.
 (utilities_helpers.R) is CORRECT — was NOT changed** (verified: fed true
 params it returns the oracle).
 
-**Verification status (all green):** - `devtools::test()`: 157 pass / 0
-fail / 1 skip (incl. new `test-recovery.R`, `test-true-effects.R`,
-`test-bound-contains-truth.R`). - `devtools::check()` (`--as-cran`): 0
-errors / 0 warnings / 2 benign NOTEs (new submission, dev-version
-string). - New vignette `vignettes/identification-math.qmd` documents
-the derivation; registered in `_pkgdown.yml`.
+**Verification status (all green):** -
+[`devtools::test()`](https://devtools.r-lib.org/reference/test.html):
+157 pass / 0 fail / 1 skip (incl. new `test-recovery.R`,
+`test-true-effects.R`, `test-bound-contains-truth.R`). -
+[`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
+(`--as-cran`): 0 errors / 0 warnings / 2 benign NOTEs (new submission,
+dev-version string). - New vignette `vignettes/identification-math.qmd`
+documents the derivation; registered in `_pkgdown.yml`.
 
 **Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
 `ISSUE-true-effects-estimand-2026-06-11.md`,
