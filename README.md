@@ -1,8 +1,8 @@
 # medrobust: Robust Causal Mediation Analysis Under Differential Misclassification
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Repo Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/R-CMD-check.yaml)
 [![Website Status](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/pkgdown.yaml)
 [![R-hub](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml/badge.svg)](https://github.com/data-wise/medrobust/actions/workflows/rhub.yaml)
@@ -15,6 +15,14 @@
 The `medrobust` package provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with **differential misclassification** (e.g., recall bias, outcome-dependent measurement error).
 
 Unlike existing measurement error correction methods that assume non-differential error or require validation data, `medrobust` derives **partial identification bounds** that remain valid without gold-standard measurements.
+
+> **Where this fits.** In the mediationverse pipeline you *fit* a mediation model with
+> [medfit](https://data-wise.github.io/medfit/), quantify effects with
+> [probmed](https://data-wise.github.io/probmed/) /
+> [RMediation](https://data-wise.github.io/RMediation/), and then use **medrobust** to
+> stress-test those conclusions against differential misclassification — the
+> "how fragile is my estimate?" step. The whole stack loads together via the
+> [mediationverse](https://data-wise.github.io/mediationverse/) umbrella package.
 
 ## Key Features
 

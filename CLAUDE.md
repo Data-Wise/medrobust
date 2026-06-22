@@ -4,6 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## 📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)
+
+`dev`/`main` synced at **0.4.0** (release PR #21, `a3aff0e`). Strict incoming check
+(`R CMD check --run-donttest --as-cran`) clean: **0E/0W/1N** (new-submission only).
+`nhanes_pa` exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual):
+`devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**. Authoritative
+state lives in `.STATUS`.
+
+---
+
 ## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
 
 Smoke-testing the differential-misclassification simulations surfaced **two real bugs**, now
@@ -33,10 +43,12 @@ recovery to 5e-17); the faults were in the implementation.
 - New vignette `vignettes/identification-math.qmd` documents the derivation; registered in
   `_pkgdown.yml`.
 
-**Authoritative docs:** `PLAN-fix-bound_ne-solve-2026-06-11.md`,
-`ISSUE-true-effects-estimand-2026-06-11.md`, `START-HERE-fix-true-effects.md`; reference
-oracles in `dev-diagnostics/` (gitignored). Downstream: regenerate manuscript M2a/M2b
-illustrative numbers and scale sims (`n_grid≥50`) after merge.
+**Authoritative docs:** the original fix-planning notes (`PLAN-fix-bound_ne-solve`,
+`ISSUE-true-effects-estimand`, `START-HERE-fix-true-effects`, etc.) were **removed from
+the repo on 2026-06-21** — they were tracked in the package root, which pkgdown renders to
+public HTML; see git history for their content. Reference oracles live in
+`dev-diagnostics/`. Downstream: regenerate manuscript M2a/M2b illustrative numbers and
+scale sims (`n_grid≥50`) after merge.
 
 **Remaining:** PR `fix/true-effects-estimand` → `main`. (Merged via PR #2, 2026-06-11.)
 
@@ -221,4 +233,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-06-11 (added ACTIVE FIX section; corrected R/ file listing)
+**Last Updated**: 2026-06-21 (added v0.4.0 CRAN-ready status banner; see `.STATUS`)
