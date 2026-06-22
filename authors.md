@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/data-wise/medrobust/blob/HEAD/inst/CITATION)
+[`inst/CITATION`](https://github.com/data-wise/medrobust/blob/dev/inst/CITATION)
 
 Tofighi D (2025). *medrobust: Robust Causal Mediation Analysis Under
 Differential Misclassification*. R package version 0.1.0,

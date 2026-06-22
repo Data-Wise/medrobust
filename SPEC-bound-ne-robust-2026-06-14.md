@@ -96,8 +96,7 @@ a per-effect `reason` rather than opaque NA.
 
 - Pilot reproducer: `errors 0/N` (infeasible reps now NA-results); NA-CI
   reps carry a reason.
-- [`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
-  green incl. the two new files.
+- `devtools::test()` green incl. the two new files.
 - `R CMD check --as-cran`: 0 errors / 0 warnings; only the known
   new-submission/dev NOTEs.
 - Additive only — no behavior change for feasible inputs.

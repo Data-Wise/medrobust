@@ -55,7 +55,7 @@ intervals.
 105-108)
 
 **Bug Fixed**: Parallel bootstrap now works during development with
-[`devtools::load_all()`](https://devtools.r-lib.org/reference/load_all.html).
+`devtools::load_all()`.
 
 ### 4. ✅ Updated Documentation
 

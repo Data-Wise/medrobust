@@ -65,7 +65,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Documentation Regeneration Required</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/HEAD/REGENERATE_DOCS.md" class="external-link"><code>REGENERATE_DOCS.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/REGENERATE_DOCS.md" class="external-link"><code>REGENERATE_DOCS.md</code></a></small>
     </div>
 
 <div id="documentation-regeneration-required" class="section level1">
@@ -73,9 +73,9 @@
 <p>After the S7 conversion, you need to regenerate the package documentation to update NAMESPACE:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In R console:</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">test</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This will: 1. Remove the old <code>as.list.sensitivity_region</code> S3 method declaration 2. Update all roxygen-generated documentation 3. Ensure NAMESPACE is in sync with the code</p>
 <p>The warning you’re seeing is because the old S3 method was converted to an S7 method, but NAMESPACE hasn’t been regenerated yet.</p>
 <div class="section level2">
@@ -89,7 +89,7 @@
 <li>
 <strong>Tests</strong>: 127/132 passing (96% pass rate)</li>
 <li>
-<strong>Documentation needs</strong>: Run <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code>
+<strong>Documentation needs</strong>: Run <code>devtools::document()</code>
 </li>
 </ul></div>
 <div class="section level2">

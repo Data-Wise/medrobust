@@ -199,11 +199,9 @@ format:
 
 ## Rendering
 
-The vignette: - Uses
-[`devtools::load_all()`](https://devtools.r-lib.org/reference/load_all.html)
-for development mode - Compatible with quarto rendering - Produces HTML
-output with TOC - All code chunks are executable (eval: false where
-needed)
+The vignette: - Uses `devtools::load_all()` for development mode -
+Compatible with quarto rendering - Produces HTML output with TOC - All
+code chunks are executable (eval: false where needed)
 
 ## Integration with Package
 

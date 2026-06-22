@@ -65,7 +65,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>SPEC — Correct the exposure (A*) NIE bound in bound_ne</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/HEAD/SPEC-fix-exposure-NIE-2026-06-11.md" class="external-link"><code>SPEC-fix-exposure-NIE-2026-06-11.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/SPEC-fix-exposure-NIE-2026-06-11.md" class="external-link"><code>SPEC-fix-exposure-NIE-2026-06-11.md</code></a></small>
     </div>
 
 <div id="spec--correct-the-exposure-a-nie-bound-in-bound_ne" class="section level1">
@@ -100,7 +100,7 @@
 <ul><li>A1. <strong>Point test</strong> (<code>dev-diagnostics/bne_point_test_exposure.R</code>): degenerate region at true Ψ, n=5e5 → <code>bound_ne</code> exposure NDE <em>and</em> NIE within 0.01 (OR) of the A* oracle.</li>
 <li>A2. <strong>Recovery test</strong> (<code>tests/testthat/test-recovery-exposure.R</code>): exact population cells → recovered P(M|a,c), P(Y|a,m,c) match truth to 1e-8; incl. a differential case.</li>
 <li>A3. <strong>Contains-truth test</strong> (<code>tests/testthat/test-bound-contains-truth-exposure.R</code>): large-n, true Ψ interior, dense grid → NDE &amp; NIE bounds contain the oracle on OR/RR/RD.</li>
-<li>A4. <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code> all green (existing 157 + new); <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> clean.</li>
+<li>A4. <code>devtools::test()</code> all green (existing 157 + new); <code>devtools::check()</code> clean.</li>
 <li>A5. Re-running <code>dev-diagnostics/smoke2_popcheck_both_paths.R</code> shows the exposure NIE row TRUE.</li>
 </ul></div>
 <div class="section level2">

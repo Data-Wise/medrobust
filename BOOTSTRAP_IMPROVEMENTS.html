@@ -65,7 +65,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Bootstrap Implementation Improvements</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/HEAD/BOOTSTRAP_IMPROVEMENTS.md" class="external-link"><code>BOOTSTRAP_IMPROVEMENTS.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/BOOTSTRAP_IMPROVEMENTS.md" class="external-link"><code>BOOTSTRAP_IMPROVEMENTS.md</code></a></small>
     </div>
 
 <div id="bootstrap-implementation-improvements" class="section level1">
@@ -102,7 +102,7 @@
 <h3 id="id_3-white_check_mark-fixed-parallel-worker-loading">3. ✅ Fixed Parallel Worker Loading<a class="anchor" aria-label="anchor" href="#id_3-white_check_mark-fixed-parallel-worker-loading"></a></h3>
 <p><strong>File</strong>: <code>R/bootstrap.R</code></p>
 <p><strong>Changes</strong> (lines 92-108): - Export <code>grid_method</code> to workers (line 97) - Export functions from namespace instead of using <code><a href="https://github.com/data-wise/medrobust" class="external-link">library(medrobust)</a></code> (lines 101-102) - Load only required packages: <code>dplyr</code> and <code>rlang</code> (lines 105-108)</p>
-<p><strong>Bug Fixed</strong>: Parallel bootstrap now works during development with <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code>.</p>
+<p><strong>Bug Fixed</strong>: Parallel bootstrap now works during development with <code>devtools::load_all()</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="id_4-white_check_mark-updated-documentation">4. ✅ Updated Documentation<a class="anchor" aria-label="anchor" href="#id_4-white_check_mark-updated-documentation"></a></h3>

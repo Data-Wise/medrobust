@@ -142,7 +142,7 @@ for (cc in 0:1) for (a in 0:1) {
 cat(sprintf("max |recovered - true| (differential case) = %.2e\n", err))
 ```
 
-    max |recovered - true| (differential case) = 1.11e-16
+    max |recovered - true| (differential case) = 5.55e-17
 
 ## Exposure identification: closed-form $`2\times2`$ inverse
 

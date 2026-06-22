@@ -65,7 +65,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>CLAUDE.md for medrobust Package</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/HEAD/CLAUDE.md" class="external-link"><code>CLAUDE.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/CLAUDE.md" class="external-link"><code>CLAUDE.md</code></a></small>
     </div>
 
 <div id="claudemd-for-medrobust-package" class="section level1">
@@ -73,7 +73,7 @@
 <p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
 <hr><div class="section level2">
 <h2 id="package-status--v040-released-cran-submit-ready-2026-06-21">📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)<a class="anchor" aria-label="anchor" href="#package-status--v040-released-cran-submit-ready-2026-06-21"></a></h2>
-<p><code>dev</code>/<code>main</code> synced at <strong>0.4.0</strong> (release PR #21, <code>a3aff0e</code>). Strict incoming check (<code>R CMD check --run-donttest --as-cran</code>) clean: <strong>0E/0W/1N</strong> (new-submission only). <code>nhanes_pa</code> exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual): <code><a href="https://devtools.r-lib.org/reference/submit_cran.html" class="external-link">devtools::submit_cran()</a></code> from <code>main</code>. Acceptance unblocks <strong>medsim</strong>. Authoritative state lives in <code>.STATUS</code>.</p>
+<p><code>dev</code>/<code>main</code> synced at <strong>0.4.0</strong> (release PR #21, <code>a3aff0e</code>). Strict incoming check (<code>R CMD check --run-donttest --as-cran</code>) clean: <strong>0E/0W/1N</strong> (new-submission only). <code>nhanes_pa</code> exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual): <code>devtools::submit_cran()</code> from <code>main</code>. Acceptance unblocks <strong>medsim</strong>. Authoritative state lives in <code>.STATUS</code>.</p>
 <hr></div>
 <div class="section level2">
 <h2 id="white_check_mark-resolved--two-correctness-bugs-fixed-2026-06-11-branch-fixtrue-effects-estimand">✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch <code>fix/true-effects-estimand</code>)<a class="anchor" aria-label="anchor" href="#white_check_mark-resolved--two-correctness-bugs-fixed-2026-06-11-branch-fixtrue-effects-estimand"></a></h2>
@@ -85,7 +85,7 @@
 <li>
 <strong><code>odds_to_prob()</code> (utilities_helpers.R)</strong> — now maps infinite odds → probability 1, so perfect classification (<code>sn=1</code>/<code>sp=1</code>) no longer yields <code>NaN</code>.</li>
 </ol><p><strong><code><a href="reference/compute_effects_from_params.html">compute_effects_from_params()</a></code> (utilities_helpers.R) is CORRECT — was NOT changed</strong> (verified: fed true params it returns the oracle).</p>
-<p><strong>Verification status (all green):</strong> - <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code>: 157 pass / 0 fail / 1 skip (incl. new <code>test-recovery.R</code>, <code>test-true-effects.R</code>, <code>test-bound-contains-truth.R</code>). - <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> (<code>--as-cran</code>): 0 errors / 0 warnings / 2 benign NOTEs (new submission, dev-version string). - New vignette <code>vignettes/identification-math.qmd</code> documents the derivation; registered in <code>_pkgdown.yml</code>.</p>
+<p><strong>Verification status (all green):</strong> - <code>devtools::test()</code>: 157 pass / 0 fail / 1 skip (incl. new <code>test-recovery.R</code>, <code>test-true-effects.R</code>, <code>test-bound-contains-truth.R</code>). - <code>devtools::check()</code> (<code>--as-cran</code>): 0 errors / 0 warnings / 2 benign NOTEs (new submission, dev-version string). - New vignette <code>vignettes/identification-math.qmd</code> documents the derivation; registered in <code>_pkgdown.yml</code>.</p>
 <p><strong>Authoritative docs:</strong> <code>PLAN-fix-bound_ne-solve-2026-06-11.md</code>, <code>ISSUE-true-effects-estimand-2026-06-11.md</code>, <code>START-HERE-fix-true-effects.md</code>; reference oracles in <code>dev-diagnostics/</code> (gitignored). Downstream: regenerate manuscript M2a/M2b illustrative numbers and scale sims (<code>n_grid≥50</code>) after merge.</p>
 <p><strong>Remaining:</strong> PR <code>fix/true-effects-estimand</code> → <code>main</code>. (Merged via PR #2, 2026-06-11.)</p>
 <hr></div>
@@ -115,13 +115,13 @@
 <h2 id="common-development-commands">Common Development Commands<a class="anchor" aria-label="anchor" href="#common-development-commands"></a></h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install dependencies and check package</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_deps.html" class="external-link">install_deps</a></span><span class="op">(</span>dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_deps</span><span class="op">(</span>dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span>args <span class="op">=</span> <span class="st">"--no-manual"</span>, error_on <span class="op">=</span> <span class="st">"error"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Development workflow</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">test</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr></div>
 <div class="section level2">
 <h2 id="coding-standards">Coding Standards<a class="anchor" aria-label="anchor" href="#coding-standards"></a></h2>

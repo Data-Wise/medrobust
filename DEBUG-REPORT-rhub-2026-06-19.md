@@ -132,5 +132,4 @@ Updated `.gitignore`:
 - **win-builder R-release**: OK (token 0pY8ajL2oIoD)
 - **win-builder R-oldrelease**: OK (token d0MT9b7E7wFP)
 - **r-hub twill-brownbutterfly**: 4/4 platforms ✅
-- **Status**: Ready for
-  [`devtools::submit_cran()`](https://devtools.r-lib.org/reference/submit_cran.html)
+- **Status**: Ready for `devtools::submit_cran()`

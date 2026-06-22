@@ -985,11 +985,8 @@ git push origin claude/check-measurement-error-project-011CV4N39kJ3T4FdXg7G92im
 ### Best Practices
 
 - ✅ **Commit frequently** with clear messages
-- ✅ **Test before committing**
-  ([`test()`](https://devtools.r-lib.org/reference/test.html) and
-  [`check()`](https://devtools.r-lib.org/reference/check.html))
-- ✅ **Update renv.lock** after installing packages
-  ([`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html))
+- ✅ **Test before committing** (`test()` and `check()`)
+- ✅ **Update renv.lock** after installing packages (`renv::snapshot()`)
 - ✅ **Pull before editing** to get latest changes
 - ✅ **Push regularly** to backup your work
 - ✅ **Use descriptive commit messages** explaining why, not just what
@@ -1055,8 +1052,7 @@ Code follows R style guidelines
 
 ### ✓ Tests
 
-All tests pass:
-[`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
+All tests pass: `devtools::test()`
 
 Test coverage \>80%:
 [`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
@@ -1067,11 +1063,9 @@ S7 methods tested for all classes
 
 ### ✓ Documentation
 
-All functions documented:
-[`devtools::document()`](https://devtools.r-lib.org/reference/document.html)
+All functions documented: `devtools::document()`
 
-Examples run without errors:
-[`devtools::run_examples()`](https://devtools.r-lib.org/reference/run_examples.html)
+Examples run without errors: `devtools::run_examples()`
 
 Help files render correctly: `?function_name`
 
@@ -1079,8 +1073,7 @@ README.md is up to date
 
 ### ✓ Package Structure
 
-R CMD check passes:
-[`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
+R CMD check passes: `devtools::check()`
 
 No errors, warnings, or problematic notes
 
@@ -1433,10 +1426,8 @@ workflow) - `RENV_SETUP.md` - Reproducible environment setup -
 `QUARTO_VIGNETTES_SETUP.md` - Modern vignette creation
 
 **Configuration:** - `DESCRIPTION` - Package metadata and dependencies -
-`renv.lock` - Package versions (created after
-[`renv::init()`](https://rstudio.github.io/renv/reference/init.html)) -
-`.Rprofile` - Activates renv (created after
-[`renv::init()`](https://rstudio.github.io/renv/reference/init.html))
+`renv.lock` - Package versions (created after `renv::init()`) -
+`.Rprofile` - Activates renv (created after `renv::init()`)
 
 ------------------------------------------------------------------------
 
@@ -1445,9 +1436,7 @@ workflow) - `RENV_SETUP.md` - Reproducible environment setup -
 - Check [Troubleshooting](#id_13-troubleshooting) section above
 - Review test files for usage examples
 - Examine existing S7 methods for patterns
-- Run
-  [`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
-  for diagnostic information
+- Run `devtools::check()` for diagnostic information
 - Consult `RENV_SETUP.md` for renv problems
 - Consult `QUARTO_VIGNETTES_SETUP.md` for vignette help
 
@@ -1457,8 +1446,7 @@ workflow) - `RENV_SETUP.md` - Reproducible environment setup -
 
 **Next Steps:**
 
-1.  Initialize renv:
-    [`renv::init()`](https://rstudio.github.io/renv/reference/init.html)
+1.  Initialize renv: `renv::init()`
 2.  Create Quarto vignettes (see `QUARTO_VIGNETTES_SETUP.md`)
 3.  Test all functionality locally
 4.  Merge to main when ready
