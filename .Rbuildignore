@@ -43,10 +43,7 @@
 ^test_vectorization\.R$
 ^VECTORIZATION_IMPROVEMENTS\.md$
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
-^vignettes/_freeze$
-^vignettes/\.quarto$
-^vignettes/articles/\.quarto$
-^vignettes/.*\.html$
+^vignettes$
 ^CLAUDE\.md$
 ^CLAUDE-CODE-PROMPT.*\.md$
 ^PLAN-.*\.md$
@@ -58,6 +55,5 @@
 ^\.STATUS
 ^TECHNICAL-NOTES.*\.md$
 ^Rplots\.pdf$
-^vignettes/articles$
 ^DEBUG-REPORT.*\.md$
 ^CITATION\.cff$
