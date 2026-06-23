@@ -44,6 +44,8 @@
 ^VECTORIZATION_IMPROVEMENTS\.md$
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
 ^vignettes/_freeze$
+^vignettes/\.quarto$
+^vignettes/articles/\.quarto$
 ^vignettes/.*\.html$
 ^CLAUDE\.md$
 ^CLAUDE-CODE-PROMPT.*\.md$
