@@ -78,3 +78,10 @@ vignettes/      # Method tutorials
 🔗 DEPENDENCIES
 Imports: S7, dplyr, ggplot2, stats, rlang, parallel
 Part of: mediationverse ecosystem
+
+
+# 📌 CROSS-SESSION PLAN (2026-06-21, Cowork): READY TO SUBMIT — independently re-verified
+# `R CMD check --as-cran` = 0E/0W/1N (new-submission; HTML-Tidy NOTE is a benign local artifact).
+# Build from main (a3aff0e, n=500 fix) — NOT the v0.4.0 tag (mis-placed on pre-fix 6a651b9).
+# NEXT: devtools::submit_cran() → flip to SUBMITTED; re-point tag v0.4.0→a3aff0e.
+# Unblocks medsim → mediationverse. Full plan: ~/projects/r-packages/PLAN-2026-06-21-cowork.md
