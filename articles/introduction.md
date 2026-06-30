@@ -711,7 +711,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 59 seconds
+    Time elapsed: 62.04 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -1667,7 +1667,7 @@ Mathematical Physics*, 7(4), 86-112.
 sessionInfo()
 ```
 
-    R version 4.6.0 (2026-04-24)
+    R version 4.6.1 (2026-06-24)
     Platform: x86_64-pc-linux-gnu
     Running under: Ubuntu 24.04.4 LTS
 
@@ -1695,9 +1695,9 @@ sessionInfo()
      [1] vctrs_0.7.3        cli_3.6.6          knitr_1.51         rlang_1.2.0
      [5] xfun_0.59          otel_0.2.0         generics_0.1.4     S7_0.2.2
      [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9
-    [13] gridExtra_2.3      scales_1.4.0       rmarkdown_2.31     grid_4.6.0
+    [13] gridExtra_2.3.1    scales_1.4.0       rmarkdown_2.31     grid_4.6.1
     [17] evaluate_1.0.5     tibble_3.3.1       fastmap_1.2.0      yaml_2.3.12
-    [21] lifecycle_1.0.5    compiler_4.6.0     dplyr_1.2.1        RColorBrewer_1.1-3
+    [21] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        RColorBrewer_1.1-3
     [25] pkgconfig_2.0.3    farver_2.1.2       digest_0.6.39      R6_2.6.1
     [29] tidyselect_1.2.1   pillar_1.11.1      magrittr_2.0.5     withr_3.0.3
-    [33] tools_4.6.0        gtable_0.3.6       ggplot2_4.0.3     
+    [33] tools_4.6.1        gtable_0.3.6       ggplot2_4.0.3     
