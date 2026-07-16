@@ -352,7 +352,7 @@ ci_result <- bound_ci(
   parallel = FALSE
 )
 
-# ci_result is a medrobust_bounds object with @lower_ci / @upper_ci populated
+# ci_result is a medrobust_bounds object with @nde_lower_ci / @nde_upper_ci / @nie_lower_ci / @nie_upper_ci populated
 print(ci_result)
 ```
 
