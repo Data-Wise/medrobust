@@ -241,7 +241,7 @@ medrobust_bounds o-- "0..1" bootstrap_results
 <span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bounds_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="st">"medrobust_bounds"</span>,</span>
+<span><span class="va">bounds_result</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="st">"medrobust_bounds"</span>,</span>
 <span>  NIE_lower <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  NIE_upper <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  NDE_lower <span class="op">=</span> <span class="fl">0.2</span>,</span>
@@ -311,7 +311,7 @@ medrobust_bounds o-- "0..1" bootstrap_results
 <p><strong>Example</strong>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Conceptual example; construction is handled by check_compatibility()</span></span>
-<span><span class="va">test_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="st">"compatibility_test"</span>,</span>
+<span><span class="va">test_result</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="st">"compatibility_test"</span>,</span>
 <span>    compatible <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    psi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sn0 <span class="op">=</span> <span class="fl">0.7</span>, sp0 <span class="op">=</span> <span class="fl">0.7</span>, psi_sn <span class="op">=</span> <span class="fl">1</span>, psi_sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    reason <span class="op">=</span> <span class="st">"Implied probabilities are not in [0, 1]"</span></span>
