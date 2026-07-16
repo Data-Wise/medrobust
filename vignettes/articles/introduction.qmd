@@ -335,6 +335,32 @@ bounds_with_ci <- bound_ne(
 print(bounds_with_ci)
 ```
 
+### Step 6b: Standalone Confidence Intervals with `bound_ci()`
+
+If you already have a `medrobust_bounds` object and want to add or update confidence
+intervals without re-running the full grid search, use `bound_ci()` directly:
+
+```{r}
+#| label: bound-ci-standalone
+#| message: false
+
+# Compute Imbens-Manski CIs for an existing bounds object
+ci_result <- bound_ci(
+  bounds,
+  bootstrap_reps = 100,  # Use 1000+ for production
+  confidence_level = 0.95,
+  parallel = FALSE
+)
+
+# ci_result is a medrobust_bounds object with @lower_ci / @upper_ci populated
+print(ci_result)
+```
+
+The Imbens–Manski (2004) construction widens each endpoint by its bootstrap standard error
+rather than building a joint confidence set, which restores approximately nominal coverage
+even when the identified interval is narrow relative to endpoint sampling uncertainty (e.g.
+~0.09 → ~0.95 for the exposure NDE at *n* = 500).
+
 ### Step 7: Using Generic Methods
 
 The package provides standard S7 generic methods for all result objects:

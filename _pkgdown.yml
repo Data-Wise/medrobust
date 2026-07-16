@@ -15,9 +15,6 @@ template:
     font-size-base: 0.925rem
 
   opengraph:
-    image:
-      src: man/figures/logo.png
-      alt: "medrobust: Robust Causal Mediation Analysis"
     twitter:
       creator: "@dtofighi"
       card: summary_large_image
@@ -41,11 +38,6 @@ home:
     href: https://github.com/data-wise/medrobust/issues
   - text: "Request Feature"
     href: https://github.com/data-wise/medrobust/issues/new
-
-logo:
-  image: man/figures/logo.png
-  align: right
-  width: 350px
 
 navbar:
   structure:
