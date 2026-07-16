@@ -16,6 +16,8 @@ The `medrobust` package provides tools for conducting sensitivity analysis for c
 
 Unlike existing measurement error correction methods that assume non-differential error or require validation data, `medrobust` derives **partial identification bounds** that remain valid without gold-standard measurements.
 
+Two bundled datasets illustrate each scenario: `gesthtn` (mediator misclassification, gestational hypertension) and `nhanes_pa` (exposure misclassification, self-reported physical inactivity).
+
 > **Where this fits.** In the mediationverse pipeline you *fit* a mediation model with
 > [medfit](https://data-wise.github.io/medfit/), quantify effects with
 > [probmed](https://data-wise.github.io/probmed/) /
@@ -118,6 +120,7 @@ sensitivity_plot(bounds, param = "psi_sn", show_naive = TRUE)
 | Function | Purpose |
 |----------|---------|
 | `bound_ne()` | Compute partial identification bounds for NDE and NIE |
+| `bound_ci()` | Compute analytic Imbens–Manski confidence intervals for bounds |
 | `check_compatibility()` | Test if specific misclassification parameters are compatible with data |
 | `sensitivity_plot()` | Generate publication-quality sensitivity analysis plots |
 | `falsification_summary()` | Summarize which regions of sensitivity space are falsified |
@@ -213,7 +216,7 @@ citation("medrobust")
            Differential Misclassification},
   author = {Davood Tofighi},
   year = {2025},
-  note = {R package version 0.1.0},
+  note = {R package version 0.4.0},
   url = {https://github.com/data-wise/medrobust},
 }
 ```
