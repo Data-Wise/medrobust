@@ -14,8 +14,8 @@
   Misclassification](https://data-wise.github.io/medrobust/articles/identification-math.md):
 - [Getting Started with
   medrobust](https://data-wise.github.io/medrobust/articles/introduction.md):
-- [Methodological Details of
-  medrobust](https://data-wise.github.io/medrobust/articles/methodology.md):
+- [Methodology: Partial Identification Under Differential
+  Misclassification](https://data-wise.github.io/medrobust/articles/methodology.md):
 - [Worked example: bounds for a differentially misclassified exposure
   (physical
   inactivity)](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.md):

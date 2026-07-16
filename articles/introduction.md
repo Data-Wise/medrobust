@@ -711,7 +711,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 63.17 seconds
+    Time elapsed: 39.13 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -767,6 +767,46 @@ print(bounds_with_ci)
     ======================================================================
     Use summary() for detailed diagnostics
     ====================================================================== 
+
+### Step 6b: Standalone Confidence Intervals with `bound_ci()`
+
+If you already have a `medrobust_bounds` object and want to add or
+update confidence intervals without re-running the full grid search, use
+[`bound_ci()`](https://data-wise.github.io/medrobust/reference/bound_ci.md)
+directly:
+
+``` r
+
+# Compute Imbens-Manski CIs for an existing bounds object
+ci_result <- bound_ci(
+  bounds,
+  data = sim_data@observed,
+  exposure = "A_star",
+  mediator = "M",
+  outcome = "Y",
+  confounders = c("C1", "C2"),
+  misclassified_variable = "exposure",
+  n_boot = 100L,  # Use 1000+ for production
+  level = 0.95
+)
+
+# ci_result is a medrobust_bounds object with @nde_lower_ci / @nde_upper_ci / @nie_lower_ci / @nie_upper_ci populated
+print(ci_result)
+```
+
+    $NIE
+         lower      upper   se_lower   se_upper   ci_lower   ci_upper
+    1.01161600 1.02378807 0.04790550 0.04622928 0.92305542 1.10924990
+
+    $NDE
+        lower     upper  se_lower  se_upper  ci_lower  ci_upper
+    1.1728607 1.8744329 0.3076954 0.3568941 0.6662930 2.4619977 
+
+The Imbens–Manski (2004) construction widens each endpoint by its
+bootstrap standard error rather than building a joint confidence set,
+which restores approximately nominal coverage even when the identified
+interval is narrow relative to endpoint sampling uncertainty (e.g. ~0.09
+→ ~0.95 for the exposure NDE at *n* = 500).
 
 ### Step 7: Using Generic Methods
 

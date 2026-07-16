@@ -12,6 +12,10 @@ non-differential error or require validation data, `medrobust` derives
 **partial identification bounds** that remain valid without
 gold-standard measurements.
 
+Two bundled datasets illustrate each scenario: `gesthtn` (mediator
+misclassification, gestational hypertension) and `nhanes_pa` (exposure
+misclassification, self-reported physical inactivity).
+
 > **Where this fits.** In the mediationverse pipeline you *fit* a
 > mediation model with [medfit](https://data-wise.github.io/medfit/),
 > quantify effects with [probmed](https://data-wise.github.io/probmed/)
@@ -127,6 +131,7 @@ sensitivity_plot(bounds, param = "psi_sn", show_naive = TRUE)
 | Function | Purpose |
 |----|----|
 | [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md) | Compute partial identification bounds for NDE and NIE |
+| [`bound_ci()`](https://data-wise.github.io/medrobust/reference/bound_ci.md) | Compute analytic Imbens–Manski confidence intervals for bounds |
 | [`check_compatibility()`](https://data-wise.github.io/medrobust/reference/check_compatibility.md) | Test if specific misclassification parameters are compatible with data |
 | [`sensitivity_plot()`](https://data-wise.github.io/medrobust/reference/sensitivity_plot.md) | Generate publication-quality sensitivity analysis plots |
 | [`falsification_summary()`](https://data-wise.github.io/medrobust/reference/falsification_summary.md) | Summarize which regions of sensitivity space are falsified |
@@ -233,7 +238,7 @@ citation("medrobust")
            Differential Misclassification},
   author = {Davood Tofighi},
   year = {2025},
-  note = {R package version 0.1.0},
+  note = {R package version 0.4.0},
   url = {https://github.com/data-wise/medrobust},
 }
 ```
@@ -389,8 +394,8 @@ Example and synthetic datasets
   Misclassification](https://data-wise.github.io/medrobust/articles/identification-math.md):
 - [Getting Started with
   medrobust](https://data-wise.github.io/medrobust/articles/introduction.md):
-- [Methodological Details of
-  medrobust](https://data-wise.github.io/medrobust/articles/methodology.md):
+- [Methodology: Partial Identification Under Differential
+  Misclassification](https://data-wise.github.io/medrobust/articles/methodology.md):
 - [Worked example: bounds for a differentially misclassified exposure
   (physical
   inactivity)](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.md):

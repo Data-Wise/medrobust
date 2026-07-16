@@ -153,7 +153,7 @@ the partial-identification bounds.
 
 ------------------------------------------------------------------------
 
-## medrobust 0.1.0
+## medrobust 0.1.0 (2025-06-01)
 
 ### Initial Release (2025-Q2)
 

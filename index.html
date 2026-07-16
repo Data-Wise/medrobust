@@ -18,8 +18,6 @@
 ">
 <meta property="og:description" content="Tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with differential misclassification. Provides partial identification bounds and data-driven falsification.
 ">
-<meta property="og:image" content="https://data-wise.github.io/medrobust/reference/figures/logo.png">
-<meta property="og:image:alt" content="medrobust: Robust Causal Mediation Analysis">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@dtofighi">
 <meta name="twitter:site" content="@dtofighi">
@@ -95,6 +93,7 @@
 </h2>
 <p>The <code>medrobust</code> package provides tools for conducting sensitivity analysis for causal mediation effects when the exposure or mediator is measured with <strong>differential misclassification</strong> (e.g., recall bias, outcome-dependent measurement error).</p>
 <p>Unlike existing measurement error correction methods that assume non-differential error or require validation data, <code>medrobust</code> derives <strong>partial identification bounds</strong> that remain valid without gold-standard measurements.</p>
+<p>Two bundled datasets illustrate each scenario: <code>gesthtn</code> (mediator misclassification, gestational hypertension) and <code>nhanes_pa</code> (exposure misclassification, self-reported physical inactivity).</p>
 <blockquote>
 <p><strong>Where this fits.</strong> In the mediationverse pipeline you <em>fit</em> a mediation model with <a href="https://data-wise.github.io/medfit/" class="external-link">medfit</a>, quantify effects with <a href="https://data-wise.github.io/probmed/" class="external-link">probmed</a> / <a href="https://data-wise.github.io/rmediation/" class="external-link">RMediation</a>, and then use <strong>medrobust</strong> to stress-test those conclusions against differential misclassification — the “how fragile is my estimate?” step. The whole stack loads together via the <a href="https://data-wise.github.io/mediationverse/" class="external-link">mediationverse</a> umbrella package.</p>
 </blockquote>
@@ -249,6 +248,10 @@
 <td>Compute partial identification bounds for NDE and NIE</td>
 </tr>
 <tr>
+<td><code><a href="reference/bound_ci.html">bound_ci()</a></code></td>
+<td>Compute analytic Imbens–Manski confidence intervals for bounds</td>
+</tr>
+<tr>
 <td><code><a href="reference/check_compatibility.html">check_compatibility()</a></code></td>
 <td>Test if specific misclassification parameters are compatible with data</td>
 </tr>
@@ -377,7 +380,7 @@
 <span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>           Differential Misclassification},</span>
 <span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>  <span class="dt">author</span> = {Davood Tofighi},</span>
 <span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="dt">year</span> = {2025},</span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.1.0},</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.4.0},</span>
 <span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="dt">url</span> = {https://github.com/data-wise/medrobust},</span>
 <span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>}</span></code></pre></div>
 </div>
