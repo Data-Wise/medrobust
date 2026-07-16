@@ -176,7 +176,17 @@ bounds <- bound_ne(
   n_grid = 50
 )
 
-ci <- bound_ci(bounds, bootstrap_reps = 500, confidence_level = 0.95)
+ci <- bound_ci(
+  bounds,
+  data = gesthtn,
+  exposure = "A",
+  mediator = "M_star",
+  outcome = "Y",
+  confounders = c("C1", "C2"),
+  misclassified_variable = "mediator",
+  n_boot = 500L,
+  level = 0.95
+)
 print(ci)
 ```
 
