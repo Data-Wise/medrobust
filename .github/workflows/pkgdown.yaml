@@ -41,15 +41,21 @@ jobs:
           extra-packages: any::pkgdown, any::quarto, local::.
           needs: website
 
+      - name: Hide agent-instruction docs from pkgdown
+        # pkgdown::package_mds() has no config-level exclude list — it hardcodes
+        # README/LICENSE/LICENCE/NEWS/cran-comments as the only skipped root .md
+        # files and renders every other root .md (e.g. CLAUDE.md) as a public
+        # page (HTML, plus an llms.txt-era markdown twin, a sitemap.xml entry,
+        # and a full-text search.json entry). A POST-build `rm docs/CLAUDE.*`
+        # only removes the .html — it misses those companion artifacts, which
+        # still leak the content. CLAUDE.md must stay at the repo root for
+        # Claude Code discovery, so remove it from this disposable CI checkout
+        # BEFORE the build runs instead, so package_mds() never sees it.
+        run: rm -f CLAUDE.md
+
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
-
-      - name: Remove internal-only pages
-        # pkgdown::package_mds() has no config-level exclude list — it hardcodes
-        # README/LICENSE/LICENCE/NEWS/cran-comments as the only skipped root .md
-        # files and renders every other root .md (e.g. CLAUDE.md) as a public page.
-        run: rm -f docs/CLAUDE.html docs/CLAUDE.md
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
