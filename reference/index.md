@@ -83,8 +83,8 @@ Confidence intervals, bootstrap results, and standard-error helpers
 
 S3 methods and effect-formatting helpers
 
-- [`as.data.frame(`*`<medrobust_bounds>`*`)`](https://data-wise.github.io/medrobust/reference/as.data.frame.medrobust_bounds.md)
-  : Coerce to data frame (S3 - Legacy)
+- [`as.data.frame.medrobust_bounds`](https://data-wise.github.io/medrobust/reference/as.data.frame.medrobust_bounds.md)
+  : Convert partial identification bounds to a data frame
 - [`as.list(`*`<sensitivity_region>`*`)`](https://data-wise.github.io/medrobust/reference/as.list.sensitivity_region.md)
   : Convert sensitivity_region S7 object to list
 - [`print(`*`<compatibility_test>`*`)`](https://data-wise.github.io/medrobust/reference/print.compatibility_test.md)
