@@ -20,9 +20,11 @@
 
 \item{violated_constraints}{Data frame with details of violated constraints}
 
-\item{implied_probabilities}{List of implied probability distributions}
+\item{implied_probabilities}{List of implied probability distributions, or
+\code{NULL} when the data are incompatible with \code{psi}}
 
-\item{stratum_details}{List with stratum-specific details}
+\item{stratum_details}{List with stratum-specific details, or \code{NULL} when
+they were not requested or the test exited before any stratum was checked}
 
 \item{misclassified_variable}{Character: "exposure" or "mediator"}
 

@@ -321,8 +321,10 @@ medrobust_bounds <- new_class(
 #' @param n_constraints_satisfied Number of constraints satisfied
 #' @param n_constraints_violated Number of constraints violated
 #' @param violated_constraints Data frame with details of violated constraints
-#' @param implied_probabilities List of implied probability distributions
-#' @param stratum_details List with stratum-specific details
+#' @param implied_probabilities List of implied probability distributions, or
+#'   \code{NULL} when the data are incompatible with \code{psi}
+#' @param stratum_details List with stratum-specific details, or \code{NULL} when
+#'   they were not requested or the test exited before any stratum was checked
 #' @param misclassified_variable Character: "exposure" or "mediator"
 #' @param reason Character describing reason for incompatibility (if any)
 #'
@@ -356,12 +358,22 @@ compatibility_test <- new_class(
       default = data.frame()
     ),
     implied_probabilities = new_property(
-      class = class_list,
-      default = NULL
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !is.list(value)) {
+          "implied_probabilities must be a list or NULL"
+        }
+      }
     ),
     stratum_details = new_property(
-      class = class_list,
-      default = NULL
+      class = class_any,
+      default = NULL,
+      validator = function(value) {
+        if (!is.null(value) && !is.list(value)) {
+          "stratum_details must be a list or NULL"
+        }
+      }
     ),
     misclassified_variable = new_property(
       class = class_character,
