@@ -711,7 +711,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 58.96 seconds
+    Time elapsed: 62.69 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -1709,7 +1709,7 @@ sessionInfo()
 
     R version 4.6.1 (2026-06-24)
     Platform: x86_64-pc-linux-gnu
-    Running under: Ubuntu 24.04.4 LTS
+    Running under: Ubuntu 24.04.5 LTS
 
     Matrix products: default
     BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
@@ -1732,10 +1732,10 @@ sessionInfo()
     [1] medrobust_0.4.0
 
     loaded via a namespace (and not attached):
-     [1] vctrs_0.7.3        cli_3.6.6          knitr_1.51         rlang_1.3.0
-     [5] xfun_0.60          otel_0.2.0         generics_0.1.4     S7_0.2.2
+     [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0
+     [5] xfun_0.61          otel_0.2.0         generics_0.1.4     S7_0.2.2
      [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9
-    [13] gridExtra_2.3.1    scales_1.4.0       rmarkdown_2.31     grid_4.6.1
+    [13] gridExtra_2.3.1    scales_1.4.0       rmarkdown_2.32     grid_4.6.1
     [17] evaluate_1.0.5     tibble_3.3.1       fastmap_1.2.0      yaml_2.3.12
     [21] lifecycle_1.0.5    compiler_4.6.1     dplyr_1.2.1        RColorBrewer_1.1-3
     [25] pkgconfig_2.0.3    farver_2.1.2       digest_0.6.39      R6_2.6.1
