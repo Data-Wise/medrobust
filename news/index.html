@@ -54,7 +54,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/data-wise/medrobust/blob/dev/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -65,6 +65,8 @@
 <code><a href="../reference/check_compatibility.html">check_compatibility()</a></code> can now report an incompatible result. Every <code>compatible = FALSE</code> verdict, and every call with <code>return_details = FALSE</code>, used to abort in the <code>compatibility_test</code> validator, because <code>implied_probabilities</code> and <code>stratum_details</code> were set to <code>NULL</code> but typed as lists. Both properties now accept a list or <code>NULL</code>, matching their declared <code>NULL</code> default (<a href="https://github.com/data-wise/medrobust/issues/34" class="external-link">#34</a>).</li>
 <li>
 <code><a href="../reference/test_multiple_hypotheses.html">test_multiple_hypotheses()</a></code> read the <code>compatibility_test</code> result with <code>$</code> instead of <code>@</code>; it now returns its data frame of verdicts.</li>
+<li>
+<code><a href="../reference/check_compatibility.html">check_compatibility()</a></code> now tests the two mediator-path gamma constraints. Both gammas were computed with a numerator summed over the outcome, which equals the denominator, so they were identically 1: only <code>pi_a</code> was ever checked, and <code>implied_probabilities</code> reported <code>gamma_a0 = gamma_a1 = 1</code> for every compatible stratum with <code>pi_a</code> away from 0 and 1. A <code>psi</code> that <code><a href="../reference/bound_ne.html">bound_ne()</a></code> rejects could therefore be reported compatible. The cut-off below which a gamma is treated as undefined is now fixed at 1e-6, as in <code><a href="../reference/bound_ne.html">bound_ne()</a></code>, instead of following <code>tolerance</code>, so <code>tolerance = 0</code> no longer fails the check with a spurious “Matrix inversion failed” and a large <code>tolerance</code> no longer skips it (<a href="https://github.com/data-wise/medrobust/issues/39" class="external-link">#39</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-0-4-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-1"></a></h3>

@@ -58,7 +58,7 @@ diagnostics about which constraints are satisfied or violated."><meta name="twit
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Check Compatibility of Misclassification Parameters</h1>
-      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/main/R/check_compatibility.R" class="external-link"><code>R/check_compatibility.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/data-wise/medrobust/blob/dev/R/check_compatibility.R" class="external-link"><code>R/check_compatibility.R</code></a></small>
       <div class="d-none name"><code>check_compatibility.Rd</code></div>
     </div>
 
@@ -126,7 +126,11 @@ Default is TRUE.</p></dd>
 
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>Numeric. Tolerance for numerical precision when checking
-constraints. Default is 1e-6.</p></dd>
+constraints. Default is 1e-6. On the mediator path, <code><a href="bound_ne.html">bound_ne</a></code>
+applies the same constraints with no tolerance, so this function is the more
+lenient of the two there: a <code>psi</code> whose implied probabilities fall
+outside [0, 1] by less than <code>tolerance</code> is reported compatible here but
+rejected by <code><a href="bound_ne.html">bound_ne()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -14,6 +14,20 @@
 - [`test_multiple_hypotheses()`](https://data-wise.github.io/medrobust/reference/test_multiple_hypotheses.md)
   read the `compatibility_test` result with `$` instead of `@`; it now
   returns its data frame of verdicts.
+- [`check_compatibility()`](https://data-wise.github.io/medrobust/reference/check_compatibility.md)
+  now tests the two mediator-path gamma constraints. Both gammas were
+  computed with a numerator summed over the outcome, which equals the
+  denominator, so they were identically 1: only `pi_a` was ever checked,
+  and `implied_probabilities` reported `gamma_a0 = gamma_a1 = 1` for
+  every compatible stratum with `pi_a` away from 0 and 1. A `psi` that
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+  rejects could therefore be reported compatible. The cut-off below
+  which a gamma is treated as undefined is now fixed at 1e-6, as in
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md),
+  instead of following `tolerance`, so `tolerance = 0` no longer fails
+  the check with a spurious “Matrix inversion failed” and a large
+  `tolerance` no longer skips it
+  ([\#39](https://github.com/data-wise/medrobust/issues/39)).
 
 ### Documentation
 

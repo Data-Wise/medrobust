@@ -67,7 +67,13 @@ check_compatibility(
 - tolerance:
 
   Numeric. Tolerance for numerical precision when checking constraints.
-  Default is 1e-6.
+  Default is 1e-6. On the mediator path,
+  [`bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+  applies the same constraints with no tolerance, so this function is
+  the more lenient of the two there: a `psi` whose implied probabilities
+  fall outside \[0, 1\] by less than `tolerance` is reported compatible
+  here but rejected by
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
 
 ## Value
 
