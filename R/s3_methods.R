@@ -11,6 +11,7 @@
 #' @return Invisibly returns the input object.
 #'
 #' @keywords internal
+#' @exportS3Method NULL
 print.medrobust_bounds <- function(x, digits = 3, ...) {
 
   cat("\n")
@@ -83,6 +84,7 @@ print.medrobust_bounds <- function(x, digits = 3, ...) {
 #' @return Invisibly returns a list with summary information.
 #'
 #' @keywords internal
+#' @exportS3Method NULL
 summary.medrobust_bounds <- function(object, ...) {
 
   cat("\n")
