@@ -327,16 +327,19 @@ check_compatibility_mediator <- function(data,
         # Ensure non-negative (with tolerance)
         pi_a <- max(0, min(1, pi_a))
 
-        # Recover gamma parameters
+        # Recover gamma parameters, as in bound_ne_mediator():
+        #   gamma_a1 = P(Y=1 | M=1, a, C) = P(M=1, Y=1) / pi_a
+        #   gamma_a0 = P(Y=1 | M=0, a, C) = P(M=0, Y=1) / (1 - pi_a)
+        # Summing over Y in the numerator (#39) gives pi_a / pi_a = 1.
         if (pi_a < tolerance) {
           gamma_a1 <- 0.5  # Undefined
-          gamma_a0 <- (oneminuspi_gamma0_y1 + oneminuspi_gamma0_y0) / (1 - pi_a + tolerance)
+          gamma_a0 <- oneminuspi_gamma0_y1 / (1 - pi_a)
         } else if (pi_a > 1 - tolerance) {
-          gamma_a1 <- (pi_gamma1 + pi_oneminusgamma1) / (pi_a + tolerance)
+          gamma_a1 <- pi_gamma1 / pi_a
           gamma_a0 <- 0.5  # Undefined
         } else {
-          gamma_a1 <- (pi_gamma1 + pi_oneminusgamma1) / pi_a
-          gamma_a0 <- (oneminuspi_gamma0_y1 + oneminuspi_gamma0_y0) / (1 - pi_a)
+          gamma_a1 <- pi_gamma1 / pi_a
+          gamma_a0 <- oneminuspi_gamma0_y1 / (1 - pi_a)
         }
 
         # Check constraints: 0 <= gamma_a0, gamma_a1 <= 1

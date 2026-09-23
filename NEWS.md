@@ -10,6 +10,12 @@
   `NULL` default (#34).
 * `test_multiple_hypotheses()` read the `compatibility_test` result with `$`
   instead of `@`; it now returns its data frame of verdicts.
+* `check_compatibility()` now tests the two mediator-path gamma constraints.
+  Both gammas were computed with a numerator summed over the outcome, which
+  equals the denominator, so they were identically 1: only `pi_a` was ever
+  checked, and `implied_probabilities` reported `gamma_a0 = gamma_a1 = 1` for
+  every compatible stratum. A `psi` that `bound_ne()` rejects could therefore
+  be reported compatible (#39).
 
 ## Documentation
 

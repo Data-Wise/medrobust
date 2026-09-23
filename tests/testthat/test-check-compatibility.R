@@ -93,6 +93,54 @@ test_that("test_multiple_hypotheses reports compatible and incompatible psi", {
   expect_identical(out$compatible, c(TRUE, FALSE))
 })
 
+# Mediator gamma checks (#39). Both gamma estimates were computed as a sum over
+# the same cells as their denominator, so they were identically 1 and only
+# pi_a was ever tested.
+
+# A = 0: every Y = 1 row has M_star = 0, so at Sn = Sp = 0.9
+# P(M = 1, Y = 1) = -1/24 while pi_a = 7/24 is valid; gamma_a1 = -1/7
+gamma_violation_data <- function() {
+  rbind(
+    data.frame(A = 0, Y = 1, M_star = rep(0, 10)),
+    data.frame(A = 0, Y = 0, M_star = rep(c(0, 1), 10)),
+    data.frame(A = 1, Y = rep(c(0, 1), each = 20), M_star = rep(c(0, 1), 20))
+  )
+}
+
+# A = 0: P*(Y, M*) = (3/8, 1/8, 1/8, 3/8), so at Sn = Sp = 0.9 the solved
+# cells give pi_a = 1/2, gamma_a1 = 13/16, gamma_a0 = 3/16
+gamma_compatible_data <- function() {
+  rbind(
+    data.frame(A = 0, Y = 1, M_star = rep(c(1, 0), c(12, 4))),
+    data.frame(A = 0, Y = 0, M_star = rep(c(1, 0), c(4, 12))),
+    data.frame(A = 1, Y = rep(c(0, 1), each = 20), M_star = rep(c(0, 1), 20))
+  )
+}
+
+test_that("a negative solved cell fails the mediator gamma check (#39)", {
+  res <- check_compatibility(
+    gamma_violation_data(), "A", "M_star", "Y",
+    psi = psi_nd, misclassified_variable = "mediator"
+  )
+  expect_false(res@compatible)
+  expect_identical(res@n_constraints_violated, 1L)
+  expect_identical(res@violated_constraints$constraint, "gamma_a1 in [0,1]")
+  expect_identical(res@violated_constraints$exposure, 0)
+  expect_equal(res@violated_constraints$value, -1 / 7)
+})
+
+test_that("implied gamma is P(Y = 1 | M, a), not 1 (#39)", {
+  res <- check_compatibility(
+    gamma_compatible_data(), "A", "M_star", "Y",
+    psi = psi_nd, misclassified_variable = "mediator"
+  )
+  expect_true(res@compatible)
+  a0 <- res@implied_probabilities$a0_s1
+  expect_equal(a0$pi_a, 1 / 2)
+  expect_equal(a0$gamma_a1, 13 / 16)
+  expect_equal(a0$gamma_a0, 3 / 16)
+})
+
 test_that("implied_probabilities and stratum_details still reject non-lists", {
   make <- function(...) {
     compatibility_test(
