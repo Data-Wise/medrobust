@@ -330,10 +330,23 @@ method(plot, medrobust_bounds) <- function(x, ...) {
 # Methods for compatibility_test
 # =============================================================================
 
-#' Print method for compatibility_test
+#' Print Method for compatibility_test
 #'
-#' @param x A compatibility_test object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' Prints a formatted report of a falsification test returned by
+#' \code{\link{check_compatibility}}. This is an S7 method for the base
+#' generic; call it as \code{print(x)}.
+#'
+#' @param x An object of class \code{\link{compatibility_test}}.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return Invisibly returns the input object.
+#'
+#' @seealso \code{\link{check_compatibility}}, \code{\link{summary.compatibility_test}}
+#' @name print.compatibility_test
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(print, compatibility_test) <- function(x, ...) {
@@ -408,11 +421,23 @@ method(print, compatibility_test) <- function(x, ...) {
 }
 
 
-#' Summary method for compatibility_test
+#' Summary Method for compatibility_test
 #'
-#' @param object A compatibility_test object
-#' @noRd
-#' @param ... Additional arguments (ignored)
+#' @description
+#' Prints a detailed summary of a falsification test returned by
+#' \code{\link{check_compatibility}}. This is an S7 method for the base
+#' generic; call it as \code{summary(object)}.
+#'
+#' @param object An object of class \code{\link{compatibility_test}}.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return Invisibly returns the input object.
+#'
+#' @seealso \code{\link{check_compatibility}}, \code{\link{print.compatibility_test}}
+#' @name summary.compatibility_test
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(summary, compatibility_test) <- function(object, ...) {
