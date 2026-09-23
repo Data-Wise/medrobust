@@ -230,7 +230,7 @@ citation("medrobust")
            Differential Misclassification},
   author = {Davood Tofighi},
   year = {2025},
-  note = {R package version 0.4.0},
+  note = {R package version 0.4.1},
   url = {https://github.com/data-wise/medrobust},
 }
 ```
