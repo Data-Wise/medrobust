@@ -152,10 +152,32 @@ method(summary, medrobust_bounds) <- function(object, ...) {
 }
 
 
-#' Convert medrobust_bounds to data frame
+#' Convert partial identification bounds to a data frame
 #'
-#' @param x A medrobust_bounds object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' \code{as.data.frame()} on a \code{\link{medrobust_bounds}} object (as returned by
+#' \code{\link{bound_ne}}) returns a one-row data frame of the bounds and fit summary,
+#' convenient for tabulating or combining results across analyses.
+#'
+#' This is an S7 method for the base generic; call it as \code{as.data.frame(bounds)}.
+#'
+#' @param x A \code{\link{medrobust_bounds}} object.
+#' @param ... Ignored.
+#'
+#' @return A one-row \code{data.frame} with columns \code{NIE_lower}, \code{NIE_upper},
+#'   \code{NDE_lower}, \code{NDE_upper}, \code{NIE_width}, \code{NDE_width} (upper minus lower),
+#'   \code{effect_scale}, \code{misclassified_variable}, \code{n_compatible}, \code{n_evaluated},
+#'   and \code{falsified_proportion}. If the object carries bootstrap results, it
+#'   also has percentile-interval columns for each bound endpoint
+#'   (\code{NIE_lower_ci_lower}, \code{NIE_lower_ci_upper}, ..., \code{NDE_upper_ci_upper})
+#'   plus \code{bootstrap_method} and \code{bootstrap_n_reps}. Analytic (Imbens-Manski)
+#'   intervals are not included; use \code{x@analytic_ci}.
+#'
+#' @seealso \code{\link{bound_ne}}, \code{\link{medrobust_bounds}}
+#' @name as.data.frame.medrobust_bounds
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(as.data.frame, medrobust_bounds) <- function(x, ...) {
