@@ -1,24 +1,31 @@
-# Convert sensitivity_region S7 object to list
+# Convert a sensitivity region to a list
 
-Convert sensitivity_region S7 object to list
+[`as.list()`](https://rdrr.io/r/base/list.html) on a sensitivity region
+object (as returned by
+[`sensitivity_region`](https://data-wise.github.io/medrobust/reference/sensitivity_region.md))
+returns its four parameter ranges as a plain named list, the same shape
+accepted by the `sensitivity_region` argument of
+[`bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
 
-## Usage
-
-``` r
-# S3 method for class 'sensitivity_region'
-as.list(x, ...)
-```
+This is an S7 method for the base generic; call it as `as.list(region)`.
 
 ## Arguments
 
 - x:
 
-  A sensitivity_region S7 object
+  A sensitivity region object created by
+  [`sensitivity_region`](https://data-wise.github.io/medrobust/reference/sensitivity_region.md).
 
 - ...:
 
-  Additional arguments (ignored)
+  Ignored.
 
 ## Value
 
-A list with sn0_range, sp0_range, psi_sn_range, psi_sp_range
+A named list with elements `sn0_range`, `sp0_range`, `psi_sn_range`, and
+`psi_sp_range`, each a length-2 numeric vector `c(lower, upper)`.
+
+## See also
+
+[`sensitivity_region`](https://data-wise.github.io/medrobust/reference/sensitivity_region.md),
+[`bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
