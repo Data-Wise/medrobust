@@ -16,6 +16,8 @@ The `medrobust` package provides tools for conducting sensitivity analysis for c
 
 Unlike existing measurement error correction methods that assume non-differential error or require validation data, `medrobust` derives **partial identification bounds** that remain valid without gold-standard measurements.
 
+Two bundled datasets illustrate each scenario: `gesthtn` (mediator misclassification, gestational hypertension) and `nhanes_pa` (exposure misclassification, self-reported physical inactivity).
+
 > **Where this fits.** In the mediationverse pipeline you *fit* a mediation model with
 > [medfit](https://data-wise.github.io/medfit/), quantify effects with
 > [probmed](https://data-wise.github.io/probmed/) /
@@ -57,7 +59,7 @@ See [Ecosystem Coordination](https://github.com/data-wise/medfit/blob/main/plann
 if (!require("devtools")) install.packages("devtools")
 
 # Install medrobust
-devtools::install_github("data-wise/medrobust", build_vignettes = TRUE)
+devtools::install_github("data-wise/medrobust")
 ```
 
 ### From r-universe (pre-built binaries)
@@ -82,35 +84,47 @@ install.packages("medrobust")
 ```r
 library(medrobust)
 
-# Load example data
-data("arsenic_synthetic")
-
-# Define sensitivity region for misclassification parameters
-sens_region <- list(
-  sn0_range = c(0.80, 0.90),      # Sensitivity when Y=0
-  sp0_range = c(0.80, 0.90),      # Specificity when Y=0
-  psi_sn_range = c(1.0, 2.0),     # Sensitivity odds ratio
-  psi_sp_range = c(1.0, 1.0)      # Specificity odds ratio
+# Simulate data with a known mediator-misclassification mechanism
+sim <- simulate_dm_data(
+  n = 8000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
 )
 
-# Compute partial identification bounds
+# Sensitivity region containing the (here non-differential) truth
+sens_region <- list(
+  sn0_range = c(0.80, 0.99),
+  sp0_range = c(0.80, 0.99),
+  psi_sn_range = c(0.8, 1.5),
+  psi_sp_range = c(0.8, 1.5)
+)
+
+# Compute partial-identification bounds for mediator misclassification.
+# The raw bound [L, U] is consistent but is NOT a confidence set; at finite n
+# it can under-cover the truth, so we add Imbens-Manski confidence intervals
+# in the same fit via ci_method = "analytic".
+set.seed(1)
 bounds <- bound_ne(
-  data = arsenic_synthetic,
-  exposure = "A_star",              # Misclassified exposure
-  mediator = "M",
+  data = sim@observed,
+  exposure = "A",
+  mediator = "M_star",
   outcome = "Y",
-  confounders = c("age", "smoking", "alcohol"),
-  misclassified_variable = "exposure",
+  confounders = "C1",
+  misclassified_variable = "mediator",
   sensitivity_region = sens_region,
-  n_grid = 50
+  n_grid = 10,
+  ci_method = "analytic",
+  ci_n_boot = 50   # fast demo; the default (200) gives more stable CI endpoints
 )
 
 # View results
 print(bounds)
 summary(bounds)
+bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
 
-# Visualize sensitivity analysis
-sensitivity_plot(bounds, param = "psi_sn", show_naive = TRUE)
+# Visualize
+sensitivity_plot(bounds, param = "psi_sn")
 ```
 
 ## Main Functions
@@ -118,6 +132,7 @@ sensitivity_plot(bounds, param = "psi_sn", show_naive = TRUE)
 | Function | Purpose |
 |----------|---------|
 | `bound_ne()` | Compute partial identification bounds for NDE and NIE |
+| `bound_ci()` | Compute analytic Imbens–Manski confidence intervals for bounds |
 | `check_compatibility()` | Test if specific misclassification parameters are compatible with data |
 | `sensitivity_plot()` | Generate publication-quality sensitivity analysis plots |
 | `falsification_summary()` | Summarize which regions of sensitivity space are falsified |
@@ -155,13 +170,15 @@ Detailed documentation and tutorials are available:
 
 # Browse all package documentation
 help(package = "medrobust")
-
-# View vignettes
-vignette("introduction", package = "medrobust")
-vignette("mediator_misclass", package = "medrobust")
-vignette("exposure_misclass", package = "medrobust")
-vignette("interpretation", package = "medrobust")
 ```
+
+Long-form articles are published on the [package website](https://data-wise.github.io/medrobust/articles/) (they are not installed as vignettes):
+
+- [Getting Started with medrobust](https://data-wise.github.io/medrobust/articles/introduction.html)
+- [Methodology: Partial Identification Under Differential Misclassification](https://data-wise.github.io/medrobust/articles/methodology.html)
+- [Identification Mathematics](https://data-wise.github.io/medrobust/articles/identification-math.html)
+- [Worked example: misclassified mediator (gestational hypertension)](https://data-wise.github.io/medrobust/articles/gesthtn-bounds.html)
+- [Worked example: misclassified exposure (physical inactivity)](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.html)
 
 ## Methodological Background
 
@@ -213,7 +230,7 @@ citation("medrobust")
            Differential Misclassification},
   author = {Davood Tofighi},
   year = {2025},
-  note = {R package version 0.1.0},
+  note = {R package version 0.4.1},
   url = {https://github.com/data-wise/medrobust},
 }
 ```

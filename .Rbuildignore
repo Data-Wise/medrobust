@@ -17,9 +17,13 @@
 ^\.vscode$
 ^\.DS_Store$
 ^cran-comments\.md$
+^CITATION\.cff$
+^DEBUG-REPORT-.*\.md$
 ^CRAN-RELEASE$
 ^revdep$
 ^\.claude$
+^\.remember$
+^\.token-optimizer$
 ^BOOTSTRAP_IMPROVEMENTS\.md$
 ^FINAL_OPTIMIZATION_SUMMARY\.md$
 ^FORMULA_INTERFACE_FEASIBILITY\.md$
@@ -45,6 +49,7 @@
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
 ^vignettes$
 ^CLAUDE\.md$
+^AGENTS\.md$
 ^CLAUDE-CODE-PROMPT.*\.md$
 ^PLAN-.*\.md$
 ^SPEC-.*\.md$

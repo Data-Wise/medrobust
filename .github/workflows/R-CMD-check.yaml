@@ -12,6 +12,14 @@ name: R-CMD-check
 
 permissions: read-all
 
+# One run per workflow+ref: a newer push to dev or a PR branch cancels the
+# superseded run instead of queueing a full 3-OS matrix per commit.
+# main (and the weekly schedule, which runs on main) is never cancelled, so
+# every commit that reaches main keeps a complete check.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}

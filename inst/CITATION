@@ -5,7 +5,7 @@ bibentry(
   title    = "medrobust: Robust Causal Mediation Analysis Under Differential Misclassification",
   author   = person("Davood", "Tofighi"),
   year     = 2025,
-  note     = "R package version 0.1.0",
+  note     = sprintf("R package version %s", meta$Version),
   url      = "https://github.com/data-wise/medrobust"
 )
 

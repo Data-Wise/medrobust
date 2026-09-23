@@ -152,10 +152,32 @@ method(summary, medrobust_bounds) <- function(object, ...) {
 }
 
 
-#' Convert medrobust_bounds to data frame
+#' Convert partial identification bounds to a data frame
 #'
-#' @param x A medrobust_bounds object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' \code{as.data.frame()} on a \code{\link{medrobust_bounds}} object (as returned by
+#' \code{\link{bound_ne}}) returns a one-row data frame of the bounds and fit summary,
+#' convenient for tabulating or combining results across analyses.
+#'
+#' This is an S7 method for the base generic; call it as \code{as.data.frame(bounds)}.
+#'
+#' @param x A \code{\link{medrobust_bounds}} object.
+#' @param ... Ignored.
+#'
+#' @return A one-row \code{data.frame} with columns \code{NIE_lower}, \code{NIE_upper},
+#'   \code{NDE_lower}, \code{NDE_upper}, \code{NIE_width}, \code{NDE_width} (upper minus lower),
+#'   \code{effect_scale}, \code{misclassified_variable}, \code{n_compatible}, \code{n_evaluated},
+#'   and \code{falsified_proportion}. If the object carries bootstrap results, it
+#'   also has percentile-interval columns for each bound endpoint
+#'   (\code{NIE_lower_ci_lower}, \code{NIE_lower_ci_upper}, ..., \code{NDE_upper_ci_upper})
+#'   plus \code{bootstrap_method} and \code{bootstrap_n_reps}. Analytic (Imbens-Manski)
+#'   intervals are not included; use \code{x@analytic_ci}.
+#'
+#' @seealso \code{\link{bound_ne}}, \code{\link{medrobust_bounds}}
+#' @name as.data.frame.medrobust_bounds
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(as.data.frame, medrobust_bounds) <- function(x, ...) {
@@ -308,10 +330,23 @@ method(plot, medrobust_bounds) <- function(x, ...) {
 # Methods for compatibility_test
 # =============================================================================
 
-#' Print method for compatibility_test
+#' Print Method for compatibility_test
 #'
-#' @param x A compatibility_test object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' Prints a formatted report of a falsification test returned by
+#' \code{\link{check_compatibility}}. This is an S7 method for the base
+#' generic; call it as \code{print(x)}.
+#'
+#' @param x An object of class \code{\link{compatibility_test}}.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return Invisibly returns the input object.
+#'
+#' @seealso \code{\link{check_compatibility}}, \code{\link{summary.compatibility_test}}
+#' @name print.compatibility_test
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(print, compatibility_test) <- function(x, ...) {
@@ -386,11 +421,23 @@ method(print, compatibility_test) <- function(x, ...) {
 }
 
 
-#' Summary method for compatibility_test
+#' Summary Method for compatibility_test
 #'
-#' @param object A compatibility_test object
-#' @noRd
-#' @param ... Additional arguments (ignored)
+#' @description
+#' Prints a detailed summary of a falsification test returned by
+#' \code{\link{check_compatibility}}. This is an S7 method for the base
+#' generic; call it as \code{summary(object)}.
+#'
+#' @param object An object of class \code{\link{compatibility_test}}.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return Invisibly returns the input object.
+#'
+#' @seealso \code{\link{check_compatibility}}, \code{\link{print.compatibility_test}}
+#' @name summary.compatibility_test
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(summary, compatibility_test) <- function(object, ...) {
@@ -554,10 +601,28 @@ method(print, .sensitivity_region_class) <- function(x, ...) {
 }
 
 
-#' as.list method for sensitivity_region
+#' Convert a sensitivity region to a list
 #'
-#' @param x A sensitivity_region object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' \code{as.list()} on a sensitivity region object (as returned by
+#' \code{\link{sensitivity_region}}) returns its four parameter ranges as a
+#' plain named list, the same shape accepted by the \code{sensitivity_region}
+#' argument of \code{\link{bound_ne}}.
+#'
+#' This is an S7 method for the base generic; call it as \code{as.list(region)}.
+#'
+#' @param x A sensitivity region object created by \code{\link{sensitivity_region}}.
+#' @param ... Ignored.
+#'
+#' @return A named list with elements \code{sn0_range}, \code{sp0_range},
+#'   \code{psi_sn_range}, and \code{psi_sp_range}, each a length-2 numeric
+#'   vector \code{c(lower, upper)}.
+#'
+#' @seealso \code{\link{sensitivity_region}}, \code{\link{bound_ne}}
+#' @name as.list.sensitivity_region
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(as.list, .sensitivity_region_class) <- function(x, ...) {

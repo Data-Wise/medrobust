@@ -70,3 +70,6 @@ Rplots.pdf
 
 # Claude Code / craft guard local artifacts
 .claude/
+
+# Quarto build cache
+.quarto/

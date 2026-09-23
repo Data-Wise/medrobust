@@ -1,3 +1,27 @@
+# medrobust 0.4.1 (2026-09-23)
+
+## Bug fixes
+
+* `check_compatibility()` can now report an incompatible result. Every
+  `compatible = FALSE` verdict, and every call with `return_details = FALSE`,
+  used to abort in the `compatibility_test` validator, because
+  `implied_probabilities` and `stratum_details` were set to `NULL` but typed as
+  lists. Both properties now accept a list or `NULL`, matching their declared
+  `NULL` default (#34).
+* `test_multiple_hypotheses()` read the `compatibility_test` result with `$`
+  instead of `@`; it now returns its data frame of verdicts.
+
+## Documentation
+
+* `?as.data.frame.medrobust_bounds` now documents the columns
+  `as.data.frame()` actually returns (including `NIE_width`/`NDE_width` and
+  the bootstrap interval columns). It previously described an unused legacy
+  method with an `n` column that was never produced.
+* The README Quick Start ran against a dataset that does not ship
+  (`arsenic_synthetic`); it now uses the maintained `bound_ne()` example, and
+  the README links the website articles instead of `vignette()` calls
+  (articles are published on the pkgdown site, not installed as vignettes).
+
 # medrobust 0.4.0 (2026-06-15)
 
 ## New features
@@ -115,7 +139,7 @@ adds confidence intervals for the partial-identification bounds.
 
 ---
 
-# medrobust 0.1.0
+# medrobust 0.1.0 (2025-06-01)
 
 ## Initial Release (2025-Q2)
 

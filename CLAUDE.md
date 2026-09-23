@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)
 
+> ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
+
 `dev`/`main` synced at **0.4.0** (release PR #21, `a3aff0e`). Strict incoming check
 (`R CMD check --run-donttest --as-cran`) clean: **0E/0W/1N** (new-submission only).
 `nhanes_pa` exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual):
@@ -124,7 +126,7 @@ devtools::test()
 |------|------------|----------|
 | Functions | snake_case | `bound_ne()`, `check_compatibility()` |
 | Internal | dot prefix | `.compute_bounds()`, `.validate_input()` |
-| S7 Classes | CamelCase | `BoundsResult`, `SensitivityResult` |
+| S7 Classes | snake_case | `medrobust_bounds`, `compatibility_test` |
 | Properties | snake_case | `@lower_bound`, `@upper_bound` |
 
 ### Code Organization
@@ -132,7 +134,7 @@ devtools::test()
 ```
 R/
 ├── s7-classes.R              # S7 class definitions
-├── s3_methods.R              # print / summary / plot methods
+├── s7-methods.R              # S7 print / summary / plot / as.data.frame / as.list methods (no legacy S3 file; see note below)
 ├── bound_ne.R                # Main bounds dispatch
 ├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
 ├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
@@ -141,7 +143,9 @@ R/
 ├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
 └── visualization.R           # Sensitivity plots
 ```
-(Filenames verified against `R/` on 2026-06-11.)
+(Filenames verified against `R/` on 2026-06-11; `s3_methods.R` removed 2026-09-23.)
+
+**S7 + base generics:** S7 objects carry the class `medrobust::<name>`, so a `NAMESPACE` `S3method(generic, <bare name>)` never dispatches. Define methods only with `method(generic, Class)` in `s7-methods.R` (registered at load by `S7::methods_register()` in `zzz.R`); document them with a standalone `@name generic.class` block on `NULL`, in Rd syntax, with no `\usage`.
 
 ---
 
@@ -149,20 +153,28 @@ R/
 
 ### S7 Classes
 
-| Class | Purpose | Key Properties |
+All defined in `R/s7-classes.R` with `package = "medrobust"`, so their S3 class is
+`medrobust::<name>` (see the S7 + base generics note above). Names are snake_case.
+
+| Class | Purpose | Key properties |
 |-------|---------|----------------|
-| `BoundsResult` | Partial ID bounds | `lower_bound`, `upper_bound`, `naive_estimate` |
-| `SensitivityResult` | Sensitivity analysis | `param_grid`, `bounds_matrix`, `falsified_region` |
-| `FalsificationResult` | Falsification tests | `testable_implications`, `falsified`, `p_value` |
+| `medrobust_bounds` | Partial-ID bounds from `bound_ne()` | `NIE_lower`/`NIE_upper`, `NDE_lower`/`NDE_upper`, `compatible_sets`, `n_compatible`, `falsified_proportion`, `analytic_ci`, `bootstrap_results`, `reason` |
+| `compatibility_test` | One falsification test from `check_compatibility()` | `compatible`, `psi`, `n_constraints_*`, `violated_constraints`, `implied_probabilities`, `stratum_details`, `reason` |
+| `sensitivity_region` | Parameter ranges (`sensitivity_region()`) | `sn0_range`, `sp0_range`, `psi_sn_range`, `psi_sp_range` |
+| `bootstrap_results` | Bootstrap CIs for bound endpoints | CI vectors, `method`, `n_reps` |
+| `falsification_summary` | Summary over a parameter grid | — |
+| `simulated_dm_data` | Output of `simulate_dm_data()` | `observed`, `true_effects`, … |
+| `power_analysis_result` | Falsification power analysis | — |
 
 ### Core Functions
 
 | Function | Purpose | Returns |
 |----------|---------|---------|
-| `bound_ne()` | Compute bounds | `BoundsResult` |
-| `check_compatibility()` | Falsification tests | `FalsificationResult` |
+| `bound_ne()` | Compute bounds | `medrobust_bounds` |
+| `bound_ci()` | Imbens–Manski CIs for bounds | list |
+| `check_compatibility()` | Falsification test | `compatibility_test` |
 | `sensitivity_plot()` | Visualization | ggplot2 plot |
-| `simulate_dm_data()` | Data generation | data.frame |
+| `simulate_dm_data()` | Data generation | `simulated_dm_data` (data in `@observed`) |
 
 ### Misclassification Framework
 
@@ -194,6 +206,9 @@ R/
   - Windows: package check only (vignette build skipped via `runner.os == 'Windows'` conditional due to quarto issues)
 - **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
 - **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
+- **Quarto caches**: `.quarto/` is gitignored (local build cache, untracked 2026-09-23). `vignettes/articles/_freeze/` is **tracked on purpose** — `_quarto.yml` sets `freeze: auto`, so the committed results are reused instead of re-executing articles. Never gitignore `_freeze/`.
+- **Agent-instruction files**: `CLAUDE.md` (source of truth) and `AGENTS.md` (a short pointer to `CLAUDE.md` for Codex — keep it a pointer, never copy content into it) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and the *pre-build* step in `.github/workflows/pkgdown.yaml`, which deletes **every root `.md` except README/NEWS/LICENSE/cran-comments** from the CI checkout (pkgdown publishes every root `.md`; no config exclude exists). New root planning docs are therefore kept off the site automatically, but still need an `.Rbuildignore` pattern.
+- **Site deploy mirrors the build**: `clean: true` on the gh-pages deploy removes orphaned pages (deleted help topics, renamed articles). It depends on `development: mode: release` in `_pkgdown.yml`; switching back to `auto` would make dev versions build into `docs/dev/` only, and `clean: true` would then wipe the released site at the root.
 
 ---
 
@@ -233,4 +248,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-06-21 (added v0.4.0 CRAN-ready status banner; see `.STATUS`)
+**Last Updated**: 2026-09-23 (real S7 class/function tables, CRAN hold note, Quarto + agent-file conventions; see `.STATUS`)

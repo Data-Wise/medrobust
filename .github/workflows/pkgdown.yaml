@@ -41,6 +41,20 @@ jobs:
           extra-packages: any::pkgdown, any::quarto, local::.
           needs: website
 
+      - name: Hide non-site root docs from pkgdown
+        # pkgdown::package_mds() has no config-level exclude list: it publishes
+        # every root .md except README/LICENSE/NEWS/cran-comments as a public
+        # page (HTML, plus a markdown twin, a sitemap.xml entry and a full-text
+        # search.json entry). A POST-build rm of docs/<file>.html misses those
+        # companions, so delete the sources from this disposable CI checkout
+        # BEFORE the build. Allowlist, not a name list: agent files (CLAUDE.md,
+        # AGENTS.md) and planning docs (SPEC-*, PLAN-*, ...) must never reach the
+        # site, and a new prefix must not leak just because no one listed it.
+        run: |
+          find . -maxdepth 1 -type f -name '*.md' \
+            ! -name README.md ! -name NEWS.md ! -name LICENSE.md ! -name cran-comments.md \
+            -print -delete
+
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
@@ -49,6 +63,10 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
-          clean: false
+          # Mirror the build exactly: remove pages whose source is gone (deleted
+          # help topics, renamed articles). Safe only with development mode
+          # `release` in _pkgdown.yml; mode auto would build dev versions into
+          # docs/dev/ alone and this would wipe the released site at the root.
+          clean: true
           branch: gh-pages
           folder: docs
