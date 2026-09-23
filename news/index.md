@@ -15,6 +15,21 @@
   read the `compatibility_test` result with `$` instead of `@`; it now
   returns its data frame of verdicts.
 
+### Documentation
+
+- [`?as.data.frame.medrobust_bounds`](https://data-wise.github.io/medrobust/reference/as.data.frame.medrobust_bounds.md)
+  now documents the columns
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
+  actually returns (including `NIE_width`/`NDE_width` and the bootstrap
+  interval columns). It previously described an unused legacy method
+  with an `n` column that was never produced.
+- The README Quick Start ran against a dataset that does not ship
+  (`arsenic_synthetic`); it now uses the maintained
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+  example, and the README links the website articles instead of
+  [`vignette()`](https://rdrr.io/r/utils/vignette.html) calls (articles
+  are published on the pkgdown site, not installed as vignettes).
+
 ## medrobust 0.4.0 (2026-06-15)
 
 ### New features
