@@ -507,8 +507,8 @@ test_multiple_hypotheses <- function(data,
       sp0 = psi$sp0,
       psi_sn = psi$psi_sn,
       psi_sp = psi$psi_sp,
-      compatible = test_result$compatible,
-      n_violated = test_result$n_constraints_violated
+      compatible = test_result@compatible,
+      n_violated = test_result@n_constraints_violated
     )
   })
 
