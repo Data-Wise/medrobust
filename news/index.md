@@ -184,10 +184,8 @@ the partial-identification bounds.
 - Comprehensive package documentation with roxygen2
 - Getting started vignette
 - Example datasets: `arsenic_synthetic` and `simulation_results`
-- S3 methods for clean output:
-  [`print.medrobust_bounds()`](https://data-wise.github.io/medrobust/reference/print.medrobust_bounds.md)
-  and
-  [`summary.medrobust_bounds()`](https://data-wise.github.io/medrobust/reference/summary.medrobust_bounds.md)
+- S3 methods for clean output: `print.medrobust_bounds()` and
+  `summary.medrobust_bounds()`
 
 #### Testing
 
