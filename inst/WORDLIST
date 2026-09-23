@@ -10,6 +10,7 @@ Codecov
 Confounder
 Conover
 Cramer's
+Cramér's
 DOP
 Dietz
 Econometrica
@@ -32,9 +33,11 @@ OOP
 ORCID
 PAQ
 Pre
+README
 RMediation
 SEs
 Sobol
+Springer
 TCE
 Technometrics
 UML
@@ -43,6 +46,8 @@ al
 argmax
 argmin
 bca
+bigl
+bigr
 biomarker
 bw
 callout
@@ -65,7 +70,9 @@ ggplot
 gtrsim
 hs
 infty
+invertible
 le
+mathcal
 mathrm
 medfit
 mediationverse
@@ -81,7 +88,10 @@ neq
 nie
 parallelization
 params
+perp
+pkgdown
 pmatrix
+positivity
 pre
 probmed
 qmd
@@ -96,6 +106,7 @@ sp
 testthat
 underbrace
 underreport
+validator
 widehat
 ym
 Ψ

@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)
 
+> ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
+
 `dev`/`main` synced at **0.4.0** (release PR #21, `a3aff0e`). Strict incoming check
 (`R CMD check --run-donttest --as-cran`) clean: **0E/0W/1N** (new-submission only).
 `nhanes_pa` exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual):
@@ -124,7 +126,7 @@ devtools::test()
 |------|------------|----------|
 | Functions | snake_case | `bound_ne()`, `check_compatibility()` |
 | Internal | dot prefix | `.compute_bounds()`, `.validate_input()` |
-| S7 Classes | CamelCase | `BoundsResult`, `SensitivityResult` |
+| S7 Classes | snake_case | `medrobust_bounds`, `compatibility_test` |
 | Properties | snake_case | `@lower_bound`, `@upper_bound` |
 
 ### Code Organization
@@ -151,20 +153,28 @@ R/
 
 ### S7 Classes
 
-| Class | Purpose | Key Properties |
+All defined in `R/s7-classes.R` with `package = "medrobust"`, so their S3 class is
+`medrobust::<name>` (see the S7 + base generics note above). Names are snake_case.
+
+| Class | Purpose | Key properties |
 |-------|---------|----------------|
-| `BoundsResult` | Partial ID bounds | `lower_bound`, `upper_bound`, `naive_estimate` |
-| `SensitivityResult` | Sensitivity analysis | `param_grid`, `bounds_matrix`, `falsified_region` |
-| `FalsificationResult` | Falsification tests | `testable_implications`, `falsified`, `p_value` |
+| `medrobust_bounds` | Partial-ID bounds from `bound_ne()` | `NIE_lower`/`NIE_upper`, `NDE_lower`/`NDE_upper`, `compatible_sets`, `n_compatible`, `falsified_proportion`, `analytic_ci`, `bootstrap_results`, `reason` |
+| `compatibility_test` | One falsification test from `check_compatibility()` | `compatible`, `psi`, `n_constraints_*`, `violated_constraints`, `implied_probabilities`, `stratum_details`, `reason` |
+| `sensitivity_region` | Parameter ranges (`sensitivity_region()`) | `sn0_range`, `sp0_range`, `psi_sn_range`, `psi_sp_range` |
+| `bootstrap_results` | Bootstrap CIs for bound endpoints | CI vectors, `method`, `n_reps` |
+| `falsification_summary` | Summary over a parameter grid | — |
+| `simulated_dm_data` | Output of `simulate_dm_data()` | `observed`, `true_effects`, … |
+| `power_analysis_result` | Falsification power analysis | — |
 
 ### Core Functions
 
 | Function | Purpose | Returns |
 |----------|---------|---------|
-| `bound_ne()` | Compute bounds | `BoundsResult` |
-| `check_compatibility()` | Falsification tests | `FalsificationResult` |
+| `bound_ne()` | Compute bounds | `medrobust_bounds` |
+| `bound_ci()` | Imbens–Manski CIs for bounds | list |
+| `check_compatibility()` | Falsification test | `compatibility_test` |
 | `sensitivity_plot()` | Visualization | ggplot2 plot |
-| `simulate_dm_data()` | Data generation | data.frame |
+| `simulate_dm_data()` | Data generation | `simulated_dm_data` (data in `@observed`) |
 
 ### Misclassification Framework
 
@@ -237,4 +247,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-23 (Quarto cache + agent-instruction-file conventions; see `.STATUS`)
+**Last Updated**: 2026-09-23 (real S7 class/function tables, CRAN hold note, Quarto + agent-file conventions; see `.STATUS`)
