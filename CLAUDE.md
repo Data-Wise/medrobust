@@ -194,6 +194,8 @@ R/
   - Windows: package check only (vignette build skipped via `runner.os == 'Windows'` conditional due to quarto issues)
 - **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
 - **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
+- **Quarto caches**: `.quarto/` is gitignored (local build cache, untracked 2026-09-23). `vignettes/articles/_freeze/` is **tracked on purpose** — `_quarto.yml` sets `freeze: auto`, so the committed results are reused instead of re-executing articles. Never gitignore `_freeze/`.
+- **Agent-instruction files**: `CLAUDE.md` and `AGENTS.md` (Codex mirror) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and a *pre-build* `rm -f` step in `.github/workflows/pkgdown.yaml` (pkgdown publishes every root `.md`; no config exclude exists). A new root `.md` needs both. Edit `CLAUDE.md` and `AGENTS.md` together — they are near-identical and drift otherwise.
 
 ---
 
@@ -233,4 +235,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-06-21 (added v0.4.0 CRAN-ready status banner; see `.STATUS`)
+**Last Updated**: 2026-09-23 (Quarto cache + agent-instruction-file conventions; see `.STATUS`)
