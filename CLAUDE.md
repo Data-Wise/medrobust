@@ -207,7 +207,8 @@ All defined in `R/s7-classes.R` with `package = "medrobust"`, so their S3 class 
 - **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
 - **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
 - **Quarto caches**: `.quarto/` is gitignored (local build cache, untracked 2026-09-23). `vignettes/articles/_freeze/` is **tracked on purpose** — `_quarto.yml` sets `freeze: auto`, so the committed results are reused instead of re-executing articles. Never gitignore `_freeze/`.
-- **Agent-instruction files**: `CLAUDE.md` (source of truth) and `AGENTS.md` (a short pointer to `CLAUDE.md` for Codex — keep it a pointer, never copy content into it) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and a *pre-build* `rm -f` step in `.github/workflows/pkgdown.yaml` (pkgdown publishes every root `.md`; no config exclude exists). A new root `.md` needs both.
+- **Agent-instruction files**: `CLAUDE.md` (source of truth) and `AGENTS.md` (a short pointer to `CLAUDE.md` for Codex — keep it a pointer, never copy content into it) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and the *pre-build* step in `.github/workflows/pkgdown.yaml`, which deletes **every root `.md` except README/NEWS/LICENSE/cran-comments** from the CI checkout (pkgdown publishes every root `.md`; no config exclude exists). New root planning docs are therefore kept off the site automatically, but still need an `.Rbuildignore` pattern.
+- **Site deploy mirrors the build**: `clean: true` on the gh-pages deploy removes orphaned pages (deleted help topics, renamed articles). It depends on `development: mode: release` in `_pkgdown.yml`; switching back to `auto` would make dev versions build into `docs/dev/` only, and `clean: true` would then wipe the released site at the root.
 
 ---
 

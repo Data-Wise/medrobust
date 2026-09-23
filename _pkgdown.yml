@@ -166,7 +166,10 @@ reference:
   - simulated_dm_data
 
 development:
-  mode: auto
+  # release, not auto: the site always builds at the root, which the gh-pages
+  # deploy's clean: true relies on (auto would put dev versions in docs/dev/
+  # only). Revisit after CRAN acceptance if a separate /dev/ site is wanted.
+  mode: release
   version_label: default
   version_tooltip: "Development version"
 
