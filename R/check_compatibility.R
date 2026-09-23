@@ -21,7 +21,11 @@
 #' @param return_details Logical. If TRUE, returns detailed stratum-level diagnostics.
 #'   Default is TRUE.
 #' @param tolerance Numeric. Tolerance for numerical precision when checking
-#'   constraints. Default is 1e-6.
+#'   constraints. Default is 1e-6. On the mediator path, \code{\link{bound_ne}}
+#'   applies the same constraints with no tolerance, so this function is the more
+#'   lenient of the two there: a \code{psi} whose implied probabilities fall
+#'   outside [0, 1] by less than \code{tolerance} is reported compatible here but
+#'   rejected by \code{bound_ne()}.
 #'
 #' @return A list with class \code{compatibility_test} containing:
 #'   \item{compatible}{Logical. TRUE if parameters are compatible}
