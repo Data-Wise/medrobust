@@ -576,10 +576,28 @@ method(print, .sensitivity_region_class) <- function(x, ...) {
 }
 
 
-#' as.list method for sensitivity_region
+#' Convert a sensitivity region to a list
 #'
-#' @param x A sensitivity_region object
-#' @param ... Additional arguments (ignored)
+#' @description
+#' \code{as.list()} on a sensitivity region object (as returned by
+#' \code{\link{sensitivity_region}}) returns its four parameter ranges as a
+#' plain named list, the same shape accepted by the \code{sensitivity_region}
+#' argument of \code{\link{bound_ne}}.
+#'
+#' This is an S7 method for the base generic; call it as \code{as.list(region)}.
+#'
+#' @param x A sensitivity region object created by \code{\link{sensitivity_region}}.
+#' @param ... Ignored.
+#'
+#' @return A named list with elements \code{sn0_range}, \code{sp0_range},
+#'   \code{psi_sn_range}, and \code{psi_sp_range}, each a length-2 numeric
+#'   vector \code{c(lower, upper)}.
+#'
+#' @seealso \code{\link{sensitivity_region}}, \code{\link{bound_ne}}
+#' @name as.list.sensitivity_region
+NULL
+
+# S7 method for the base S3 generic; documented above.
 #' @noRd
 #' @export
 method(as.list, .sensitivity_region_class) <- function(x, ...) {

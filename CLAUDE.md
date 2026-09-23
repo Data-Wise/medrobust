@@ -132,7 +132,7 @@ devtools::test()
 ```
 R/
 ├── s7-classes.R              # S7 class definitions
-├── s3_methods.R              # print / summary / plot methods
+├── s7-methods.R              # S7 print / summary / plot / as.data.frame / as.list methods (no legacy S3 file; see note below)
 ├── bound_ne.R                # Main bounds dispatch
 ├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
 ├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
@@ -141,7 +141,9 @@ R/
 ├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
 └── visualization.R           # Sensitivity plots
 ```
-(Filenames verified against `R/` on 2026-06-11.)
+(Filenames verified against `R/` on 2026-06-11; `s3_methods.R` removed 2026-09-23.)
+
+**S7 + base generics:** S7 objects carry the class `medrobust::<name>`, so a `NAMESPACE` `S3method(generic, <bare name>)` never dispatches. Define methods only with `method(generic, Class)` in `s7-methods.R` (registered at load by `S7::methods_register()` in `zzz.R`); document them with a standalone `@name generic.class` block on `NULL`, in Rd syntax, with no `\usage`.
 
 ---
 
