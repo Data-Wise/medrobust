@@ -39,11 +39,13 @@ misclassification parameter values.
 
 - implied_probabilities:
 
-  List of implied probability distributions
+  List of implied probability distributions, or `NULL` when the data are
+  incompatible with `psi`
 
 - stratum_details:
 
-  List with stratum-specific details
+  List with stratum-specific details, or `NULL` when they were not
+  requested or the test exited before any stratum was checked
 
 - misclassified_variable:
 

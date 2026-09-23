@@ -1,5 +1,20 @@
 # Changelog
 
+## medrobust (development version)
+
+### Bug fixes
+
+- [`check_compatibility()`](https://data-wise.github.io/medrobust/reference/check_compatibility.md)
+  can now report an incompatible result. Every `compatible = FALSE`
+  verdict, and every call with `return_details = FALSE`, used to abort
+  in the `compatibility_test` validator, because `implied_probabilities`
+  and `stratum_details` were set to `NULL` but typed as lists. Both
+  properties now accept a list or `NULL`, matching their declared `NULL`
+  default ([\#34](https://github.com/data-wise/medrobust/issues/34)).
+- [`test_multiple_hypotheses()`](https://data-wise.github.io/medrobust/reference/test_multiple_hypotheses.md)
+  read the `compatibility_test` result with `$` instead of `@`; it now
+  returns its data frame of verdicts.
+
 ## medrobust 0.4.0 (2026-06-15)
 
 ### New features

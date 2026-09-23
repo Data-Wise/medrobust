@@ -87,9 +87,9 @@ S3 methods and effect-formatting helpers
   : Convert partial identification bounds to a data frame
 - [`as.list.sensitivity_region`](https://data-wise.github.io/medrobust/reference/as.list.sensitivity_region.md)
   : Convert a sensitivity region to a list
-- [`print(`*`<compatibility_test>`*`)`](https://data-wise.github.io/medrobust/reference/print.compatibility_test.md)
+- [`print.compatibility_test`](https://data-wise.github.io/medrobust/reference/print.compatibility_test.md)
   : Print Method for compatibility_test
-- [`summary(`*`<compatibility_test>`*`)`](https://data-wise.github.io/medrobust/reference/summary.compatibility_test.md)
+- [`summary.compatibility_test`](https://data-wise.github.io/medrobust/reference/summary.compatibility_test.md)
   : Summary Method for compatibility_test
 - [`format_effect()`](https://data-wise.github.io/medrobust/reference/format_effect.md)
   : Format Effect Estimate for Reporting

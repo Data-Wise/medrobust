@@ -103,11 +103,13 @@ misclassification parameter values.</p>
 
 
 <dt id="arg-implied-probabilities">implied_probabilities<a class="anchor" aria-label="anchor" href="#arg-implied-probabilities"></a></dt>
-<dd><p>List of implied probability distributions</p></dd>
+<dd><p>List of implied probability distributions, or
+<code>NULL</code> when the data are incompatible with <code>psi</code></p></dd>
 
 
 <dt id="arg-stratum-details">stratum_details<a class="anchor" aria-label="anchor" href="#arg-stratum-details"></a></dt>
-<dd><p>List with stratum-specific details</p></dd>
+<dd><p>List with stratum-specific details, or <code>NULL</code> when
+they were not requested or the test exited before any stratum was checked</p></dd>
 
 
 <dt id="arg-misclassified-variable">misclassified_variable<a class="anchor" aria-label="anchor" href="#arg-misclassified-variable"></a></dt>

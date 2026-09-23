@@ -58,6 +58,16 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/check_compatibility.html">check_compatibility()</a></code> can now report an incompatible result. Every <code>compatible = FALSE</code> verdict, and every call with <code>return_details = FALSE</code>, used to abort in the <code>compatibility_test</code> validator, because <code>implied_probabilities</code> and <code>stratum_details</code> were set to <code>NULL</code> but typed as lists. Both properties now accept a list or <code>NULL</code>, matching their declared <code>NULL</code> default (<a href="https://github.com/data-wise/medrobust/issues/34" class="external-link">#34</a>).</li>
+<li>
+<code><a href="../reference/test_multiple_hypotheses.html">test_multiple_hypotheses()</a></code> read the <code>compatibility_test</code> result with <code>$</code> instead of <code>@</code>; it now returns its data frame of verdicts.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="medrobust-040-2026-06-15">medrobust 0.4.0 (2026-06-15)<a class="anchor" aria-label="anchor" href="#medrobust-040-2026-06-15"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>

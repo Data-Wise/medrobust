@@ -175,7 +175,7 @@
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install medrobust</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"data-wise/medrobust"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"data-wise/medrobust"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-r-universe-pre-built-binaries">From r-universe (pre-built binaries)<a class="anchor" aria-label="anchor" href="#from-r-universe-pre-built-binaries"></a>
@@ -200,35 +200,47 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-wise/medrobust" class="external-link">medrobust</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load example data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"arsenic_synthetic"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define sensitivity region for misclassification parameters</span></span>
-<span><span class="va">sens_region</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.90</span><span class="op">)</span>,      <span class="co"># Sensitivity when Y=0</span></span>
-<span>  sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.90</span><span class="op">)</span>,      <span class="co"># Specificity when Y=0</span></span>
-<span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span><span class="op">)</span>,     <span class="co"># Sensitivity odds ratio</span></span>
-<span>  psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.0</span><span class="op">)</span>      <span class="co"># Specificity odds ratio</span></span>
+<span><span class="co"># Simulate data with a known mediator-misclassification mechanism</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulate_dm_data.html">simulate_dm_data</a></span><span class="op">(</span></span>
+<span>  n <span class="op">=</span> <span class="fl">8000</span>,</span>
+<span>  true_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta_AM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span>, theta_AY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1.5</span><span class="op">)</span>, theta_MY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  dm_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sn0 <span class="op">=</span> <span class="fl">0.9</span>, sp0 <span class="op">=</span> <span class="fl">0.9</span>, psi_sn <span class="op">=</span> <span class="fl">1</span>, psi_sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  misclass_type <span class="op">=</span> <span class="st">"mediator"</span>, confounders <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Compute partial identification bounds</span></span>
+<span><span class="co"># Sensitivity region containing the (here non-differential) truth</span></span>
+<span><span class="va">sens_region</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>,</span>
+<span>  sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>,</span>
+<span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
+<span>  psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compute partial-identification bounds for mediator misclassification.</span></span>
+<span><span class="co"># The raw bound [L, U] is consistent but is NOT a confidence set; at finite n</span></span>
+<span><span class="co"># it can under-cover the truth, so we add Imbens-Manski confidence intervals</span></span>
+<span><span class="co"># in the same fit via ci_method = "analytic".</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">arsenic_synthetic</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,              <span class="co"># Misclassified exposure</span></span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">sim</span><span class="op">@</span><span class="va">observed</span>,</span>
+<span>  exposure <span class="op">=</span> <span class="st">"A"</span>,</span>
+<span>  mediator <span class="op">=</span> <span class="st">"M_star"</span>,</span>
 <span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"smoking"</span>, <span class="st">"alcohol"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
+<span>  confounders <span class="op">=</span> <span class="st">"C1"</span>,</span>
+<span>  misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
 <span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span></span>
+<span>  n_grid <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  ci_method <span class="op">=</span> <span class="st">"analytic"</span>,</span>
+<span>  ci_n_boot <span class="op">=</span> <span class="fl">50</span>   <span class="co"># fast demo; the default (200) gives more stable CI endpoints</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
+<span><span class="va">bounds</span><span class="op">@</span><span class="va">analytic_ci</span><span class="op">$</span><span class="va">NDE</span>   <span class="co"># raw [L, U] plus Imbens-Manski confidence interval</span></span>
 <span></span>
-<span><span class="co"># Visualize sensitivity analysis</span></span>
-<span><span class="fu"><a href="reference/sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span><span class="va">bounds</span>, param <span class="op">=</span> <span class="st">"psi_sn"</span>, show_naive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Visualize</span></span>
+<span><span class="fu"><a href="reference/sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span><span class="va">bounds</span>, param <span class="op">=</span> <span class="st">"psi_sn"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="main-functions">Main Functions<a class="anchor" aria-label="anchor" href="#main-functions"></a>
@@ -309,13 +321,15 @@
 <span><span class="op">?</span><span class="va">bound_ne</span></span>
 <span></span>
 <span><span class="co"># Browse all package documentation</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View vignettes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"introduction"</span>, package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mediator_misclass"</span>, package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"exposure_misclass"</span>, package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"interpretation"</span>, package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/help.html" class="external-link">help</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"medrobust"</span><span class="op">)</span></span></code></pre></div>
+<p>Long-form articles are published on the <a href="https://data-wise.github.io/medrobust/articles/">package website</a> (they are not installed as vignettes):</p>
+<ul>
+<li><a href="https://data-wise.github.io/medrobust/articles/introduction.html">Getting Started with medrobust</a></li>
+<li><a href="https://data-wise.github.io/medrobust/articles/methodology.html">Methodology: Partial Identification Under Differential Misclassification</a></li>
+<li><a href="https://data-wise.github.io/medrobust/articles/identification-math.html">Identification Mathematics</a></li>
+<li><a href="https://data-wise.github.io/medrobust/articles/gesthtn-bounds.html">Worked example: misclassified mediator (gestational hypertension)</a></li>
+<li><a href="https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.html">Worked example: misclassified exposure (physical inactivity)</a></li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="methodological-background">Methodological Background<a class="anchor" aria-label="anchor" href="#methodological-background"></a>
