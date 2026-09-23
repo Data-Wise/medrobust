@@ -48,6 +48,7 @@
 ^POWER_ANALYSIS_OPTIMIZATIONS\.md$
 ^vignettes$
 ^CLAUDE\.md$
+^AGENTS\.md$
 ^CLAUDE-CODE-PROMPT.*\.md$
 ^PLAN-.*\.md$
 ^SPEC-.*\.md$
