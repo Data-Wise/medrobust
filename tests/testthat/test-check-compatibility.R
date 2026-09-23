@@ -7,8 +7,8 @@
 exposure_data <- function(zero_cell = FALSE) {
   d <- data.frame(
     A_star = rep(c(0, 1), 40),
-    M = rep(c(0, 0, 1, 1), each = 20),
-    Y = rep(c(0, 1), each = 40)
+    M = rep(c(0, 1), each = 40),
+    Y = rep(c(0, 1), each = 20, times = 2)
   )
   # All A_star = 1 in (M = 1, Y = 1): violates P*_0 / P*_1 >= (1 - Sn1) / Sn1
   if (zero_cell) d$A_star[d$M == 1 & d$Y == 1] <- 1
@@ -66,7 +66,9 @@ test_that("a compatible psi still carries implied probabilities", {
   )
   expect_true(res@compatible)
   expect_type(res@implied_probabilities, "list")
-  expect_gt(length(res@implied_probabilities), 0L)
+  # One entry and four constraints per (M, Y) cell: all four cells were tested
+  expect_length(res@implied_probabilities, 4L)
+  expect_identical(res@n_constraints_total, 16L)
 })
 
 test_that("return_details = FALSE no longer errors", {
