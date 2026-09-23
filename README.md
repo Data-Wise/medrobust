@@ -114,7 +114,8 @@ bounds <- bound_ne(
   misclassified_variable = "mediator",
   sensitivity_region = sens_region,
   n_grid = 10,
-  ci_method = "analytic", ci_n_boot = 50
+  ci_method = "analytic",
+  ci_n_boot = 50   # fast demo; the default (200) gives more stable CI endpoints
 )
 
 # View results
