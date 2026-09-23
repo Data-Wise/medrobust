@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,16 +58,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.1" id="medrobust-041-2026-09-23">medrobust 0.4.1 (2026-09-23)<a class="anchor" aria-label="anchor" href="#medrobust-041-2026-09-23"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-4-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-1"></a></h3>
 <ul><li>
 <code><a href="../reference/check_compatibility.html">check_compatibility()</a></code> can now report an incompatible result. Every <code>compatible = FALSE</code> verdict, and every call with <code>return_details = FALSE</code>, used to abort in the <code>compatibility_test</code> validator, because <code>implied_probabilities</code> and <code>stratum_details</code> were set to <code>NULL</code> but typed as lists. Both properties now accept a list or <code>NULL</code>, matching their declared <code>NULL</code> default (<a href="https://github.com/data-wise/medrobust/issues/34" class="external-link">#34</a>).</li>
 <li>
 <code><a href="../reference/test_multiple_hypotheses.html">test_multiple_hypotheses()</a></code> read the <code>compatibility_test</code> result with <code>$</code> instead of <code>@</code>; it now returns its data frame of verdicts.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-development-version">Documentation<a class="anchor" aria-label="anchor" href="#documentation-development-version"></a></h3>
+<h3 id="documentation-0-4-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-1"></a></h3>
 <ul><li>
 <code><a href="../reference/as.data.frame.medrobust_bounds.html">?as.data.frame.medrobust_bounds</a></code> now documents the columns <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> actually returns (including <code>NIE_width</code>/<code>NDE_width</code> and the bootstrap interval columns). It previously described an unused legacy method with an <code>n</code> column that was never produced.</li>
 <li>The README Quick Start ran against a dataset that does not ship (<code>arsenic_synthetic</code>); it now uses the maintained <code><a href="../reference/bound_ne.html">bound_ne()</a></code> example, and the README links the website articles instead of <code><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette()</a></code> calls (articles are published on the pkgdown site, not installed as vignettes).</li>
