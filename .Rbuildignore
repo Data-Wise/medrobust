@@ -23,6 +23,7 @@
 ^revdep$
 ^\.claude$
 ^\.remember$
+^\.token-optimizer$
 ^BOOTSTRAP_IMPROVEMENTS\.md$
 ^FINAL_OPTIMIZATION_SUMMARY\.md$
 ^FORMULA_INTERFACE_FEASIBILITY\.md$
