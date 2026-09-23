@@ -59,7 +59,7 @@ See [Ecosystem Coordination](https://github.com/data-wise/medfit/blob/main/plann
 if (!require("devtools")) install.packages("devtools")
 
 # Install medrobust
-devtools::install_github("data-wise/medrobust", build_vignettes = TRUE)
+devtools::install_github("data-wise/medrobust")
 ```
 
 ### From r-universe (pre-built binaries)
@@ -169,13 +169,15 @@ Detailed documentation and tutorials are available:
 
 # Browse all package documentation
 help(package = "medrobust")
-
-# View vignettes
-vignette("introduction", package = "medrobust")
-vignette("mediator_misclass", package = "medrobust")
-vignette("exposure_misclass", package = "medrobust")
-vignette("interpretation", package = "medrobust")
 ```
+
+Long-form articles are published on the [package website](https://data-wise.github.io/medrobust/articles/) (they are not installed as vignettes):
+
+- [Getting Started with medrobust](https://data-wise.github.io/medrobust/articles/introduction.html)
+- [Methodology: Partial Identification Under Differential Misclassification](https://data-wise.github.io/medrobust/articles/methodology.html)
+- [Identification Mathematics](https://data-wise.github.io/medrobust/articles/identification-math.html)
+- [Worked example: misclassified mediator (gestational hypertension)](https://data-wise.github.io/medrobust/articles/gesthtn-bounds.html)
+- [Worked example: misclassified exposure (physical inactivity)](https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.html)
 
 ## Methodological Background
 
