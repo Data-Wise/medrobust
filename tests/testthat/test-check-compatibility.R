@@ -141,6 +141,42 @@ test_that("implied gamma is P(Y = 1 | M, a), not 1 (#39)", {
   expect_equal(a0$gamma_a0, 3 / 16)
 })
 
+balanced_a1 <- function() {
+  data.frame(A = 1, Y = rep(c(0, 1), each = 20), M_star = rep(c(0, 1), 20))
+}
+
+test_that("tolerance = 0 does not divide 0 by 0 in the gamma checks (#39)", {
+  # A = 0 has no Y = 1 rows and 1 of 20 M_star = 1: pi_a solves to -1/16,
+  # is flagged, and is clamped to 0, where gamma_a1 is undefined
+  d <- rbind(data.frame(A = 0, Y = 0, M_star = rep(c(1, 0), c(1, 19))),
+             balanced_a1())
+  res <- check_compatibility(
+    d, "A", "M_star", "Y", psi = psi_nd,
+    misclassified_variable = "mediator", tolerance = 0
+  )
+  expect_false(res@compatible)
+  expect_identical(res@n_constraints_violated, nrow(res@violated_constraints))
+  expect_identical(res@violated_constraints$constraint, "pi_a in [0,1]")
+  expect_false(grepl("inversion", res@stratum_details$a0_s1$reason))
+})
+
+test_that("a large tolerance does not switch off the gamma check (#39)", {
+  # A = 0: pi_a = 1/40 is below tolerance = 0.05 but is a valid pi_a, and
+  # gamma_a1 = -1; bound_ne() rejects the same psi
+  d <- rbind(
+    data.frame(A = 0, Y = 1, M_star = rep(0, 20)),
+    data.frame(A = 0, Y = 0, M_star = rep(c(1, 0), c(12, 68))),
+    balanced_a1()
+  )
+  res <- check_compatibility(
+    d, "A", "M_star", "Y", psi = psi_nd,
+    misclassified_variable = "mediator", tolerance = 0.05
+  )
+  expect_false(res@compatible)
+  expect_identical(res@violated_constraints$constraint, "gamma_a1 in [0,1]")
+  expect_equal(res@violated_constraints$value, -1)
+})
+
 test_that("implied_probabilities and stratum_details still reject non-lists", {
   make <- function(...) {
     compatibility_test(

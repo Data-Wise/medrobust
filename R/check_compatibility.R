@@ -335,10 +335,13 @@ check_compatibility_mediator <- function(data,
         #   gamma_a1 = P(Y=1 | M=1, a, C) = P(M=1, Y=1) / pi_a
         #   gamma_a0 = P(Y=1 | M=0, a, C) = P(M=0, Y=1) / (1 - pi_a)
         # Summing over Y in the numerator (#39) gives pi_a / pi_a = 1.
-        if (pi_a < tolerance) {
+        # The "undefined" cut-off is fixed at 1e-6, as there, not `tolerance`:
+        # tolerance = 0 would divide 0 by 0, and a large tolerance would skip
+        # a real gamma check.
+        if (pi_a < 1e-6) {
           gamma_a1 <- 0.5  # Undefined
           gamma_a0 <- oneminuspi_gamma0_y1 / (1 - pi_a)
-        } else if (pi_a > 1 - tolerance) {
+        } else if (pi_a > 1 - 1e-6) {
           gamma_a1 <- pi_gamma1 / pi_a
           gamma_a0 <- 0.5  # Undefined
         } else {
