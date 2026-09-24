@@ -80,7 +80,8 @@ data("nhanes_pa")
 table(A_star = nhanes_pa$A_star, Y = nhanes_pa$Y)
 
 # Partial-identification bounds for the (differentially misclassified) exposure;
-# see ?bound_ne and vignette("nhanes_pa-bounds", package = "medrobust").
+# see ?bound_ne and the article
+# https://data-wise.github.io/medrobust/articles/nhanes_pa-bounds.html
 region <- sensitivity_region(
   sn0_range = c(0.80, 0.95), sp0_range = c(0.80, 0.95),
   psi_sn_range = c(1.0, 2.0), psi_sp_range = c(1.0, 1.0)

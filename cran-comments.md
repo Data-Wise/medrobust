@@ -1,6 +1,6 @@
 ## Submission summary
 
-This is a new submission of **medrobust** (version 0.4.1). The package has not
+This is a new submission of **medrobust** (version 0.4.2). The package has not
 previously been on CRAN.
 
 medrobust provides partial-identification sensitivity analysis for causal mediation
@@ -10,14 +10,15 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 ## Test environments
 
-> **Re-run before submitting 0.4.1:** the win-builder and r-hub results below were
-> produced for 0.4.0. The local `--as-cran` check and GitHub Actions results are current for 0.4.1.
+> **Re-run on the `v0.4.2` tag before submitting.** The results below are for `v0.4.1`; 0.4.2
+> changes only help-page text (links to website articles instead of `vignette()`, #44).
 
-* Local: macOS 15 (aarch64-apple-darwin25.4.0), R 4.6.0 — `R CMD check --as-cran`
-* win-builder R-release (R 4.6.0): token 0pY8ajL2oIoD — **Status: 1 NOTE (new submission)**
-* win-builder R-oldrelease (R 4.5.3): token d0MT9b7E7wFP — **Status: 1 NOTE (new submission)**
-* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release + oldrel-1
-* r-hub (twill-brownbutterfly, run 27854775371, on dev/v0.4.0):
+* Local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --run-donttest` on the tarball built from the `v0.4.1` tag (54812ec): 0 errors | 0 warnings | 1 note (new submission)
+* win-builder R-devel (2026-09-21 r90579): https://win-builder.r-project.org/3l38uWfnQlRB — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-release (R 4.6.1): https://win-builder.r-project.org/2CEkI89WdS64 — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-oldrelease (R 4.5.3): https://win-builder.r-project.org/zmmbDslTB1uN — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release, green on the v0.4.1 tag (54812ec)
+* r-hub (beachy-asiaticmouflon, run 35951885492, on dev at 5cff2de; built package identical to the `v0.4.1` tag, since the only differences are .Rbuildignore'd):
   - `ubuntu-clang`: OK
   - `ubuntu-gcc12`: OK
   - `nosuggests`: OK
@@ -27,9 +28,11 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 `0 errors | 0 warnings | 1 note`
 
-The remaining NOTE is the expected new-submission note (and a "possibly misspelled
-words" entry flagging the author surnames *Manski* and *Imbens* and domain terms such as
-*misclassification*, all of which are spelled correctly):
+The remaining NOTE is the expected new-submission note. On win-builder it also lists
+"possibly misspelled words" in DESCRIPTION: *BCa*, *Imbens*, *Manski*, *NDE*, *NIE* and
+*Tofighi*. All are spelled correctly: *Imbens*, *Manski* and *Tofighi* are author surnames,
+*BCa* is the bias-corrected and accelerated bootstrap, and *NDE*/*NIE* are the natural
+direct/indirect effects, spelled out in the Description.
 
 ```
 * checking CRAN incoming feasibility ... NOTE

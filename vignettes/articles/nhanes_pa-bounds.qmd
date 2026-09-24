@@ -32,7 +32,7 @@ indirect (NIE) effects are not point-identified --- but `medrobust` returns a **
 identified set** over a transparent sensitivity region, plus an Imbens--Manski confidence
 interval.
 
-This is the exposure-side mirror of `vignette("gesthtn-bounds")`, which instead
+This is the exposure-side mirror of the [gesthtn article](gesthtn-bounds.html), which instead
 misclassifies the *mediator*. The only structural change to the estimator call is
 `misclassified_variable = "exposure"`.
 
