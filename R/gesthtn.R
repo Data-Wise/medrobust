@@ -50,7 +50,8 @@
 #' table(gesthtn$M_star, gesthtn$Y)
 #'
 #' # Partial-identification bounds for the (differentially misclassified) mediator;
-#' # see ?bound_ne and vignette("gesthtn-bounds", package = "medrobust").
+#' # see ?bound_ne and the article
+#' # https://data-wise.github.io/medrobust/articles/gesthtn-bounds.html
 #' region <- sensitivity_region(
 #'   sn0_range = c(0.50, 0.70), sp0_range = c(0.90, 0.99),
 #'   psi_sn_range = c(1.0, 3.0), psi_sp_range = c(1.0, 1.0)
