@@ -10,15 +10,12 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 ## Test environments
 
-> **Re-run on the `v0.4.1` tag before submitting:** the win-builder and r-hub results below were
-> run on 633914e (0.4.1 before the #39 `check_compatibility()` fix, #43). GitHub Actions on the
-> tagged commit 54812ec is green on macOS, Ubuntu and Windows.
-
-* Local: macOS (aarch64), R 4.6.0 — `R CMD check --as-cran --run-donttest` on the 0.4.1 tarball (633914e, before #39): 0 errors | 0 warnings | 1 note (new submission)
-* win-builder R-release (R 4.6.1, 0.4.1): https://win-builder.r-project.org/u1xLtKTASffB — **Status: 1 NOTE (new submission + the DESCRIPTION spellings above)**
-* win-builder R-oldrelease (R 4.5.3): token d0MT9b7E7wFP — **Status: 1 NOTE (new submission)**
+* Local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --run-donttest` on the tarball built from the `v0.4.1` tag (54812ec): 0 errors | 0 warnings | 1 note (new submission)
+* win-builder R-devel (2026-09-21 r90579): https://win-builder.r-project.org/3l38uWfnQlRB — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-release (R 4.6.1): https://win-builder.r-project.org/2CEkI89WdS64 — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-oldrelease (R 4.5.3): https://win-builder.r-project.org/zmmbDslTB1uN — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
 * GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release, green on the v0.4.1 tag (54812ec)
-* r-hub (arthralgic-lark, run 35927616393, on dev at 633914e — 0.4.1 before the #39 fix; re-run on `v0.4.1`):
+* r-hub (beachy-asiaticmouflon, run 35951885492, on dev at 5cff2de; built package identical to the `v0.4.1` tag, since the only differences are .Rbuildignore'd):
   - `ubuntu-clang`: OK
   - `ubuntu-gcc12`: OK
   - `nosuggests`: OK
@@ -28,9 +25,11 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 `0 errors | 0 warnings | 1 note`
 
-The remaining NOTE is the expected new-submission note (and a "possibly misspelled
-words" entry flagging the author surnames *Manski* and *Imbens* and domain terms such as
-*misclassification*, all of which are spelled correctly):
+The remaining NOTE is the expected new-submission note. On win-builder it also lists
+"possibly misspelled words" in DESCRIPTION: *BCa*, *Imbens*, *Manski*, *NDE*, *NIE* and
+*Tofighi*. All are spelled correctly: *Imbens*, *Manski* and *Tofighi* are author surnames,
+*BCa* is the bias-corrected and accelerated bootstrap, and *NDE*/*NIE* are the natural
+direct/indirect effects, spelled out in the Description.
 
 ```
 * checking CRAN incoming feasibility ... NOTE
