@@ -49,9 +49,10 @@
 #' }
 #'
 #' @source
-#' Synthetic data generated using methods described in the package vignette
-#' "Synthetic HEALS Data: Ground Truth with Differential Measurement Error".
-#' See \code{vignette("heals-synthetic-data", package = "medrobust")} for full details.
+#' Synthetic data generated using methods described in the article
+#' "Synthetic HEALS Data: Ground Truth with Differential Measurement Error"
+#' on the package website:
+#' \url{https://data-wise.github.io/medrobust/articles/heals-synthetic-data.html}.
 #'
 #' @examples
 #' # Load the data
