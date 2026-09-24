@@ -4,16 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 📦 STATUS — v0.4.1 released (2026-09-23), CRAN-submit-ready
+## 📦 STATUS — v0.4.2 released (2026-09-24), CRAN-submit-ready
 
 > ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
 
-`dev`/`main` synced at **0.4.1** (release PRs #41 + #43; tag `v0.4.1` = `54812ec`). Strict
-incoming check (`R CMD check --as-cran --run-donttest` on the tarball) clean: **0E/0W/1N**
-(new-submission only). 0.4.1 = bug fixes (#34, #38, #39) + doc corrections + S3-leftover cleanup;
-no new API. win-builder (devel/release/oldrelease) + r-hub re-run on the `v0.4.1` tag
-2026-09-24: new-submission NOTE only (`cran-comments.md`). `dev` is ahead of `main` by PR #44
-(help-page links), so cut **0.4.2** and re-check before `devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
+`dev`/`main` synced at **0.4.2** (release PR #45, merge `9d88d07` = tag `v0.4.2`). 0.4.2 is docs-only
+(help pages link website articles instead of `vignette()`, #44) on top of 0.4.1 (bug fixes #34, #38, #39).
+Tarball `--as-cran --run-donttest`: 1 NOTE (new submission). Before submitting: re-run win-builder + r-hub
+on `v0.4.2` (`cran-comments.md` results are still v0.4.1), then `devtools::submit_cran()` from `main`.
+Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
 ---
@@ -251,4 +250,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-24 (pkgdown-only article-link rule, 0.4.2 before submit; tag re-checks recorded; v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
+**Last Updated**: 2026-09-24 (v0.4.2 release; pkgdown-only article-link rule, 0.4.2 before submit; tag re-checks recorded; v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
