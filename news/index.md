@@ -1,5 +1,14 @@
 # Changelog
 
+## medrobust (development version)
+
+### Documentation
+
+- The help pages for `gesthtn`, `nhanes_pa` and `heals_data` no longer
+  call [`vignette()`](https://rdrr.io/r/utils/vignette.html): the
+  articles are published only on the package website, so those calls
+  failed in an installed package. They now link to the website articles.
+
 ## medrobust 0.4.1 (2026-09-23)
 
 ### Bug fixes

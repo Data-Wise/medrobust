@@ -56,10 +56,10 @@ A data frame with 450 observations and 9 variables:
 
 ## Source
 
-Synthetic data generated using methods described in the package vignette
-"Synthetic HEALS Data: Ground Truth with Differential Measurement
-Error". See `vignette("heals-synthetic-data", package = "medrobust")`
-for full details.
+Synthetic data generated using methods described in the article
+"Synthetic HEALS Data: Ground Truth with Differential Measurement Error"
+on the package website:
+<https://data-wise.github.io/medrobust/articles/heals-synthetic-data.html>.
 
 ## Details
 
