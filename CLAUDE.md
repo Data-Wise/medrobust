@@ -12,7 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 incoming check (`R CMD check --as-cran --run-donttest` on the tarball) clean: **0E/0W/1N**
 (new-submission only). 0.4.1 = bug fixes (#34, #38, #39) + doc corrections + S3-leftover cleanup;
 no new API. win-builder (devel/release/oldrelease) + r-hub re-run on the `v0.4.1` tag
-2026-09-24: new-submission NOTE only (`cran-comments.md`). Next: `devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
+2026-09-24: new-submission NOTE only (`cran-comments.md`). `dev` is ahead of `main` by PR #44
+(help-page links), so cut **0.4.2** and re-check before `devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
 ---
@@ -209,6 +210,7 @@ All defined in `R/s7-classes.R` with `package = "medrobust"`, so their S3 class 
 - **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
 - **Quarto caches**: `.quarto/` is gitignored (local build cache, untracked 2026-09-23). `vignettes/articles/_freeze/` is **tracked on purpose** — `_quarto.yml` sets `freeze: auto`, so the committed results are reused instead of re-executing articles. Never gitignore `_freeze/`.
 - **Agent-instruction files**: `CLAUDE.md` (source of truth) and `AGENTS.md` (a short pointer to `CLAUDE.md` for Codex — keep it a pointer, never copy content into it) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and the *pre-build* step in `.github/workflows/pkgdown.yaml`, which deletes **every root `.md` except README/NEWS/LICENSE/cran-comments** from the CI checkout (pkgdown publishes every root `.md`; no config exclude exists). New root planning docs are therefore kept off the site automatically, but still need an `.Rbuildignore` pattern.
+- **Articles are pkgdown-only** (`^vignettes$` in `.Rbuildignore`, no `VignetteBuilder`): never write `vignette("...")` in roxygen, examples, README or articles — it fails in an installed package. Link the site article (`https://data-wise.github.io/medrobust/articles/<name>.html`, `\url{}` in Rd) instead. Fixed twice: README (#37), help pages (#44).
 - **Site deploy mirrors the build**: `clean: true` on the gh-pages deploy removes orphaned pages (deleted help topics, renamed articles). It depends on `development: mode: release` in `_pkgdown.yml`; switching back to `auto` would make dev versions build into `docs/dev/` only, and `clean: true` would then wipe the released site at the root.
 
 ---
@@ -249,4 +251,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-24 (tag re-checks recorded; v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
+**Last Updated**: 2026-09-24 (pkgdown-only article-link rule, 0.4.2 before submit; tag re-checks recorded; v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
