@@ -10,14 +10,15 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 ## Test environments
 
-> **Re-run before submitting 0.4.1:** the win-builder and r-hub results below were
-> produced for 0.4.0. The local `--as-cran` check and GitHub Actions results are current for 0.4.1.
+> **Re-run on the `v0.4.1` tag before submitting:** the win-builder and r-hub results below were
+> run on 633914e (0.4.1 before the #39 `check_compatibility()` fix, #43). GitHub Actions on the
+> tagged commit 54812ec is green on macOS, Ubuntu and Windows.
 
-* Local: macOS 15 (aarch64-apple-darwin25.4.0), R 4.6.0 — `R CMD check --as-cran`
-* win-builder R-release (R 4.6.0): token 0pY8ajL2oIoD — **Status: 1 NOTE (new submission)**
+* Local: macOS (aarch64), R 4.6.0 — `R CMD check --as-cran --run-donttest` on the 0.4.1 tarball (633914e, before #39): 0 errors | 0 warnings | 1 note (new submission)
+* win-builder R-release (R 4.6.1, 0.4.1): https://win-builder.r-project.org/u1xLtKTASffB — **Status: 1 NOTE (new submission + the DESCRIPTION spellings above)**
 * win-builder R-oldrelease (R 4.5.3): token d0MT9b7E7wFP — **Status: 1 NOTE (new submission)**
-* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release + oldrel-1
-* r-hub (twill-brownbutterfly, run 27854775371, on dev/v0.4.0):
+* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release, green on the v0.4.1 tag (54812ec)
+* r-hub (arthralgic-lark, run 35927616393, on dev at 633914e — 0.4.1 before the #39 fix; re-run on `v0.4.1`):
   - `ubuntu-clang`: OK
   - `ubuntu-gcc12`: OK
   - `nosuggests`: OK

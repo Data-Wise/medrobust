@@ -4,15 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 📦 STATUS — v0.4.0 released, CRAN-submit-ready (2026-06-21)
+## 📦 STATUS — v0.4.1 released (2026-09-23), CRAN-submit-ready
 
 > ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
 
-`dev`/`main` synced at **0.4.0** (release PR #21, `a3aff0e`). Strict incoming check
-(`R CMD check --run-donttest --as-cran`) clean: **0E/0W/1N** (new-submission only).
-`nhanes_pa` exposure dataset + vignette shipped (v0.4.0). NEXT (maintainer-manual):
-`devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**. Authoritative
-state lives in `.STATUS`.
+`dev`/`main` synced at **0.4.1** (release PRs #41 + #43; tag `v0.4.1` = `54812ec`). Strict
+incoming check (`R CMD check --as-cran --run-donttest` on the tarball) clean: **0E/0W/1N**
+(new-submission only). 0.4.1 = bug fixes (#34, #38, #39) + doc corrections + S3-leftover cleanup;
+no new API. Before submitting: re-run win-builder + r-hub on `v0.4.1` (the results in
+`cran-comments.md` predate the #39 fix), then `devtools::submit_cran()` from `main`. Acceptance unblocks **medsim**.
+Authoritative state lives in `.STATUS`.
 
 ---
 
@@ -248,4 +249,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-23 (real S7 class/function tables, CRAN hold note, Quarto + agent-file conventions; see `.STATUS`)
+**Last Updated**: 2026-09-23 (v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
