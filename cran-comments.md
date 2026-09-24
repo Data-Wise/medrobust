@@ -1,6 +1,6 @@
 ## Submission summary
 
-This is a new submission of **medrobust** (version 0.4.1). The package has not
+This is a new submission of **medrobust** (version 0.4.2). The package has not
 previously been on CRAN.
 
 medrobust provides partial-identification sensitivity analysis for causal mediation
@@ -9,6 +9,9 @@ effects (Natural Direct and Indirect Effects) when the exposure or mediator is s
 data or gold-standard measurements. The package has no dependencies outside CRAN.
 
 ## Test environments
+
+> **Re-run on the `v0.4.2` tag before submitting.** The results below are for `v0.4.1`; 0.4.2
+> changes only help-page text (links to website articles instead of `vignette()`, #44).
 
 * Local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --run-donttest` on the tarball built from the `v0.4.1` tag (54812ec): 0 errors | 0 warnings | 1 note (new submission)
 * win-builder R-devel (2026-09-21 r90579): https://win-builder.r-project.org/3l38uWfnQlRB — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
