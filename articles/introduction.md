@@ -711,7 +711,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 55.02 seconds
+    Time elapsed: 64.89 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -1729,7 +1729,7 @@ sessionInfo()
     [8] base
 
     other attached packages:
-    [1] medrobust_0.4.1
+    [1] medrobust_0.4.2
 
     loaded via a namespace (and not attached):
      [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0

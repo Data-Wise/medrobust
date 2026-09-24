@@ -1,6 +1,6 @@
 # Changelog
 
-## medrobust (development version)
+## medrobust 0.4.2 (2026-09-24)
 
 ### Documentation
 

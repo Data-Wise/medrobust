@@ -14,14 +14,14 @@ Source:
 [`inst/CITATION`](https://github.com/data-wise/medrobust/blob/dev/inst/CITATION)
 
 Tofighi D (2025). *medrobust: Robust Causal Mediation Analysis Under
-Differential Misclassification*. R package version 0.4.1,
+Differential Misclassification*. R package version 0.4.2,
 <https://github.com/data-wise/medrobust>.
 
     @Manual{,
       title = {medrobust: Robust Causal Mediation Analysis Under Differential Misclassification},
       author = {Davood Tofighi},
       year = {2025},
-      note = {R package version 0.4.1},
+      note = {R package version 0.4.2},
       url = {https://github.com/data-wise/medrobust},
     }
 
