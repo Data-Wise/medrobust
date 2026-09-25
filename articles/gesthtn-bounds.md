@@ -93,15 +93,15 @@ b@analytic_ci$NDE[c("ci_lower", "ci_upper")]
 ```
 
     ci_lower ci_upper
-    0.885098 1.470448 
+    0.860386 1.521597 
 
 ``` r
 
 b@analytic_ci$NIE[c("ci_lower", "ci_upper")]
 ```
 
-    ci_lower ci_upper
-    0.986576 1.368272 
+     ci_lower  ci_upper
+    0.9862162 1.3799110 
 
 ## Reading the result
 
