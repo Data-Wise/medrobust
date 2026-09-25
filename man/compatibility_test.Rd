@@ -31,7 +31,7 @@ they were not requested or the test exited before any stratum was checked}
 \item{reason}{Character describing reason for incompatibility (if any)}
 }
 \value{
-An S7 object of class `compatibility_test` holding the outcome of the
+An S7 object of class \code{compatibility_test} holding the outcome of the
   data-compatibility (falsification) test, including the satisfied and
   violated testable constraints.
 }

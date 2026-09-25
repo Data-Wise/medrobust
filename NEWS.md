@@ -1,3 +1,34 @@
+# medrobust (development version)
+
+## Bug fixes
+
+* Bootstrap confidence intervals from `bound_ne(bootstrap = TRUE)` had zero
+  width. The Latin hypercube search called `set.seed(42)` on the global
+  random-number stream, so every bootstrap replicate drew the same resample.
+  The search still uses a fixed design, but now restores the caller's RNG state,
+  so `bound_ne()` no longer resets the random stream in your session.
+* `compute_bound_se()`, `bootstrap_width_summary()` and
+  `plot_bootstrap_distribution()` failed on the bootstrap results stored by
+  `bound_ne()` (an S7 object). They now accept it, as well as the list from
+  `compute_bootstrap_ci()`.
+* `extract_falsified_region()` returned wrong sets under the default Latin
+  hypercube search: it compared the compatible sets against a rebuilt regular
+  grid they never lay on. `bound_ne()` now records every evaluated parameter set
+  with its verdict (new `evaluated_sets` property), and
+  `extract_falsified_region()` returns the ones the data falsified.
+* With `grid_method = "auto"` on the mediator path, a region whose 16 corners
+  were all compatible was reported as infeasible (`NA` bounds). It now falls
+  back to the regular grid, as the exposure path already did.
+* `test_multiple_hypotheses()` failed on an unnamed `psi_list`; unnamed entries
+  are now labeled `H1`, `H2`, ....
+
+## Documentation
+
+* Help pages written with Markdown syntax (backticks, `[fn()]` links, `*emphasis*`)
+  showed it literally, because roxygen Markdown is off in this package. They now
+  use Rd markup. The `bound_ne()` references no longer contain the placeholder
+  "[Author] (2025)".
+
 # medrobust 0.4.2 (2026-09-24)
 
 ## Documentation

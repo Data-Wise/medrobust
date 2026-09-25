@@ -186,10 +186,10 @@ bound_ci_exposure <- function(bounds, data, exposure, mediator, outcome,
 #' Confidence intervals for partial-identification bounds (Imbens-Manski)
 #'
 #' Computes a confidence interval for the partial-identification set returned by
-#' [bound_ne()]. The raw estimated bound \eqn{[\hat L, \hat U]} is consistent but
-#' is *not* a confidence set: when the identified set is narrow relative to the
+#' \code{\link{bound_ne}()}. The raw estimated bound \eqn{[\hat L, \hat U]} is consistent but
+#' is \emph{not} a confidence set: when the identified set is narrow relative to the
 #' sampling uncertainty of its endpoints, it under-covers the true effect at small
-#' samples. `bound_ci()` widens the endpoints by their standard errors using the
+#' samples. \code{bound_ci()} widens the endpoints by their standard errors using the
 #' Imbens & Manski (2004) construction, restoring approximately nominal coverage of
 #' the true effect.
 #'
@@ -198,22 +198,22 @@ bound_ci_exposure <- function(bounds, data, exposure, mediator, outcome,
 #' resample, with no grid search), which is far cheaper than a full bootstrap of the
 #' whole grid.
 #'
-#' @param bounds A fitted `medrobust_bounds` object from [bound_ne()].
-#' @param data The data frame passed to [bound_ne()].
-#' @param exposure,mediator,outcome,confounders Column names, as in [bound_ne()].
-#' @param misclassified_variable Either `"exposure"` or `"mediator"`; selects the
+#' @param bounds A fitted \code{medrobust_bounds} object from \code{\link{bound_ne}()}.
+#' @param data The data frame passed to \code{\link{bound_ne}()}.
+#' @param exposure,mediator,outcome,confounders Column names, as in \code{\link{bound_ne}()}.
+#' @param misclassified_variable Either \code{"exposure"} or \code{"mediator"}; selects the
 #'   recovery used to evaluate the effect at a single sensitivity parameter.
 #' @param n_boot Number of resamples for the endpoint standard errors (default 200).
 #' @param level Confidence level (default 0.95).
 #' @param seed Optional integer seed for reproducibility.
 #'
-#' @return A named list with elements `NIE` and `NDE`, each a numeric vector with
-#'   `lower`, `upper` (the point bounds), `se_lower`, `se_upper` (endpoint SEs), and
-#'   `ci_lower`, `ci_upper` (the Imbens-Manski confidence interval).
+#' @return A named list with elements \code{NIE} and \code{NDE}, each a numeric vector with
+#'   \code{lower}, \code{upper} (the point bounds), \code{se_lower}, \code{se_upper} (endpoint SEs), and
+#'   \code{ci_lower}, \code{ci_upper} (the Imbens-Manski confidence interval).
 #'
 #' @references Imbens, G. W. and Manski, C. F. (2004). Confidence Intervals for
-#'   Partially Identified Parameters. *Econometrica*, 72(6), 1845-1857.
-#' @seealso [bound_ne()]
+#'   Partially Identified Parameters. \emph{Econometrica}, 72(6), 1845-1857.
+#' @seealso \code{\link{bound_ne}()}
 #' @export
 bound_ci <- function(bounds, data, exposure, mediator, outcome, confounders,
                      misclassified_variable = c("exposure", "mediator"),

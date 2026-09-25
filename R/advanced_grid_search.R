@@ -38,8 +38,20 @@ latin_hypercube_search <- function(sensitivity_region, evaluate_func,
     cat("Samples:", n_samples, "\n")
   }
 
-  # Generate LHS design in [0,1]^4 (vectorized)
-  set.seed(42)  # Reproducibility
+  # Generate LHS design in [0,1]^4 (vectorized). The design is fixed (seed 42)
+  # so bounds are reproducible, but the caller's RNG state is restored on exit:
+  # resetting the global stream made every bootstrap replicate draw the same
+  # resample.
+  had_seed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+  if (had_seed) old_seed <- get(".Random.seed", envir = globalenv(), inherits = FALSE)
+  on.exit({
+    if (had_seed) {
+      assign(".Random.seed", old_seed, envir = globalenv())
+    } else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+      rm(".Random.seed", envir = globalenv())
+    }
+  }, add = TRUE)
+  set.seed(42)
 
   # Divide [0,1] into n_samples intervals
   intervals <- seq(0, 1, length.out = n_samples + 1)
