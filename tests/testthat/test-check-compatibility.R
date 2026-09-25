@@ -190,3 +190,24 @@ test_that("implied_probabilities and stratum_details still reject non-lists", {
   expect_error(make(implied_probabilities = 1), "must be a list or NULL")
   expect_error(make(stratum_details = "x"), "must be a list or NULL")
 })
+
+# test_multiple_hypotheses() used names(psi_list)[i] as the hypothesis label,
+# which is NULL for an unnamed list, so data.frame() failed on 0 vs 1 rows.
+test_that("test_multiple_hypotheses labels an unnamed psi_list H1, H2, ...", {
+  out <- test_multiple_hypotheses(
+    exposure_data(), "A_star", "M", "Y", confounders = NULL,
+    psi_list = list(psi_nd, list(sn0 = 0.4, sp0 = 0.5, psi_sn = 1, psi_sp = 1)),
+    misclassified_variable = "exposure"
+  )
+  expect_identical(out$hypothesis, c("H1", "H2"))
+  expect_identical(out$compatible, c(TRUE, FALSE))
+})
+
+test_that("test_multiple_hypotheses fills in blank names in a partly named list", {
+  out <- test_multiple_hypotheses(
+    exposure_data(), "A_star", "M", "Y", confounders = NULL,
+    psi_list = list(nd = psi_nd, list(sn0 = 0.4, sp0 = 0.5, psi_sn = 1, psi_sp = 1)),
+    misclassified_variable = "exposure"
+  )
+  expect_identical(out$hypothesis, c("nd", "H2"))
+})

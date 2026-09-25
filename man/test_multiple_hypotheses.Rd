@@ -25,7 +25,9 @@ test_multiple_hypotheses(
 
 \item{confounders}{Character vector}
 
-\item{psi_list}{List of parameter sets to test}
+\item{psi_list}{List of parameter sets to test, each a list with \code{sn0},
+\code{sp0}, \code{psi_sn} and \code{psi_sp}. Names label the rows of the result; unnamed
+entries are labeled \code{H1}, \code{H2}, ... by position.}
 
 \item{misclassified_variable}{Character string}
 }

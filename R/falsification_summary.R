@@ -453,11 +453,14 @@ extract_bounds <- function(bounds_object) {
 #' Extract Falsified Region
 #'
 #' @description
-#' Extract the subset of the sensitivity region that is empirically falsified.
+#' Extract the parameter sets that the grid search evaluated and the data
+#' falsified. Works for every \code{grid_method}, because \code{\link{bound_ne}}
+#' records each evaluated set with its verdict.
 #'
 #' @param bounds_object An object of class \code{medrobust_bounds}
 #'
-#' @return A data frame containing parameter sets that were falsified
+#' @return A data frame with columns \code{sn0}, \code{sp0}, \code{psi_sn} and
+#'   \code{psi_sp}, one row per falsified parameter set.
 #' @export
 extract_falsified_region <- function(bounds_object) {
 
@@ -465,21 +468,16 @@ extract_falsified_region <- function(bounds_object) {
     stop("bounds_object must be of class 'medrobust_bounds'")
   }
 
-  # Get all evaluated parameter sets
-  # This requires recreating the full grid
-  param_grid <- create_parameter_grid(
-    bounds_object@sensitivity_region,
-    n_grid = round(bounds_object@n_evaluated^(1/4))  # Approximate
-  )
+  sets <- bounds_object@evaluated_sets
+  if (is.null(sets)) {
+    stop("bounds_object has no record of the evaluated parameter sets; ",
+         "refit it with bound_ne() from this version of medrobust.")
+  }
 
-  # Get compatible sets
-  compat <- bounds_object@compatible_sets[, c("sn0", "sp0", "psi_sn", "psi_sp")]
-
-  # Find falsified sets (those in grid but not in compatible)
-  falsified <- dplyr::anti_join(param_grid, compat,
-                        by = c("sn0", "sp0", "psi_sn", "psi_sp"))
-
-  return(falsified)
+  falsified <- sets[!sets$compatible, c("sn0", "sp0", "psi_sn", "psi_sp"),
+                    drop = FALSE]
+  rownames(falsified) <- NULL
+  falsified
 }
 
 
@@ -493,7 +491,9 @@ extract_falsified_region <- function(bounds_object) {
 #' @param mediator Character string
 #' @param outcome Character string
 #' @param confounders Character vector
-#' @param psi_list List of parameter sets to test
+#' @param psi_list List of parameter sets to test, each a list with \code{sn0},
+#'   \code{sp0}, \code{psi_sn} and \code{psi_sp}. Names label the rows of the result; unnamed
+#'   entries are labeled \code{H1}, \code{H2}, ... by position.
 #' @param misclassified_variable Character string
 #'
 #' @return Data frame with test results for each hypothesis
@@ -523,6 +523,11 @@ test_multiple_hypotheses <- function(data,
                                      psi_list,
                                      misclassified_variable) {
 
+  labels <- names(psi_list)
+  if (is.null(labels)) labels <- rep("", length(psi_list))
+  unnamed <- is.na(labels) | labels == ""
+  labels[unnamed] <- paste0("H", seq_along(psi_list))[unnamed]
+
   results <- lapply(seq_along(psi_list), function(i) {
     psi <- psi_list[[i]]
 
@@ -538,7 +543,7 @@ test_multiple_hypotheses <- function(data,
     )
 
     data.frame(
-      hypothesis = names(psi_list)[i],
+      hypothesis = labels[i],
       sn0 = psi$sn0,
       sp0 = psi$sp0,
       psi_sn = psi$psi_sn,
