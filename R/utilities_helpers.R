@@ -745,10 +745,14 @@ convert_effect_scale <- function(effect,
 
 # Record every parameter set an evaluator sees, with its verdict (a NULL result
 # means the set was falsified), so extract_falsified_region() can report the
-# sets that were actually evaluated, whatever the search method.
+# sets that were actually evaluated, whatever the search method. The recorder is
+# also the source of the compatible results and of n_evaluated: the searches
+# evaluate points they do not return (the 16 probe corners of auto and binary),
+# and their own counts are not the number of evaluations.
 .recording_evaluator <- function(evaluate_func) {
   log <- new.env(parent = emptyenv())
   log$rows <- list()
+  log$results <- list()
   list(
     evaluate = function(i, param_row) {
       res <- evaluate_func(i, param_row)
@@ -756,9 +760,11 @@ convert_effect_scale <- function(effect,
         unlist(param_row[c("sn0", "sp0", "psi_sn", "psi_sp")]),
         compatible = !is.null(res)
       )
+      if (!is.null(res)) log$results[[length(log$results) + 1L]] <- res
       res
     },
-    sets = function() .as_verdict_frame(log$rows)
+    sets = function() .as_verdict_frame(log$rows),
+    results = function() log$results
   )
 }
 
