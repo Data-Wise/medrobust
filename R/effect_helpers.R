@@ -157,6 +157,11 @@ classify_effect_direction <- function(lower, upper, effect_scale = "OR") {
 #' @param ci Optional: confidence interval (length 2 vector)
 #'
 #' @return Character string
+#' @examples
+#' format_effect(1.48)
+#' format_effect(1.48, ci = c(1.21, 1.81))   # point estimate with a CI
+#' format_effect(c(1.12, 1.37))              # bounds [L, U]
+#' format_effect(0.031, effect_scale = "RD", digits = 3)
 #' @export
 format_effect <- function(estimate,
                          effect_scale = "OR",

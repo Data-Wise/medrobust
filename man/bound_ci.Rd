@@ -53,6 +53,33 @@ minimizing/maximizing sensitivity parameter on resampled data (one evaluation pe
 resample, with no grid search), which is far cheaper than a full bootstrap of the
 whole grid.
 }
+\examples{
+\donttest{
+sim <- simulate_dm_data(
+  n = 2000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
+bounds <- bound_ne(
+  data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+  confounders = "C1", misclassified_variable = "mediator",
+  sensitivity_region = list(
+    sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+    psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)
+  ),
+  n_grid = 10, verbose = FALSE
+)
+
+# Widen the raw bounds [L, U] into Imbens-Manski confidence intervals
+ci <- bound_ci(
+  bounds, data = sim@observed, exposure = "A", mediator = "M_star",
+  outcome = "Y", confounders = "C1", misclassified_variable = "mediator",
+  n_boot = 50, seed = 1
+)
+ci$NDE
+}
+}
 \references{
 Imbens, G. W. and Manski, C. F. (2004). Confidence Intervals for
   Partially Identified Parameters. \emph{Econometrica}, 72(6), 1845-1857.

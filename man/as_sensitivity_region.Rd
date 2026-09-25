@@ -15,3 +15,9 @@ sensitivity_region S7 object
 \description{
 Create sensitivity_region object from list
 }
+\examples{
+as_sensitivity_region(list(
+  sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+  psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+))
+}

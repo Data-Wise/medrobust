@@ -28,6 +28,9 @@
   showed it literally, because roxygen Markdown is off in this package. They now
   use Rd markup. The `bound_ne()` references no longer contain the placeholder
   "[Author] (2025)".
+* Examples added to the help pages of `bound_ci()`, `sensitivity_region()`,
+  `as_sensitivity_region()`, `format_effect()`, `extract_bounds()`,
+  `test_multiple_hypotheses()` and `new_falsification_summary()`.
 
 # medrobust 0.4.2 (2026-09-24)
 
