@@ -17,65 +17,22 @@ Authoritative state lives in `.STATUS`.
 
 ---
 
-## ✅ RESOLVED — two correctness bugs fixed 2026-06-11 (branch `fix/true-effects-estimand`)
+## Verified invariants — do not regress
 
-Smoke-testing the differential-misclassification simulations surfaced **two real bugs**, now
-**both fixed and verified**. The manuscript §4.2 derivation was verified exact (population
-recovery to 5e-17); the faults were in the implementation.
+The identification math is verified exact against oracles in `dev-diagnostics/` (population
+recovery to 5e-17; target NDE_OR 1.48025 / NIE_OR 1.19940). Keep these properties when editing:
 
-1. **`bound_ne_mediator.R` mediator SOLVE** — the mis-specified 3×3 system (whose `P01` row
-   used the Y=1 parameterization `(1-pi)*g0` instead of the Y=0 form `(1-pi)*(1-g0)`) was
-   replaced with **two per-Y-stratum 2×2 systems** (each solvable iff `Sn_y+Sp_y≠1`). Point
-   test moved 1.601→1.495 (→1.480 as n→∞; residual is finite-sample, confirmed by an n-scaling
-   sweep). `bound_ne_exposure.R` was audited and is **correct** (closed-form 2×2 inverse,
-   verified to 1e-16) — never affected.
-2. **`compute_true_effects()` (simulate_dm_data.R)** — replaced plug-in-mean-M/mean-C with
-   **Monte-Carlo g-computation over the empirical confounder distribution**. `@true_effects`
-   now returns NDE_OR=1.48025 / NIE_OR=1.19940 = oracle (was 1.500).
-3. **`odds_to_prob()` (utilities_helpers.R)** — now maps infinite odds → probability 1, so
-   perfect classification (`sn=1`/`sp=1`) no longer yields `NaN`.
+- **Mediator solve** (`R/bound_ne_mediator.R`): two per-Y-stratum 2×2 systems, each solvable iff
+  `Sn_y + Sp_y != 1`. The Y=0 row uses `(1-pi)*(1-g0)`, not the Y=1 form `(1-pi)*g0`.
+- **Exposure solve** (`R/bound_ne_exposure.R`) returns the *conditional* `P(A=a | M,Y,C)`.
+  `evaluate_param_set()` must multiply it by the observed `P(M=m, Y=y | C)` to form the joint
+  before `compute_effects_from_joint_probs()`; skipping that weight drives the NIE to the null
+  while the NDE still looks right.
+- **`compute_effects_from_params()`** and **`compute_true_effects()`** use Monte-Carlo
+  g-computation over the empirical confounder distribution; both reproduce the oracle.
+- **`odds_to_prob()`** maps infinite odds to probability 1, so `sn = 1` / `sp = 1` is valid.
 
-**`compute_effects_from_params()` (utilities_helpers.R) is CORRECT — was NOT changed**
-(verified: fed true params it returns the oracle).
-
-**Verification status (all green):**
-- `devtools::test()`: 157 pass / 0 fail / 1 skip (incl. new `test-recovery.R`,
-  `test-true-effects.R`, `test-bound-contains-truth.R`).
-- `devtools::check()` (`--as-cran`): 0 errors / 0 warnings / 2 benign NOTEs (new submission,
-  dev-version string).
-- New vignette `vignettes/identification-math.qmd` documents the derivation; registered in
-  `_pkgdown.yml`.
-
-**Authoritative docs:** the original fix-planning notes (`PLAN-fix-bound_ne-solve`,
-`ISSUE-true-effects-estimand`, `START-HERE-fix-true-effects`, etc.) were **removed from
-the repo on 2026-06-21** — they were tracked in the package root, which pkgdown renders to
-public HTML; see git history for their content. Reference oracles live in
-`dev-diagnostics/`. Downstream: regenerate manuscript M2a/M2b illustrative numbers and
-scale sims (`n_grid≥50`) after merge.
-
-**Remaining:** PR `fix/true-effects-estimand` → `main`. (Merged via PR #2, 2026-06-11.)
-
----
-
-## ✅ RESOLVED — exposure NIE bound fixed (2026-06-11, branch `fix/exposure-nie`)
-
-The **exposure (A\*) path's NIE bound** missed the truth (true 1.199 vs [0.980, 0.991]) while
-its NDE bound was correct. **Root cause:** `bound_ne_exposure.R` recovers the **conditional**
-`P(A=a | M,Y,C)`, but `compute_effects_from_joint_probs()` consumed those as the **joint**
-`P(A,M,Y | C)`, dropping the observed `P(M,Y | C)` weight → the M,Y marginal became effectively
-uniform → `P(M|A=1)` and `P(M|A=0)` collapsed toward the same shape → NIE driven to the null
-(NDE survives because it fixes the mediator distribution at M(0) in both terms).
-
-**Fix:** multiply the recovered conditional by the observed `P(M=m, Y=y | C)` (M and Y are not
-misclassified in the exposure scenario) to form the joint, in `evaluate_param_set()`
-(`R/bound_ne_exposure.R`, shared by the serial and parallel paths). The exposure *solve* was
-already correct; only the NIE *assembly* was wrong. `compute_effects_from_joint_probs()` is
-otherwise correct and was not changed structurally.
-
-**Verified:** point test `dev-diagnostics/bne_point_test_exposure.R` recovers NDE 1.480 / NIE
-1.199 within 0.01 (was NIE ~0.99); `smoke2_popcheck_both_paths.R` exposure NIE row now TRUE;
-new tests `test-recovery-exposure.R`, `test-bound-contains-truth-exposure.R` pass; mediator path
-unaffected. Oracle: `dev-diagnostics/oracle_exposure.R`.
+Regression tests: `test-recovery*.R`, `test-true-effects.R`, `test-bound-contains-truth*.R`.
 
 ---
 
@@ -119,32 +76,34 @@ devtools::test()
 - **Minimum R version**: 4.1.0 (native pipe `|>` support)
 - **OOP Framework**: S7 (modern object system)
 - **Style**: tidyverse style guide with native pipe
-- **Namespacing**: ALWAYS use explicit `package::function()` for non-base functions
+- **Namespacing**: call non-base functions as `package::function()`
 
 ### Naming Conventions
 
 | Type | Convention | Examples |
 |------|------------|----------|
 | Functions | snake_case | `bound_ne()`, `check_compatibility()` |
-| Internal | dot prefix | `.compute_bounds()`, `.validate_input()` |
+| Internal | dot prefix for new helpers (most existing ones are unprefixed, marked `@keywords internal`) | `.imbens_manski_ci()`, `.endpoint_se_exposure()` |
 | S7 Classes | snake_case | `medrobust_bounds`, `compatibility_test` |
-| Properties | snake_case | `@lower_bound`, `@upper_bound` |
+| Properties | snake_case (effect bounds keep their `NIE_`/`NDE_` prefix) | `@NIE_lower`, `@n_compatible` |
 
 ### Code Organization
 
 ```
 R/
-├── s7-classes.R              # S7 class definitions
-├── s7-methods.R              # S7 print / summary / plot / as.data.frame / as.list methods (no legacy S3 file; see note below)
-├── bound_ne.R                # Main bounds dispatch
-├── bound_ne_exposure.R       # Exposure (A*) misclassification solve+bounds
-├── bound_ne_mediator.R       # Mediator (M*) misclassification solve+bounds  (two per-Y 2×2 systems)
-├── utilities_helpers.R       # compute_effects_from_params (g-computation; VERIFIED correct)
-├── check_compatibility.R     # Falsification tests
-├── simulate_dm_data.R        # Data generation  (compute_true_effects = g-computation)
-└── visualization.R           # Sensitivity plots
+├── s7-classes.R / s7-methods.R   # S7 classes; print/summary/plot/as.data.frame/as.list methods
+├── bound_ne.R                    # bound_ne() dispatch
+├── bound_ne_exposure.R           # exposure (A*) solve + bounds
+├── bound_ne_mediator.R           # mediator (M*) solve + bounds
+├── bound_ci.R, bootstrap.R       # Imbens–Manski and bootstrap CIs
+├── check_compatibility.R         # falsification tests
+├── falsification_summary.R, power_analysis.R
+├── utilities_helpers.R           # compute_effects_from_params(), joint-prob effects
+├── simulate_dm_data.R, simulation.R
+├── data.R, gesthtn.R, nhanes_pa.R  # dataset docs
+├── visualization.R
+└── zzz.R                         # S7::methods_register() at load
 ```
-(Filenames verified against `R/` on 2026-06-11; `s3_methods.R` removed 2026-09-23.)
 
 **S7 + base generics:** S7 objects carry the class `medrobust::<name>`, so a `NAMESPACE` `S3method(generic, <bare name>)` never dispatches. Define methods only with `method(generic, Class)` in `s7-methods.R` (registered at load by `S7::methods_register()` in `zzz.R`); document them with a standalone `@name generic.class` block on `NULL`, in Rd syntax, with no `\usage`.
 
@@ -199,17 +158,15 @@ All defined in `R/s7-classes.R` with `package = "medrobust"`, so their S3 class 
 
 ## Repository Infrastructure
 
-- **Default branch**: `main` (renamed from `claude/check-measurement-error-...` on 2026-05-09)
-- **Integration branch**: `dev` (created 2026-05-09; planning hub, no feature code)
+- **Branches**: `main` (default, PR-only) ← `dev` (integration) ← `feature/*`/`fix/*` worktrees
 - **Remote**: HTTPS via `gh auth setup-git`
-- **CI**: R-CMD-check workflow (`.github/workflows/R-CMD-check.yaml`) added 2026-05-09 via PR #1
-  - macOS + Ubuntu: full check including vignettes
-  - Windows: package check only (vignette build skipped via `runner.os == 'Windows'` conditional due to quarto issues)
-- **Branch protection on `main`**: PR required, no force-push, no deletions; no required status checks yet
+- **CI**: `.github/workflows/R-CMD-check.yaml` on macOS, Ubuntu, Windows (release R); `--as-cran` except
+  on Windows. `pkgdown.yaml` builds and deploys the site; `rhub.yaml` is manual (`workflow_dispatch`).
+- **Branch protection on `main`**: PR required, no force-push, no deletions; required check `ubuntu-latest (release)` with strict up-to-date, so a release PR may need `gh pr update-branch`
 - **Dependencies**: CRAN-only (S7, dplyr, ggplot2, stats, utils, rlang, parallel) — no `Remotes:` field needed
 - **Quarto caches**: `.quarto/` is gitignored (local build cache, untracked 2026-09-23). `vignettes/articles/_freeze/` is **tracked on purpose** — `_quarto.yml` sets `freeze: auto`, so the committed results are reused instead of re-executing articles. Never gitignore `_freeze/`.
 - **Agent-instruction files**: `CLAUDE.md` (source of truth) and `AGENTS.md` (a short pointer to `CLAUDE.md` for Codex — keep it a pointer, never copy content into it) both live at the root. Each is excluded twice: `.Rbuildignore` (keeps it out of the CRAN tarball) and the *pre-build* step in `.github/workflows/pkgdown.yaml`, which deletes **every root `.md` except README/NEWS/LICENSE/cran-comments** from the CI checkout (pkgdown publishes every root `.md`; no config exclude exists). New root planning docs are therefore kept off the site automatically, but still need an `.Rbuildignore` pattern.
-- **Articles are pkgdown-only** (`^vignettes$` in `.Rbuildignore`, no `VignetteBuilder`): never write `vignette("...")` in roxygen, examples, README or articles — it fails in an installed package. Link the site article (`https://data-wise.github.io/medrobust/articles/<name>.html`, `\url{}` in Rd) instead. Fixed twice: README (#37), help pages (#44).
+- **Articles are pkgdown-only** (`^vignettes$` in `.Rbuildignore`, no `VignetteBuilder`): never write `vignette("...")` in roxygen, examples, README or articles — it fails in an installed package. Link the site article (`https://data-wise.github.io/medrobust/articles/<name>.html`, `\url{}` in Rd) instead.
 - **Site deploy mirrors the build**: `clean: true` on the gh-pages deploy removes orphaned pages (deleted help topics, renamed articles). It depends on `development: mode: release` in `_pkgdown.yml`; switching back to `auto` would make dev versions build into `docs/dev/` only, and `clean: true` would then wipe the released site at the root.
 
 ---
@@ -220,7 +177,7 @@ medrobust is an **application package** in the mediationverse ecosystem.
 
 ### Central Planning
 
-Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
+Ecosystem coordination managed in `~/projects/r-packages/mediation-planning/`:
 - `ECOSYSTEM-COORDINATION.md` - Version matrix, release timeline
 - `MONTHLY-CHECKLIST.md` - Health checks
 
@@ -250,4 +207,4 @@ Ecosystem coordination managed in `/Users/dt/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-24 (v0.4.2 release; pkgdown-only article-link rule, 0.4.2 before submit; tag re-checks recorded; v0.4.1 release; S7 tables, CRAN hold, Quarto + agent-file + pkgdown clean conventions; see `.STATUS`)
+**Last Updated**: 2026-09-24 (history: `git log -- CLAUDE.md`; project state: `.STATUS`)
