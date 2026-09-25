@@ -1,4 +1,4 @@
-# medrobust (development version)
+# medrobust 0.4.3 (2026-09-25)
 
 ## Bug fixes
 

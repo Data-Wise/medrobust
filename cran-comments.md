@@ -1,6 +1,9 @@
+> **Re-run on the `v0.4.3` tag before submitting.** The results below are for `v0.4.2`. 0.4.3 fixes
+> bugs in the bootstrap and grid-search code (#47, #48) and adds examples (#46).
+
 ## Submission summary
 
-This is a new submission of **medrobust** (version 0.4.2). The package has not
+This is a new submission of **medrobust** (version 0.4.3). The package has not
 previously been on CRAN.
 
 medrobust provides partial-identification sensitivity analysis for causal mediation
