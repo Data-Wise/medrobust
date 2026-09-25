@@ -42,3 +42,8 @@ A falsification_summary S7 object
 Low-level constructor for falsification_summary S7 objects.
 Most users should use the falsification_summary() function which analyzes bounds.
 }
+\examples{
+new_falsification_summary(
+  overall = 0.25, n_evaluated = 100L, n_compatible = 75L, n_falsified = 25L
+)
+}

@@ -30,8 +30,8 @@
 #'
 #' ## Misclassification
 #' Validation of the 2003 revised birth certificate against the medical record
-#' (Dietz et al., 2015) found the gestational-hypertension item to have *poor*
-#' sensitivity (< 70\%) and *excellent* specificity (> 90\%); differential
+#' (Dietz et al., 2015) found the gestational-hypertension item to have \emph{poor}
+#' sensitivity (< 70\%) and \emph{excellent} specificity (> 90\%); differential
 #' (outcome-dependent) sensitivity is plausible. These motivate a sensitivity
 #' region with baseline sensitivity in roughly [0.50, 0.70], specificity in
 #' [0.90, 0.99], and a differential-sensitivity odds ratio at or above 1.

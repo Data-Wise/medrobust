@@ -56,9 +56,9 @@ giving the minimum and maximum values. If NULL, default ranges are used.}
 
 \item{confidence_level}{Numeric. Confidence level for confidence intervals. Default is 0.95.}
 
-\item{ci_method}{Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
-attaches Imbens-Manski confidence intervals (see [bound_ci()]) to the result's
-`@analytic_ci` slot.}
+\item{ci_method}{Character. \code{"none"} (default) or \code{"analytic"}. If \code{"analytic"},
+attaches Imbens-Manski confidence intervals (see \code{\link{bound_ci}()}) to the result's
+\code{@analytic_ci} slot.}
 
 \item{ci_n_boot}{Integer. Resamples for the analytic CI endpoint SEs. Default 200.}
 
@@ -115,6 +115,8 @@ An object of class \code{medrobust_bounds} containing:
   \item{falsified_proportion}{Proportion of sensitivity region falsified}
   \item{effect_scale}{Scale used for reporting}
   \item{n_evaluated}{Number of parameter sets evaluated}
+  \item{evaluated_sets}{Every evaluated parameter set with a logical
+    \code{compatible} column; see \code{\link{extract_falsified_region}}}
   \item{n_compatible}{Number of compatible parameter sets}
   \item{computation_time}{Time taken for computation}
   \item{call}{Original function call}
@@ -128,7 +130,7 @@ to differential misclassification. The method does not require validation data.
 }
 \details{
 This function implements the partial identification approach described in
-[Author] (2025). The method derives bounds on causal mediation effects by
+Tofighi, D. (2025). The method derives bounds on causal mediation effects by
 specifying a plausible range for misclassification parameters and using
 testable implications to rule out empirically inconsistent values.
 
@@ -189,7 +191,7 @@ sensitivity_plot(bounds, param = "psi_sn")
 
 }
 \references{
-[Author] (2025). Partial Identification of Causal Mediation Effects Under
+Tofighi, D. (2025). Partial Identification of Causal Mediation Effects Under
 Differential Misclassification. \emph{Biostatistics}.
 
 McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three

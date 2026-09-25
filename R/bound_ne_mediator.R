@@ -218,6 +218,7 @@ bound_ne_mediator <- function(data,
     evaluate_wrapper <- function(i, param_row) {
       evaluate_param_set(param_row)
     }
+    recorder <- .recording_evaluator(evaluate_wrapper)
 
     # Choose appropriate grid search algorithm
     if (grid_method == "lhs") {
@@ -225,7 +226,7 @@ bound_ne_mediator <- function(data,
       target_samples <- ceiling(sqrt(n_grid^4))
       results <- latin_hypercube_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_wrapper,
+        evaluate_func = recorder$evaluate,
         n_samples = target_samples,
         verbose = verbose
       )
@@ -234,7 +235,7 @@ bound_ne_mediator <- function(data,
       target_samples <- ceiling(sqrt(n_grid^4))
       results <- sobol_sequence_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_wrapper,
+        evaluate_func = recorder$evaluate,
         n_samples = target_samples,
         verbose = verbose
       )
@@ -242,7 +243,7 @@ bound_ne_mediator <- function(data,
       # Binary search on bounds
       results <- binary_search_bounds(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_wrapper,
+        evaluate_func = recorder$evaluate,
         verbose = verbose
       )
     } else if (grid_method == "auto") {
@@ -251,25 +252,31 @@ bound_ne_mediator <- function(data,
       target_samples <- min(n_grid^2, 10000)
       results <- auto_grid_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_wrapper,
+        evaluate_func = recorder$evaluate,
         target_samples = target_samples,
         verbose = verbose
       )
+      # NULL means every corner was compatible: use the regular grid below,
+      # as the exposure path does.
+      if (is.null(results)) use_advanced_method <- FALSE
     } else if (grid_method == "adaptive") {
       # Adaptive two-stage refinement
       results <- adaptive_grid_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_wrapper,
+        evaluate_func = recorder$evaluate,
         n_grid_fine = n_grid,
         coarse_factor = 5,
         verbose = verbose
       )
     }
 
-    # Extract compatible results from advanced search
-    results <- Filter(Negate(is.null), results)
+    # Take the compatible results from the recorder, not the search's return
+    # value, so points the search evaluated but did not return still count.
+    evaluated_sets <- recorder$sets()
+    results <- recorder$results()
+  }
 
-  } else {
+  if (!use_advanced_method) {
     # Regular grid search (original implementation)
     if (verbose) cat("Using regular grid search\n")
     param_grid <- create_parameter_grid(sensitivity_region, n_grid)
@@ -324,6 +331,7 @@ bound_ne_mediator <- function(data,
     if (verbose) close(pb)
 
     # Extract compatible results
+    evaluated_sets <- .grid_verdicts(param_grid, results)
     results <- Filter(Negate(is.null), results)
   }
 
@@ -331,13 +339,6 @@ bound_ne_mediator <- function(data,
     # Graceful infeasible result: no compatible parameter sets in the grid.
     # Return NA bounds with a machine-readable reason rather than stop();
     # bound_ne() signals a 'medrobust_infeasible' condition for callers.
-    n_eval_infeasible <- if (exists("n_total", inherits = FALSE)) {
-      n_total
-    } else if (exists("target_samples", inherits = FALSE)) {
-      target_samples
-    } else {
-      0L
-    }
     return(list(
       NIE_lower = NA_real_,
       NIE_upper = NA_real_,
@@ -345,9 +346,10 @@ bound_ne_mediator <- function(data,
       NDE_upper = NA_real_,
       compatible_sets = data.frame(),
       n_compatible = 0L,
-      n_evaluated = n_eval_infeasible,
+      n_evaluated = nrow(evaluated_sets),
       falsified_proportion = 1.0,
       naive_estimates = naive_estimates,
+      evaluated_sets = evaluated_sets,
       reason = "infeasible_no_compatible_sets"
     ))
   }
@@ -368,24 +370,7 @@ bound_ne_mediator <- function(data,
 
   # Compute number of compatible and evaluated
   n_compatible <- length(results)
-  if (use_advanced_method) {
-    # For advanced methods, count how many were actually evaluated
-    if (grid_method == "lhs" || grid_method == "sobol") {
-      n_evaluated <- target_samples
-    } else if (grid_method == "adaptive") {
-      # Coarse grid + fine grid evaluations
-      n_coarse <- ceiling(n_grid / 5)^4
-      n_evaluated <- n_coarse + n_compatible * 5^4
-    } else {
-      # For auto and binary, use actual number returned
-      n_evaluated <- length(results) + sum(sapply(results, function(x) {
-        if (!is.null(x$n_evaluated)) x$n_evaluated else 0
-      }))
-    }
-  } else {
-    # Regular grid: use full grid size
-    n_evaluated <- n_total
-  }
+  n_evaluated <- nrow(evaluated_sets)
 
   falsified_proportion <- 1 - (n_compatible / n_evaluated)
 
@@ -399,6 +384,7 @@ bound_ne_mediator <- function(data,
     n_compatible = n_compatible,
     n_evaluated = n_evaluated,
     falsified_proportion = falsified_proportion,
-    naive_estimates = naive_estimates
+    naive_estimates = naive_estimates,
+    evaluated_sets = evaluated_sets
   ))
 }

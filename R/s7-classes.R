@@ -89,6 +89,12 @@ NULL
 #' @param psi_sp_range Numeric vector of length 2: [min, max] for specificity OR
 #'
 #' @return A sensitivity_region S7 object
+#' @examples
+#' region <- sensitivity_region(
+#'   sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+#'   psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+#' )
+#' region
 #' @export
 sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range) {
   obj <- .sensitivity_region_class(
@@ -128,7 +134,7 @@ sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range)
 #' @param z0 BCa bias-correction parameter
 #' @param acceleration BCa acceleration parameter
 #'
-#' @return An S7 object of class `bootstrap_results` holding bootstrap
+#' @return An S7 object of class \code{bootstrap_results} holding bootstrap
 #'   confidence intervals and the replicate samples for the lower and upper
 #'   bound endpoints of the natural direct and indirect effects.
 #' @export
@@ -197,9 +203,12 @@ bootstrap_results <- new_class(
 #' @param naive_estimates List of naive effect estimates
 #' @param bootstrap_results Bootstrap inference results (if computed)
 #' @param data_summary Summary statistics from the data
+#' @param evaluated_sets Data frame of every parameter set the grid search
+#'   evaluated (\code{sn0}, \code{sp0}, \code{psi_sn}, \code{psi_sp}) with a
+#'   logical \code{compatible} column; \code{NULL} when no search ran
 #' @param call The function call that created this object
 #'
-#' @return An S7 object of class `medrobust_bounds` containing the partial
+#' @return An S7 object of class \code{medrobust_bounds} containing the partial
 #'   identification bounds for the natural direct and indirect effects, the
 #'   parameter sets compatible with the data, and the associated inference and
 #'   diagnostic summaries.
@@ -287,6 +296,7 @@ medrobust_bounds <- new_class(
       }
     ),
     data_summary = new_property(class = class_list, default = NULL),
+    evaluated_sets = new_property(class = class_any, default = NULL),
     call = new_property(class = class_any, default = NULL)
   ),
   validator = function(self) {
@@ -328,7 +338,7 @@ medrobust_bounds <- new_class(
 #' @param misclassified_variable Character: "exposure" or "mediator"
 #' @param reason Character describing reason for incompatibility (if any)
 #'
-#' @return An S7 object of class `compatibility_test` holding the outcome of the
+#' @return An S7 object of class \code{compatibility_test} holding the outcome of the
 #'   data-compatibility (falsification) test, including the satisfied and
 #'   violated testable constraints.
 #' @usage NULL
@@ -461,6 +471,10 @@ compatibility_test <- new_class(
 #' @param plot ggplot2 object (optional)
 #'
 #' @return A falsification_summary S7 object
+#' @examples
+#' new_falsification_summary(
+#'   overall = 0.25, n_evaluated = 100L, n_compatible = 75L, n_falsified = 25L
+#' )
 #' @export
 new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_falsified,
                                       by_parameter = NULL, joint_falsification = NULL,
@@ -493,7 +507,7 @@ new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_fals
 #' @param generation_params List of parameters used to generate the data
 #' @param misclassification_applied List of misclassification parameters applied
 #'
-#' @return An S7 object of class `simulated_dm_data` holding the simulated
+#' @return An S7 object of class \code{simulated_dm_data} holding the simulated
 #'   observed data together with the true (unobserved) values, the true causal
 #'   effects, and the data-generating parameters.
 #' @usage NULL
@@ -558,7 +572,7 @@ simulated_dm_data <- new_class(
 #' @param recommended_n_width Recommended sample size to achieve target width
 #' @param simulation_params List of simulation parameters used
 #'
-#' @return An S7 object of class `power_analysis_result` holding the power and
+#' @return An S7 object of class \code{power_analysis_result} holding the power and
 #'   bound-width curves across sample sizes and the recommended sample sizes for
 #'   the target power and width.
 #' @usage NULL
@@ -628,6 +642,11 @@ power_analysis_result <- new_class(
 #'
 #' @param region_list List with sn0_range, sp0_range, psi_sn_range, psi_sp_range
 #' @return sensitivity_region S7 object
+#' @examples
+#' as_sensitivity_region(list(
+#'   sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+#'   psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+#' ))
 #' @export
 as_sensitivity_region <- function(region_list) {
   sensitivity_region(

@@ -190,11 +190,12 @@ bound_ne_exposure <- function(data,
 
   if (use_advanced_method) {
     # Use advanced grid search algorithms
+    recorder <- .recording_evaluator(evaluate_param_set)
     if (grid_method == "adaptive" || (grid_method == "auto" && use_adaptive_grid && n_grid >= 10)) {
       # Adaptive grid refinement
       results <- adaptive_grid_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_param_set,
+        evaluate_func = recorder$evaluate,
         n_grid_fine = n_grid,
         coarse_factor = min(5, ceiling(n_grid / 3)),
         verbose = verbose
@@ -204,7 +205,7 @@ bound_ne_exposure <- function(data,
       target_samples <- ceiling(sqrt(n_grid^4))  # sqrt of full grid
       results <- latin_hypercube_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_param_set,
+        evaluate_func = recorder$evaluate,
         n_samples = target_samples,
         verbose = verbose
       )
@@ -213,7 +214,7 @@ bound_ne_exposure <- function(data,
       target_samples <- ceiling(sqrt(n_grid^4))
       results <- sobol_sequence_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_param_set,
+        evaluate_func = recorder$evaluate,
         n_samples = target_samples,
         verbose = verbose
       )
@@ -221,7 +222,7 @@ bound_ne_exposure <- function(data,
       # Binary search on bounds
       results <- binary_search_bounds(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_param_set,
+        evaluate_func = recorder$evaluate,
         verbose = verbose
       )
     } else {  # "auto"
@@ -229,7 +230,7 @@ bound_ne_exposure <- function(data,
       target_samples <- min(500, ceiling(sqrt(n_grid^4)))
       results <- auto_grid_search(
         sensitivity_region = sensitivity_region,
-        evaluate_func = evaluate_param_set,
+        evaluate_func = recorder$evaluate,
         target_samples = target_samples,
         verbose = verbose
       )
@@ -241,8 +242,12 @@ bound_ne_exposure <- function(data,
     }
 
     if (use_advanced_method) {
-      n_total_evaluated <- attr(results, "n_evaluated")
-      if (is.null(n_total_evaluated)) n_total_evaluated <- length(results)
+      # Take the compatible results and the count from the recorder, not the
+      # search's return value, so points the search evaluated but did not
+      # return still count.
+      evaluated_sets <- recorder$sets()
+      results <- recorder$results()
+      n_total_evaluated <- nrow(evaluated_sets)
 
       # Check if any compatible sets were found
       if (length(results) == 0) {
@@ -258,6 +263,7 @@ bound_ne_exposure <- function(data,
           n_evaluated = n_total_evaluated,
           falsified_proportion = 1.0,
           naive_estimates = naive_estimates,
+          evaluated_sets = evaluated_sets,
           reason = "infeasible_no_compatible_sets"
         ))
       }
@@ -317,6 +323,7 @@ bound_ne_exposure <- function(data,
     }
 
     # Filter compatible results
+    evaluated_sets <- .grid_verdicts(param_grid, results)
     results <- Filter(Negate(is.null), results)
     n_total_evaluated <- n_total
 
@@ -333,6 +340,7 @@ bound_ne_exposure <- function(data,
         n_evaluated = n_total_evaluated,
         falsified_proportion = 1.0,
         naive_estimates = naive_estimates,
+        evaluated_sets = evaluated_sets,
         reason = "infeasible_no_compatible_sets"
       ))
     }
@@ -365,6 +373,7 @@ bound_ne_exposure <- function(data,
     n_compatible = n_compatible,
     n_evaluated = n_total_evaluated,
     falsified_proportion = falsified_proportion,
-    naive_estimates = naive_estimates
+    naive_estimates = naive_estimates,
+    evaluated_sets = evaluated_sets
   ))
 }

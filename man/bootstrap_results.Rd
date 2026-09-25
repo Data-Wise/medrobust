@@ -51,7 +51,7 @@ bootstrap_results(
 \item{acceleration}{BCa acceleration parameter}
 }
 \value{
-An S7 object of class `bootstrap_results` holding bootstrap
+An S7 object of class \code{bootstrap_results} holding bootstrap
   confidence intervals and the replicate samples for the lower and upper
   bound endpoints of the natural direct and indirect effects.
 }

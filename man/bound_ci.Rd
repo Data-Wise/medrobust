@@ -18,13 +18,13 @@ bound_ci(
 )
 }
 \arguments{
-\item{bounds}{A fitted `medrobust_bounds` object from [bound_ne()].}
+\item{bounds}{A fitted \code{medrobust_bounds} object from \code{\link{bound_ne}()}.}
 
-\item{data}{The data frame passed to [bound_ne()].}
+\item{data}{The data frame passed to \code{\link{bound_ne}()}.}
 
-\item{exposure, mediator, outcome, confounders}{Column names, as in [bound_ne()].}
+\item{exposure, mediator, outcome, confounders}{Column names, as in \code{\link{bound_ne}()}.}
 
-\item{misclassified_variable}{Either `"exposure"` or `"mediator"`; selects the
+\item{misclassified_variable}{Either \code{"exposure"} or \code{"mediator"}; selects the
 recovery used to evaluate the effect at a single sensitivity parameter.}
 
 \item{n_boot}{Number of resamples for the endpoint standard errors (default 200).}
@@ -34,16 +34,16 @@ recovery used to evaluate the effect at a single sensitivity parameter.}
 \item{seed}{Optional integer seed for reproducibility.}
 }
 \value{
-A named list with elements `NIE` and `NDE`, each a numeric vector with
-  `lower`, `upper` (the point bounds), `se_lower`, `se_upper` (endpoint SEs), and
-  `ci_lower`, `ci_upper` (the Imbens-Manski confidence interval).
+A named list with elements \code{NIE} and \code{NDE}, each a numeric vector with
+  \code{lower}, \code{upper} (the point bounds), \code{se_lower}, \code{se_upper} (endpoint SEs), and
+  \code{ci_lower}, \code{ci_upper} (the Imbens-Manski confidence interval).
 }
 \description{
 Computes a confidence interval for the partial-identification set returned by
-[bound_ne()]. The raw estimated bound \eqn{[\hat L, \hat U]} is consistent but
-is *not* a confidence set: when the identified set is narrow relative to the
+\code{\link{bound_ne}()}. The raw estimated bound \eqn{[\hat L, \hat U]} is consistent but
+is \emph{not} a confidence set: when the identified set is narrow relative to the
 sampling uncertainty of its endpoints, it under-covers the true effect at small
-samples. `bound_ci()` widens the endpoints by their standard errors using the
+samples. \code{bound_ci()} widens the endpoints by their standard errors using the
 Imbens & Manski (2004) construction, restoring approximately nominal coverage of
 the true effect.
 }
@@ -53,10 +53,37 @@ minimizing/maximizing sensitivity parameter on resampled data (one evaluation pe
 resample, with no grid search), which is far cheaper than a full bootstrap of the
 whole grid.
 }
+\examples{
+\donttest{
+sim <- simulate_dm_data(
+  n = 2000,
+  true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+  dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+  misclass_type = "mediator", confounders = 1, seed = 1
+)
+bounds <- bound_ne(
+  data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+  confounders = "C1", misclassified_variable = "mediator",
+  sensitivity_region = list(
+    sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+    psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)
+  ),
+  n_grid = 10, verbose = FALSE
+)
+
+# Widen the raw bounds [L, U] into Imbens-Manski confidence intervals
+ci <- bound_ci(
+  bounds, data = sim@observed, exposure = "A", mediator = "M_star",
+  outcome = "Y", confounders = "C1", misclassified_variable = "mediator",
+  n_boot = 50, seed = 1
+)
+ci$NDE
+}
+}
 \references{
 Imbens, G. W. and Manski, C. F. (2004). Confidence Intervals for
-  Partially Identified Parameters. *Econometrica*, 72(6), 1845-1857.
+  Partially Identified Parameters. \emph{Econometrica}, 72(6), 1845-1857.
 }
 \seealso{
-[bound_ne()]
+\code{\link{bound_ne}()}
 }
