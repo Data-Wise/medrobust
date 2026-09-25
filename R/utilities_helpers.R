@@ -741,3 +741,42 @@ convert_effect_scale <- function(effect,
 
   stop("Unsupported conversion: ", from_scale, " to ", to_scale)
 }
+
+
+# Record every parameter set an evaluator sees, with its verdict (a NULL result
+# means the set was falsified), so extract_falsified_region() can report the
+# sets that were actually evaluated, whatever the search method.
+.recording_evaluator <- function(evaluate_func) {
+  log <- new.env(parent = emptyenv())
+  log$rows <- list()
+  list(
+    evaluate = function(i, param_row) {
+      res <- evaluate_func(i, param_row)
+      log$rows[[length(log$rows) + 1L]] <- c(
+        unlist(param_row[c("sn0", "sp0", "psi_sn", "psi_sp")]),
+        compatible = !is.null(res)
+      )
+      res
+    },
+    sets = function() .as_verdict_frame(log$rows)
+  )
+}
+
+.as_verdict_frame <- function(rows) {
+  if (length(rows) == 0) {
+    return(data.frame(sn0 = numeric(0), sp0 = numeric(0), psi_sn = numeric(0),
+                      psi_sp = numeric(0), compatible = logical(0)))
+  }
+  m <- do.call(rbind, rows)
+  out <- as.data.frame(m[, c("sn0", "sp0", "psi_sn", "psi_sp"), drop = FALSE])
+  out$compatible <- as.logical(m[, "compatible"])
+  out
+}
+
+# Verdicts for a regular grid: results are aligned with the rows of param_grid.
+.grid_verdicts <- function(param_grid, results) {
+  out <- param_grid[, c("sn0", "sp0", "psi_sn", "psi_sp")]
+  out$compatible <- !vapply(results, is.null, logical(1))
+  rownames(out) <- NULL
+  out
+}

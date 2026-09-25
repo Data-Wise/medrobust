@@ -20,9 +20,9 @@
 #' @param effect_scale Character string. Scale for reporting effects: "OR" (odds ratio),
 #'   "RR" (risk ratio), or "RD" (risk difference). Default is "OR".
 #' @param confidence_level Numeric. Confidence level for confidence intervals. Default is 0.95.
-#' @param ci_method Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
-#'   attaches Imbens-Manski confidence intervals (see [bound_ci()]) to the result's
-#'   `@analytic_ci` slot.
+#' @param ci_method Character. \code{"none"} (default) or \code{"analytic"}. If \code{"analytic"},
+#'   attaches Imbens-Manski confidence intervals (see \code{\link{bound_ci}()}) to the result's
+#'   \code{@analytic_ci} slot.
 #' @param ci_n_boot Integer. Resamples for the analytic CI endpoint SEs. Default 200.
 #' @param bootstrap Logical. Whether to compute bootstrap confidence intervals. Default is FALSE.
 #' @param bootstrap_reps Integer. Number of bootstrap replicates if bootstrap=TRUE. Default is 1000.
@@ -66,6 +66,8 @@
 #'   \item{falsified_proportion}{Proportion of sensitivity region falsified}
 #'   \item{effect_scale}{Scale used for reporting}
 #'   \item{n_evaluated}{Number of parameter sets evaluated}
+#'   \item{evaluated_sets}{Every evaluated parameter set with a logical
+#'     \code{compatible} column; see \code{\link{extract_falsified_region}}}
 #'   \item{n_compatible}{Number of compatible parameter sets}
 #'   \item{computation_time}{Time taken for computation}
 #'   \item{call}{Original function call}
@@ -74,7 +76,7 @@
 #'
 #' @details
 #' This function implements the partial identification approach described in
-#' [Author] (2025). The method derives bounds on causal mediation effects by
+#' Tofighi, D. (2025). The method derives bounds on causal mediation effects by
 #' specifying a plausible range for misclassification parameters and using
 #' testable implications to rule out empirically inconsistent values.
 #'
@@ -134,7 +136,7 @@
 #' }
 #'
 #' @references
-#' [Author] (2025). Partial Identification of Causal Mediation Effects Under
+#' Tofighi, D. (2025). Partial Identification of Causal Mediation Effects Under
 #' Differential Misclassification. \emph{Biostatistics}.
 #'
 #' McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three
@@ -349,6 +351,7 @@ bound_ne <- function(data,
     reason = bounds_reason,
     bootstrap_results = bootstrap_s7,
     data_summary = c(data_summary, list(computation_time = as.numeric(computation_time))),
+    evaluated_sets = bounds_result$evaluated_sets,
     call = match.call()
   )
 

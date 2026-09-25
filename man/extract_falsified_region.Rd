@@ -10,8 +10,11 @@ extract_falsified_region(bounds_object)
 \item{bounds_object}{An object of class \code{medrobust_bounds}}
 }
 \value{
-A data frame containing parameter sets that were falsified
+A data frame with columns \code{sn0}, \code{sp0}, \code{psi_sn} and
+  \code{psi_sp}, one row per falsified parameter set.
 }
 \description{
-Extract the subset of the sensitivity region that is empirically falsified.
+Extract the parameter sets that the grid search evaluated and the data
+falsified. Works for every \code{grid_method}, because \code{\link{bound_ne}}
+records each evaluated set with its verdict.
 }

@@ -403,13 +403,25 @@ compute_bca_ci <- function(boot_estimates,
 }
 
 
+# Read a replicate vector from either the S7 `bootstrap_results` object that
+# bound_ne() stores or the plain list returned by compute_bootstrap_ci().
+.boot_field <- function(bootstrap_results, name) {
+  if (S7::S7_inherits(bootstrap_results)) {
+    S7::prop(bootstrap_results, name)
+  } else {
+    bootstrap_results[[name]]
+  }
+}
+
+
 #' Compute Standard Errors for Bounds
 #'
 #' @description
 #' Estimate standard errors for the lower and upper bounds using the
 #' bootstrap distribution.
 #'
-#' @param bootstrap_results List returned by compute_bootstrap_ci
+#' @param bootstrap_results The \code{bootstrap_results} property of a \code{\link{bound_ne}} fit with
+#'   \code{bootstrap = TRUE}, or the list returned by \code{compute_bootstrap_ci()}
 #'
 #' @return Named vector of standard errors
 #' @export
@@ -420,10 +432,10 @@ compute_bound_se <- function(bootstrap_results) {
   }
 
   se_results <- c(
-    nie_lower_se = sd(bootstrap_results$boot_nie_lower, na.rm = TRUE),
-    nie_upper_se = sd(bootstrap_results$boot_nie_upper, na.rm = TRUE),
-    nde_lower_se = sd(bootstrap_results$boot_nde_lower, na.rm = TRUE),
-    nde_upper_se = sd(bootstrap_results$boot_nde_upper, na.rm = TRUE)
+    nie_lower_se = sd(.boot_field(bootstrap_results, "boot_nie_lower"), na.rm = TRUE),
+    nie_upper_se = sd(.boot_field(bootstrap_results, "boot_nie_upper"), na.rm = TRUE),
+    nde_lower_se = sd(.boot_field(bootstrap_results, "boot_nde_lower"), na.rm = TRUE),
+    nde_upper_se = sd(.boot_field(bootstrap_results, "boot_nde_upper"), na.rm = TRUE)
   )
 
   return(se_results)
@@ -435,7 +447,8 @@ compute_bound_se <- function(bootstrap_results) {
 #' @description
 #' Compute the mean, median, and range of bound widths from bootstrap samples.
 #'
-#' @param bootstrap_results List returned by compute_bootstrap_ci
+#' @param bootstrap_results The \code{bootstrap_results} property of a \code{\link{bound_ne}} fit with
+#'   \code{bootstrap = TRUE}, or the list returned by \code{compute_bootstrap_ci()}
 #' @param effect Character string: "NIE" or "NDE"
 #'
 #' @return List with width statistics
@@ -449,9 +462,9 @@ bootstrap_width_summary <- function(bootstrap_results, effect = "NIE") {
   effect <- match.arg(effect, c("NIE", "NDE"))
 
   if (effect == "NIE") {
-    widths <- bootstrap_results$boot_nie_upper - bootstrap_results$boot_nie_lower
+    widths <- .boot_field(bootstrap_results, "boot_nie_upper") - .boot_field(bootstrap_results, "boot_nie_lower")
   } else {
-    widths <- bootstrap_results$boot_nde_upper - bootstrap_results$boot_nde_lower
+    widths <- .boot_field(bootstrap_results, "boot_nde_upper") - .boot_field(bootstrap_results, "boot_nde_lower")
   }
 
   # Remove any NA or negative widths
@@ -480,7 +493,8 @@ bootstrap_width_summary <- function(bootstrap_results, effect = "NIE") {
 #' @description
 #' Visualize the bootstrap distribution of bounds.
 #'
-#' @param bootstrap_results List returned by compute_bootstrap_ci
+#' @param bootstrap_results The \code{bootstrap_results} property of a \code{\link{bound_ne}} fit with
+#'   \code{bootstrap = TRUE}, or the list returned by \code{compute_bootstrap_ci()}
 #' @param effect Character string: "NIE" or "NDE"
 #' @param original_bounds Original bound estimates (optional)
 #'
@@ -498,15 +512,15 @@ plot_bootstrap_distribution <- function(bootstrap_results,
 
   # Extract bootstrap estimates
   if (effect == "NIE") {
-    boot_lower <- bootstrap_results$boot_nie_lower
-    boot_upper <- bootstrap_results$boot_nie_upper
+    boot_lower <- .boot_field(bootstrap_results, "boot_nie_lower")
+    boot_upper <- .boot_field(bootstrap_results, "boot_nie_upper")
     if (!is.null(original_bounds)) {
       orig_lower <- original_bounds@NIE_lower
       orig_upper <- original_bounds@NIE_upper
     }
   } else {
-    boot_lower <- bootstrap_results$boot_nde_lower
-    boot_upper <- bootstrap_results$boot_nde_upper
+    boot_lower <- .boot_field(bootstrap_results, "boot_nde_lower")
+    boot_upper <- .boot_field(bootstrap_results, "boot_nde_upper")
     if (!is.null(original_bounds)) {
       orig_lower <- original_bounds@NDE_lower
       orig_upper <- original_bounds@NDE_upper

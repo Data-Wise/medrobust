@@ -32,10 +32,14 @@
 
 \item{data_summary}{Summary statistics from the data}
 
+\item{evaluated_sets}{Data frame of every parameter set the grid search
+evaluated (\code{sn0}, \code{sp0}, \code{psi_sn}, \code{psi_sp}) with a
+logical \code{compatible} column; \code{NULL} when no search ran}
+
 \item{call}{The function call that created this object}
 }
 \value{
-An S7 object of class `medrobust_bounds` containing the partial
+An S7 object of class \code{medrobust_bounds} containing the partial
   identification bounds for the natural direct and indirect effects, the
   parameter sets compatible with the data, and the associated inference and
   diagnostic summaries.

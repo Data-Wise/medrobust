@@ -7,7 +7,8 @@
 compute_bound_se(bootstrap_results)
 }
 \arguments{
-\item{bootstrap_results}{List returned by compute_bootstrap_ci}
+\item{bootstrap_results}{The \code{bootstrap_results} property of a \code{\link{bound_ne}} fit with
+\code{bootstrap = TRUE}, or the list returned by \code{compute_bootstrap_ci()}}
 }
 \value{
 Named vector of standard errors

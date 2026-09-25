@@ -15,7 +15,7 @@
 \item{misclassification_applied}{List of misclassification parameters applied}
 }
 \value{
-An S7 object of class `simulated_dm_data` holding the simulated
+An S7 object of class \code{simulated_dm_data} holding the simulated
   observed data together with the true (unobserved) values, the true causal
   effects, and the data-generating parameters.
 }
