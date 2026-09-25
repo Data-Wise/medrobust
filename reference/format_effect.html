@@ -92,6 +92,18 @@
     <p>Character string</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">format_effect</span><span class="op">(</span><span class="fl">1.48</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.48"</span>
+<span class="r-in"><span><span class="fu">format_effect</span><span class="op">(</span><span class="fl">1.48</span>, ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.21</span>, <span class="fl">1.81</span><span class="op">)</span><span class="op">)</span>   <span class="co"># point estimate with a CI</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1.48 (1.21, 1.81)"</span>
+<span class="r-in"><span><span class="fu">format_effect</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.12</span>, <span class="fl">1.37</span><span class="op">)</span><span class="op">)</span>              <span class="co"># bounds [L, U]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "[1.12, 1.37]"</span>
+<span class="r-in"><span><span class="fu">format_effect</span><span class="op">(</span><span class="fl">0.031</span>, effect_scale <span class="op">=</span> <span class="st">"RD"</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0.031"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

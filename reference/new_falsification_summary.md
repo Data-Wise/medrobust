@@ -60,3 +60,26 @@ new_falsification_summary(
 ## Value
 
 A falsification_summary S7 object
+
+## Examples
+
+``` r
+new_falsification_summary(
+  overall = 0.25, n_evaluated = 100L, n_compatible = 75L, n_falsified = 25L
+)
+#> 
+#> ====================================================================== 
+#> FALSIFICATION SUMMARY
+#> ====================================================================== 
+#> 
+#> Overall Falsification:
+#>   Total parameter sets evaluated: 100 
+#>   Compatible sets: 75 (75.0%)
+#>   Falsified sets: 25 (25.0%)
+#> 
+#>   -> Low falsification: Weak data constraints
+#>      Most of the sensitivity region remains compatible.
+#> 
+#> ====================================================================== 
+#> 
+```

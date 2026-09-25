@@ -152,6 +152,37 @@ whole grid.</p>
     <div class="dont-index"><p><code><a href="bound_ne.html">bound_ne()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="simulate_dm_data.html">simulate_dm_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">2000</span>,</span></span>
+<span class="r-in"><span>  true_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta_AM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span>, theta_AY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1.5</span><span class="op">)</span>, theta_MY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  dm_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sn0 <span class="op">=</span> <span class="fl">0.9</span>, sp0 <span class="op">=</span> <span class="fl">0.9</span>, psi_sn <span class="op">=</span> <span class="fl">1</span>, psi_sp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  misclass_type <span class="op">=</span> <span class="st">"mediator"</span>, confounders <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="bound_ne.html">bound_ne</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">sim</span><span class="op">@</span><span class="va">observed</span>, exposure <span class="op">=</span> <span class="st">"A"</span>, mediator <span class="op">=</span> <span class="st">"M_star"</span>, outcome <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
+<span class="r-in"><span>  confounders <span class="op">=</span> <span class="st">"C1"</span>, misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span></span>
+<span class="r-in"><span>  sensitivity_region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>, sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.99</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span>, psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_grid <span class="op">=</span> <span class="fl">10</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Widen the raw bounds [L, U] into Imbens-Manski confidence intervals</span></span></span>
+<span class="r-in"><span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="fu">bound_ci</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">bounds</span>, data <span class="op">=</span> <span class="va">sim</span><span class="op">@</span><span class="va">observed</span>, exposure <span class="op">=</span> <span class="st">"A"</span>, mediator <span class="op">=</span> <span class="st">"M_star"</span>,</span></span>
+<span class="r-in"><span>  outcome <span class="op">=</span> <span class="st">"Y"</span>, confounders <span class="op">=</span> <span class="st">"C1"</span>, misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span></span>
+<span class="r-in"><span>  n_boot <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ci</span><span class="op">$</span><span class="va">NDE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lower     upper  se_lower  se_upper  ci_lower  ci_upper </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.3592882 1.6583075 0.1735582 0.1731216 1.0731786 1.9436975 </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

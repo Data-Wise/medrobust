@@ -43,6 +43,15 @@
   this package. They now use Rd markup. The
   [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
   references no longer contain the placeholder “\[Author\] (2025)”.
+- Examples added to the help pages of
+  [`bound_ci()`](https://data-wise.github.io/medrobust/reference/bound_ci.md),
+  [`sensitivity_region()`](https://data-wise.github.io/medrobust/reference/sensitivity_region.md),
+  [`as_sensitivity_region()`](https://data-wise.github.io/medrobust/reference/as_sensitivity_region.md),
+  [`format_effect()`](https://data-wise.github.io/medrobust/reference/format_effect.md),
+  [`extract_bounds()`](https://data-wise.github.io/medrobust/reference/extract_bounds.md),
+  [`test_multiple_hypotheses()`](https://data-wise.github.io/medrobust/reference/test_multiple_hypotheses.md)
+  and
+  [`new_falsification_summary()`](https://data-wise.github.io/medrobust/reference/new_falsification_summary.md).
 
 ## medrobust 0.4.2 (2026-09-24)
 

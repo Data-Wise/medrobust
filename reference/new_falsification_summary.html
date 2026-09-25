@@ -125,6 +125,28 @@ Most users should use the falsification_summary() function which analyzes bounds
     <p>A falsification_summary S7 object</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">new_falsification_summary</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  overall <span class="op">=</span> <span class="fl">0.25</span>, n_evaluated <span class="op">=</span> <span class="fl">100L</span>, n_compatible <span class="op">=</span> <span class="fl">75L</span>, n_falsified <span class="op">=</span> <span class="fl">25L</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FALSIFICATION SUMMARY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Falsification:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Total parameter sets evaluated: 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Compatible sets: 75 (75.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Falsified sets: 25 (25.0%)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -&gt; Low falsification: Weak data constraints</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Most of the sensitivity region remains compatible.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ====================================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
