@@ -270,9 +270,10 @@ bound_ne_mediator <- function(data,
       )
     }
 
-    # Extract compatible results from advanced search
+    # Take the compatible results from the recorder, not the search's return
+    # value, so points the search evaluated but did not return still count.
     evaluated_sets <- recorder$sets()
-    results <- Filter(Negate(is.null), results)
+    results <- recorder$results()
   }
 
   if (!use_advanced_method) {
@@ -338,13 +339,6 @@ bound_ne_mediator <- function(data,
     # Graceful infeasible result: no compatible parameter sets in the grid.
     # Return NA bounds with a machine-readable reason rather than stop();
     # bound_ne() signals a 'medrobust_infeasible' condition for callers.
-    n_eval_infeasible <- if (exists("n_total", inherits = FALSE)) {
-      n_total
-    } else if (exists("target_samples", inherits = FALSE)) {
-      target_samples
-    } else {
-      0L
-    }
     return(list(
       NIE_lower = NA_real_,
       NIE_upper = NA_real_,
@@ -352,7 +346,7 @@ bound_ne_mediator <- function(data,
       NDE_upper = NA_real_,
       compatible_sets = data.frame(),
       n_compatible = 0L,
-      n_evaluated = n_eval_infeasible,
+      n_evaluated = nrow(evaluated_sets),
       falsified_proportion = 1.0,
       naive_estimates = naive_estimates,
       evaluated_sets = evaluated_sets,
@@ -376,24 +370,7 @@ bound_ne_mediator <- function(data,
 
   # Compute number of compatible and evaluated
   n_compatible <- length(results)
-  if (use_advanced_method) {
-    # For advanced methods, count how many were actually evaluated
-    if (grid_method == "lhs" || grid_method == "sobol") {
-      n_evaluated <- target_samples
-    } else if (grid_method == "adaptive") {
-      # Coarse grid + fine grid evaluations
-      n_coarse <- ceiling(n_grid / 5)^4
-      n_evaluated <- n_coarse + n_compatible * 5^4
-    } else {
-      # For auto and binary, use actual number returned
-      n_evaluated <- length(results) + sum(sapply(results, function(x) {
-        if (!is.null(x$n_evaluated)) x$n_evaluated else 0
-      }))
-    }
-  } else {
-    # Regular grid: use full grid size
-    n_evaluated <- n_total
-  }
+  n_evaluated <- nrow(evaluated_sets)
 
   falsified_proportion <- 1 - (n_compatible / n_evaluated)
 

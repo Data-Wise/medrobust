@@ -242,9 +242,12 @@ bound_ne_exposure <- function(data,
     }
 
     if (use_advanced_method) {
+      # Take the compatible results and the count from the recorder, not the
+      # search's return value, so points the search evaluated but did not
+      # return still count.
       evaluated_sets <- recorder$sets()
-      n_total_evaluated <- attr(results, "n_evaluated")
-      if (is.null(n_total_evaluated)) n_total_evaluated <- length(results)
+      results <- recorder$results()
+      n_total_evaluated <- nrow(evaluated_sets)
 
       # Check if any compatible sets were found
       if (length(results) == 0) {

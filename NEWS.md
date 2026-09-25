@@ -21,6 +21,16 @@
   back to the regular grid, as the exposure path already did.
 * `test_multiple_hypotheses()` failed on an unnamed `psi_list`; unnamed entries
   are now labeled `H1`, `H2`, ....
+* With `grid_method = "auto"` or `"binary"`, the 16 corners of the sensitivity
+  region that the search probes first were evaluated and then discarded, so a
+  compatible corner never entered the bounds. They now do. On the mediator path
+  this can widen the reported bounds (in one test, the NIE lower bound moved
+  from 1.124 to 1.098); the old bounds were too narrow.
+* `n_evaluated`, and hence `falsified_proportion`, were estimates for the
+  advanced search methods, and badly wrong on the mediator path: `"adaptive"`
+  reported about 5.3 million evaluations for 10,081 (falsified proportion 0.998
+  instead of 0.153), and `"binary"` and `"auto"` reported a falsified proportion
+  of 0. Both are now counted from the recorded evaluations, on both paths.
 
 ## Documentation
 
