@@ -41,7 +41,9 @@ test_multiple_hypotheses(
 
 - psi_list:
 
-  List of parameter sets to test
+  List of parameter sets to test, each a list with `sn0`, `sp0`,
+  `psi_sn` and `psi_sp`. Names label the rows of the result; unnamed
+  entries are labeled `H1`, `H2`, ... by position.
 
 - misclassified_variable:
 

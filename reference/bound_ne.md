@@ -84,9 +84,10 @@ bound_ne(
 
 - ci_method:
 
-  Character. \`"none"\` (default) or \`"analytic"\`. If \`"analytic"\`,
-  attaches Imbens-Manski confidence intervals (see \[bound_ci()\]) to
-  the result's \`@analytic_ci\` slot.
+  Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
+  attaches Imbens-Manski confidence intervals (see
+  [`bound_ci()`](https://data-wise.github.io/medrobust/reference/bound_ci.md))
+  to the result's `@analytic_ci` slot.
 
 - ci_n_boot:
 
@@ -201,6 +202,11 @@ An object of class `medrobust_bounds` containing:
 
   Number of parameter sets evaluated
 
+- evaluated_sets:
+
+  Every evaluated parameter set with a logical `compatible` column; see
+  [`extract_falsified_region`](https://data-wise.github.io/medrobust/reference/extract_falsified_region.md)
+
 - n_compatible:
 
   Number of compatible parameter sets
@@ -224,7 +230,7 @@ An object of class `medrobust_bounds` containing:
 ## Details
 
 This function implements the partial identification approach described
-in \[Author\] (2025). The method derives bounds on causal mediation
+in Tofighi, D. (2025). The method derives bounds on causal mediation
 effects by specifying a plausible range for misclassification parameters
 and using testable implications to rule out empirically inconsistent
 values.
@@ -244,7 +250,7 @@ Non-differential misclassification corresponds to psi_sn = psi_sp = 1.
 
 ## References
 
-\[Author\] (2025). Partial Identification of Causal Mediation Effects
+Tofighi, D. (2025). Partial Identification of Causal Mediation Effects
 Under Differential Misclassification. *Biostatistics*.
 
 McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of
@@ -316,7 +322,7 @@ bounds <- bound_ne(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 3.52 seconds
+#> Time elapsed: 3.58 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.148, 1.457]
@@ -418,7 +424,7 @@ summary(bounds)
 #> 
 bounds@analytic_ci$NDE   # raw [L, U] plus Imbens-Manski confidence interval
 #>      lower      upper   se_lower   se_upper   ci_lower   ci_upper 
-#> 1.27088581 1.61302492 0.09792204 0.09375258 1.10981848 1.76723410 
+#> 1.27088581 1.61302492 0.08751905 0.10507136 1.12692987 1.78585183 
 
 # Visualize
 sensitivity_plot(bounds, param = "psi_sn")

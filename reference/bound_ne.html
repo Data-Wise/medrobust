@@ -147,9 +147,9 @@ giving the minimum and maximum values. If NULL, default ranges are used.</p></dd
 
 
 <dt id="arg-ci-method">ci_method<a class="anchor" aria-label="anchor" href="#arg-ci-method"></a></dt>
-<dd><p>Character. `"none"` (default) or `"analytic"`. If `"analytic"`,
-attaches Imbens-Manski confidence intervals (see [bound_ci()]) to the result's
-`@analytic_ci` slot.</p></dd>
+<dd><p>Character. <code>"none"</code> (default) or <code>"analytic"</code>. If <code>"analytic"</code>,
+attaches Imbens-Manski confidence intervals (see <code><a href="bound_ci.html">bound_ci()</a></code>) to the result's
+<code>@analytic_ci</code> slot.</p></dd>
 
 
 <dt id="arg-ci-n-boot">ci_n_boot<a class="anchor" aria-label="anchor" href="#arg-ci-n-boot"></a></dt>
@@ -246,6 +246,10 @@ regions. Default is TRUE.</p></dd>
   <dt>n_evaluated</dt>
 <dd><p>Number of parameter sets evaluated</p></dd>
 
+  <dt>evaluated_sets</dt>
+<dd><p>Every evaluated parameter set with a logical
+    <code>compatible</code> column; see <code><a href="extract_falsified_region.html">extract_falsified_region</a></code></p></dd>
+
   <dt>n_compatible</dt>
 <dd><p>Number of compatible parameter sets</p></dd>
 
@@ -265,7 +269,7 @@ regions. Default is TRUE.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function implements the partial identification approach described in
-[Author] (2025). The method derives bounds on causal mediation effects by
+Tofighi, D. (2025). The method derives bounds on causal mediation effects by
 specifying a plausible range for misclassification parameters and using
 testable implications to rule out empirically inconsistent values.</p>
 <p>The sensitivity region Theta_Psi is defined by four parameters:</p><ul><li><p><code>sn0</code>: Baseline sensitivity (probability of correct classification
@@ -277,7 +281,7 @@ testable implications to rule out empirically inconsistent values.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>[Author] (2025). Partial Identification of Causal Mediation Effects Under
+    <p>Tofighi, D. (2025). Partial Identification of Causal Mediation Effects Under
 Differential Misclassification. <em>Biostatistics</em>.</p>
 <p>McKay, M. D., Beckman, R. J., &amp; Conover, W. J. (1979). A comparison of three
 methods for selecting values of input variables in the analysis of output from
@@ -346,7 +350,7 @@ Physics</em>, 7(4), 86-112.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ============================================================ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> COMPUTATION COMPLETE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 3.52 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 3.58 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Compatible parameter sets: 100 / 100 (100.0%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NIE Bounds (OR scale): [1.148, 1.457]</span>
@@ -448,7 +452,7 @@ Physics</em>, 7(4), 86-112.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">bounds</span><span class="op">@</span><span class="va">analytic_ci</span><span class="op">$</span><span class="va">NDE</span>   <span class="co"># raw [L, U] plus Imbens-Manski confidence interval</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lower      upper   se_lower   se_upper   ci_lower   ci_upper </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.27088581 1.61302492 0.09792204 0.09375258 1.10981848 1.76723410 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.27088581 1.61302492 0.08751905 0.10507136 1.12692987 1.78585183 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Visualize</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span><span class="va">bounds</span>, param <span class="op">=</span> <span class="st">"psi_sn"</span><span class="op">)</span></span></span>

@@ -805,31 +805,42 @@ Bootstrap Progress:
   |
   |===================================================================== |  98%
   |
-  |======================================================================| 100%
-
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
+mediator, : 49 bootstrap iterations failed and were removed</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
+mediator, : Fewer than 100 successful bootstrap iterations. Results may be
+unreliable.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
  ------------------------------------------------------------
-Bootstrap Results (100 replicates, 100 successful, 0 failed)
+Bootstrap Results (100 replicates, 51 successful, 49 failed)
 ------------------------------------------------------------
 
-NIE Lower Bound 95% CI: [1.014, 1.014]
-NIE Upper Bound 95% CI: [1.028, 1.028]
+NIE Lower Bound 95% CI: [0.880, 1.071]
+NIE Upper Bound 95% CI: [0.937, 1.110]
 
-NDE Lower Bound 95% CI: [1.149, 1.149]
-NDE Upper Bound 95% CI: [1.651, 1.651]
+NDE Lower Bound 95% CI: [0.726, 1.795]
+NDE Upper Bound 95% CI: [1.100, 3.022]
 ------------------------------------------------------------
 
 
  ============================================================
 COMPUTATION COMPLETE
 ============================================================
-Time elapsed: 62.63 seconds
+Time elapsed: 36.41 seconds
 Compatible parameter sets: 78 / 100 (78.0%)
 
 NIE Bounds (OR scale): [1.012, 1.024]
 NDE Bounds (OR scale): [1.173, 1.874]
 ============================================================ </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds_with_ci</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -868,10 +879,10 @@ BOOTSTRAP CONFIDENCE INTERVALS
   Replications: 100
   Confidence Level: 95.0%
 
-  NIE Lower: [1.0138, 1.0138]
-  NIE Upper: [1.0277, 1.0277]
-  NDE Lower: [1.1494, 1.1494]
-  NDE Upper: [1.6513, 1.6513]
+  NIE Lower: [0.8796, 1.0712]
+  NIE Upper: [0.9375, 1.1095]
+  NDE Lower: [0.7263, 1.7945]
+  NDE Upper: [1.0999, 3.0215]
 
 ======================================================================
 Use summary() for detailed diagnostics
@@ -883,7 +894,7 @@ Use summary() for detailed diagnostics
 </h3>
 <p>If you already have a <code>medrobust_bounds</code> object and want to add or update confidence intervals without re-running the full grid search, use <code><a href="../reference/bound_ci.html">bound_ci()</a></code> directly:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compute Imbens-Manski CIs for an existing bounds object</span></span>
 <span><span class="va">ci_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ci.html">bound_ci</a></span><span class="op">(</span></span>
 <span>  <span class="va">bounds</span>,</span>
@@ -902,11 +913,11 @@ Use summary() for detailed diagnostics
 <div class="cell-output cell-output-stdout">
 <pre><code>$NIE
      lower      upper   se_lower   se_upper   ci_lower   ci_upper
-1.01161600 1.02378807 0.04790550 0.04622928 0.92305542 1.10924990
+1.01161600 1.02378807 0.05784834 0.05282198 0.90369604 1.12233101
 
 $NDE
     lower     upper  se_lower  se_upper  ci_lower  ci_upper
-1.1728607 1.8744329 0.3076954 0.3568941 0.6662930 2.4619977 </code></pre>
+1.1728607 1.8744329 0.2918200 0.4671135 0.6905668 2.6464362 </code></pre>
 </div>
 </div>
 <p>The Imbens–Manski (2004) construction widens each endpoint by its bootstrap standard error rather than building a joint confidence set, which restores approximately nominal coverage even when the identified interval is narrow relative to endpoint sampling uncertainty (e.g. ~0.09 → ~0.95 for the exposure NDE at <em>n</em> = 500).</p>
@@ -914,7 +925,7 @@ $NDE
 </h3>
 <p>The package provides standard S7 generic methods for all result objects:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Summary method provides detailed statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -974,7 +985,7 @@ Compatible Parameter Sets (first 5):
 5 0.8350973 0.9280376 1.223051      1 1.014778 1.507371
 7 0.7522601 0.8600748 1.822771      1 1.014543 1.306651</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to data frame for further analysis</span></span>
 <span><span class="va">bounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bounds_df</span><span class="op">)</span></span></code></pre></div>
@@ -985,7 +996,7 @@ Compatible Parameter Sets (first 5):
   </script>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to list for programmatic access</span></span>
 <span><span class="va">bounds_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bounds_list</span><span class="op">)</span></span></code></pre></div>
@@ -995,7 +1006,7 @@ Compatible Parameter Sets (first 5):
  [7] "sensitivity_region"     "compatible_sets"        "n_compatible"
 [10] "n_evaluated"            "naive_estimates"       </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot method for visualization</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -1009,7 +1020,7 @@ Compatible Parameter Sets (first 5):
 </h3>
 <p>Create customized sensitivity plots to visualize how bounds vary across different misclassification parameters:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot bounds as a function of sensitivity odds ratio</span></span>
 <span><span class="fu"><a href="../reference/sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">bounds</span>,</span>
@@ -1030,7 +1041,7 @@ Figure 2: Bounds vs. sensitivity parameter (psi_sn)
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot bounds as a function of baseline sensitivity</span></span>
 <span><span class="fu"><a href="../reference/sensitivity_plot.html">sensitivity_plot</a></span><span class="op">(</span><span class="va">bounds</span>, param <span class="op">=</span> <span class="st">"sn0"</span>, effect <span class="op">=</span> <span class="st">"NIE"</span>, theme <span class="op">=</span> <span class="st">"minimal"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -1060,7 +1071,7 @@ Figure 3: Bounds vs. baseline sensitivity (sn0)
 <section class="level3"><h3 id="planning-a-study">Planning a Study<a class="anchor" aria-label="anchor" href="#planning-a-study"></a>
 </h3>
 <div class="cell" data-tbl-cap="Power analysis results for different sample sizes">
-<div class="sourceCode cell-code" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Conduct power analysis</span></span>
 <span><span class="va">power_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/power_analysis.html">power_analysis</a></span><span class="op">(</span></span>
 <span>  true_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1123,7 +1134,7 @@ Use plot() to visualize power and width curves
 </section><section class="level3"><h3 id="understanding-power-results">Understanding Power Results<a class="anchor" aria-label="anchor" href="#understanding-power-results"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Detailed summary</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">power_result</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1169,7 +1180,7 @@ Detailed Power Curve Statistics:
 2 1000       90%          12%   0.02176752   1.019624   1.046116
 3 2000       88%          18%   0.01498081   1.021415   1.037788</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to data frame for custom analysis</span></span>
 <span><span class="va">power_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">power_result</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">power_df</span><span class="op">)</span></span></code></pre></div>
@@ -1187,7 +1198,7 @@ Detailed Power Curve Statistics:
 </section><section class="level3"><h3 id="visualizing-power-curves">Visualizing Power Curves<a class="anchor" aria-label="anchor" href="#visualizing-power-curves"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot power curves</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">power_result</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1240,7 +1251,7 @@ Figure 4: Statistical power as a function of sample size
 <figure class="quarto-float quarto-float-tbl"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mediator-misclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table 5: Computed bounds on NIE and NDE under differential mediator misclassification
 </figcaption><div aria-describedby="tbl-mediator-misclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate data with mediator misclassification</span></span>
 <span><span class="va">sim_data_med</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_dm_data.html">simulate_dm_data</a></span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -1318,7 +1329,7 @@ Use summary() for detailed diagnostics
 <figure class="quarto-float quarto-float-tbl"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-nondiff-misclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table 6: Computed bounds on NIE and NDE under non-differential exposure misclassification
 </figcaption><div aria-describedby="tbl-nondiff-misclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Non-differential misclassification: error doesn't depend on Y</span></span>
 <span><span class="va">sens_region_nondiff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
 <span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.80</span>, <span class="fl">0.90</span><span class="op">)</span>,</span>
@@ -1417,7 +1428,7 @@ Use summary() for detailed diagnostics
 </h3>
 <p>You can extract various components from the results using built-in methods:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert to data frame for custom analysis</span></span>
 <span><span class="va">bounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds_df</span><span class="op">)</span></span>
@@ -1433,7 +1444,7 @@ Use summary() for detailed diagnostics
 </section><section class="level3"><h3 id="comparing-different-scenarios">Comparing Different Scenarios<a class="anchor" aria-label="anchor" href="#comparing-different-scenarios"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare bounds under different sensitivity assumptions</span></span>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_bounds.html">compare_bounds</a></span><span class="op">(</span></span>
 <span>  bounds_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1454,7 +1465,7 @@ Non-differential           0.33</code></pre>
 </section><section class="level3"><h3 id="falsification-summary">Falsification Summary<a class="anchor" aria-label="anchor" href="#falsification-summary"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get detailed falsification summary</span></span>
 <span><span class="va">falsif_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/falsification_summary.html">falsification_summary</a></span><span class="op">(</span><span class="va">bounds</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">falsif_summary</span><span class="op">)</span></span></code></pre></div>
@@ -1530,7 +1541,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>For large datasets or fine grids, enable parallelization:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bounds_parallel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">sim_data</span><span class="op">@</span><span class="va">observed</span>,</span>
 <span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
@@ -1573,7 +1584,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>When participants with disease may recall exposures differently:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Disease may improve recall of past exposure</span></span>
 <span><span class="va">sens_region_recall</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
 <span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.60</span>, <span class="fl">0.80</span><span class="op">)</span>, <span class="co"># Lower baseline sensitivity</span></span>
@@ -1586,7 +1597,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>When participants may underreport stigmatized behaviors:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Underreporting of risk behaviors</span></span>
 <span><span class="va">sens_region_social</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
 <span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.50</span>, <span class="fl">0.70</span><span class="op">)</span>, <span class="co"># Low sensitivity (underreporting)</span></span>
@@ -1599,7 +1610,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>When measurement instruments have known error rates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Based on validation study</span></span>
 <span><span class="va">sens_region_validated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
 <span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.82</span>, <span class="fl">0.88</span><span class="op">)</span>, <span class="co"># Narrow range from validation</span></span>
@@ -1615,7 +1626,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>The <code>n_grid</code> parameter controls the number of points evaluated per dimension:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Quick exploration (625 combinations, ~10-30 seconds)</span></span>
 <span><span class="va">quick_bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span><span class="va">...</span>, n_grid <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
@@ -1630,7 +1641,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>Enable parallel processing to dramatically reduce computation time:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Detect available cores</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
 <span><span class="va">n_cores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span> <span class="co"># Leave two cores free</span></span>
@@ -1647,7 +1658,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>The <code>grid_method</code> parameter controls which algorithm is used to search the parameter space. The default is Latin Hypercube Sampling (LHS), which provides dramatic speedups:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Latin Hypercube Sampling (default) - 99% fewer evaluations</span></span>
 <span><span class="va">bounds_lhs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
@@ -1724,7 +1735,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </h3>
 <p>For repeated analyses with the same data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Enable caching to reuse intermediate results</span></span>
 <span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
@@ -1796,7 +1807,7 @@ Table 7: Falsification summary for the sensitivity analysis
 </section><section class="level2"><h2 id="session-information">Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.6.1 (2026-06-24)

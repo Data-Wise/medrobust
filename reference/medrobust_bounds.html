@@ -126,13 +126,19 @@ and indirect effects under differential misclassification.</p>
 <dd><p>Summary statistics from the data</p></dd>
 
 
+<dt id="arg-evaluated-sets">evaluated_sets<a class="anchor" aria-label="anchor" href="#arg-evaluated-sets"></a></dt>
+<dd><p>Data frame of every parameter set the grid search
+evaluated (<code>sn0</code>, <code>sp0</code>, <code>psi_sn</code>, <code>psi_sp</code>) with a
+logical <code>compatible</code> column; <code>NULL</code> when no search ran</p></dd>
+
+
 <dt id="arg-call">call<a class="anchor" aria-label="anchor" href="#arg-call"></a></dt>
 <dd><p>The function call that created this object</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An S7 object of class `medrobust_bounds` containing the partial
+    <p>An S7 object of class <code>medrobust_bounds</code> containing the partial
   identification bounds for the natural direct and indirect effects, the
   parameter sets compatible with the data, and the associated inference and
   diagnostic summaries.</p>

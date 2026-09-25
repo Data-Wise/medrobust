@@ -1,7 +1,9 @@
 # Extract Falsified Region
 
-Extract the subset of the sensitivity region that is empirically
-falsified.
+Extract the parameter sets that the grid search evaluated and the data
+falsified. Works for every `grid_method`, because
+[`bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+records each evaluated set with its verdict.
 
 ## Usage
 
@@ -17,4 +19,5 @@ extract_falsified_region(bounds_object)
 
 ## Value
 
-A data frame containing parameter sets that were falsified
+A data frame with columns `sn0`, `sp0`, `psi_sn` and `psi_sp`, one row
+per falsified parameter set.

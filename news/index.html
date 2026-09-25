@@ -58,6 +58,24 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>Bootstrap confidence intervals from <code>bound_ne(bootstrap = TRUE)</code> had zero width. The Latin hypercube search called <code>set.seed(42)</code> on the global random-number stream, so every bootstrap replicate drew the same resample. The search still uses a fixed design, but now restores the caller’s RNG state, so <code><a href="../reference/bound_ne.html">bound_ne()</a></code> no longer resets the random stream in your session.</li>
+<li>
+<code><a href="../reference/compute_bound_se.html">compute_bound_se()</a></code>, <code><a href="../reference/bootstrap_width_summary.html">bootstrap_width_summary()</a></code> and <code><a href="../reference/plot_bootstrap_distribution.html">plot_bootstrap_distribution()</a></code> failed on the bootstrap results stored by <code><a href="../reference/bound_ne.html">bound_ne()</a></code> (an S7 object). They now accept it, as well as the list from <code>compute_bootstrap_ci()</code>.</li>
+<li>
+<code><a href="../reference/extract_falsified_region.html">extract_falsified_region()</a></code> returned wrong sets under the default Latin hypercube search: it compared the compatible sets against a rebuilt regular grid they never lay on. <code><a href="../reference/bound_ne.html">bound_ne()</a></code> now records every evaluated parameter set with its verdict (new <code>evaluated_sets</code> property), and <code><a href="../reference/extract_falsified_region.html">extract_falsified_region()</a></code> returns the ones the data falsified.</li>
+<li>With <code>grid_method = "auto"</code> on the mediator path, a region whose 16 corners were all compatible was reported as infeasible (<code>NA</code> bounds). It now falls back to the regular grid, as the exposure path already did.</li>
+<li>
+<code><a href="../reference/test_multiple_hypotheses.html">test_multiple_hypotheses()</a></code> failed on an unnamed <code>psi_list</code>; unnamed entries are now labeled <code>H1</code>, <code>H2</code>, ….</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-development-version">Documentation<a class="anchor" aria-label="anchor" href="#documentation-development-version"></a></h3>
+<ul><li>Help pages written with Markdown syntax (backticks, <code>[fn()]</code> links, <code>*emphasis*</code>) showed it literally, because roxygen Markdown is off in this package. They now use Rd markup. The <code><a href="../reference/bound_ne.html">bound_ne()</a></code> references no longer contain the placeholder “[Author] (2025)”.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="medrobust-042-2026-09-24">medrobust 0.4.2 (2026-09-24)<a class="anchor" aria-label="anchor" href="#medrobust-042-2026-09-24"></a></h2>
 <div class="section level3">
 <h3 id="documentation-0-4-2">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-2"></a></h3>

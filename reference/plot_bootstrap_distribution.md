@@ -16,7 +16,10 @@ plot_bootstrap_distribution(
 
 - bootstrap_results:
 
-  List returned by compute_bootstrap_ci
+  The `bootstrap_results` property of a
+  [`bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+  fit with `bootstrap = TRUE`, or the list returned by
+  `compute_bootstrap_ci()`
 
 - effect:
 

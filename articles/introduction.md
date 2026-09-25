@@ -696,22 +696,30 @@ bounds_with_ci <- bound_ne(
       |
       |======================================================================| 100%
 
+    Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
+    mediator, : 49 bootstrap iterations failed and were removed
+
+    Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
+    mediator, : Fewer than 100 successful bootstrap iterations. Results may be
+    unreliable.
+
+
      ------------------------------------------------------------
-    Bootstrap Results (100 replicates, 100 successful, 0 failed)
+    Bootstrap Results (100 replicates, 51 successful, 49 failed)
     ------------------------------------------------------------
 
-    NIE Lower Bound 95% CI: [1.014, 1.014]
-    NIE Upper Bound 95% CI: [1.028, 1.028]
+    NIE Lower Bound 95% CI: [0.880, 1.071]
+    NIE Upper Bound 95% CI: [0.937, 1.110]
 
-    NDE Lower Bound 95% CI: [1.149, 1.149]
-    NDE Upper Bound 95% CI: [1.651, 1.651]
+    NDE Lower Bound 95% CI: [0.726, 1.795]
+    NDE Upper Bound 95% CI: [1.100, 3.022]
     ------------------------------------------------------------
 
 
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 62.63 seconds
+    Time elapsed: 36.41 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -759,10 +767,10 @@ print(bounds_with_ci)
       Replications: 100
       Confidence Level: 95.0%
 
-      NIE Lower: [1.0138, 1.0138]
-      NIE Upper: [1.0277, 1.0277]
-      NDE Lower: [1.1494, 1.1494]
-      NDE Upper: [1.6513, 1.6513]
+      NIE Lower: [0.8796, 1.0712]
+      NIE Upper: [0.9375, 1.1095]
+      NDE Lower: [0.7263, 1.7945]
+      NDE Upper: [1.0999, 3.0215]
 
     ======================================================================
     Use summary() for detailed diagnostics
@@ -796,11 +804,11 @@ print(ci_result)
 
     $NIE
          lower      upper   se_lower   se_upper   ci_lower   ci_upper
-    1.01161600 1.02378807 0.04790550 0.04622928 0.92305542 1.10924990
+    1.01161600 1.02378807 0.05784834 0.05282198 0.90369604 1.12233101
 
     $NDE
         lower     upper  se_lower  se_upper  ci_lower  ci_upper
-    1.1728607 1.8744329 0.3076954 0.3568941 0.6662930 2.4619977 
+    1.1728607 1.8744329 0.2918200 0.4671135 0.6905668 2.6464362 
 
 The Imbens–Manski (2004) construction widens each endpoint by its
 bootstrap standard error rather than building a joint confidence set,

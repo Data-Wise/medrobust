@@ -1,13 +1,14 @@
 # Confidence intervals for partial-identification bounds (Imbens-Manski)
 
 Computes a confidence interval for the partial-identification set
-returned by \[bound_ne()\]. The raw estimated bound \\\[\hat L, \hat
-U\]\\ is consistent but is \*not\* a confidence set: when the identified
-set is narrow relative to the sampling uncertainty of its endpoints, it
-under-covers the true effect at small samples. \`bound_ci()\` widens the
-endpoints by their standard errors using the Imbens & Manski (2004)
-construction, restoring approximately nominal coverage of the true
-effect.
+returned by
+[`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
+The raw estimated bound \\\[\hat L, \hat U\]\\ is consistent but is
+*not* a confidence set: when the identified set is narrow relative to
+the sampling uncertainty of its endpoints, it under-covers the true
+effect at small samples. `bound_ci()` widens the endpoints by their
+standard errors using the Imbens & Manski (2004) construction, restoring
+approximately nominal coverage of the true effect.
 
 ## Usage
 
@@ -30,19 +31,22 @@ bound_ci(
 
 - bounds:
 
-  A fitted \`medrobust_bounds\` object from \[bound_ne()\].
+  A fitted `medrobust_bounds` object from
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
 
 - data:
 
-  The data frame passed to \[bound_ne()\].
+  The data frame passed to
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
 
 - exposure, mediator, outcome, confounders:
 
-  Column names, as in \[bound_ne()\].
+  Column names, as in
+  [`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md).
 
 - misclassified_variable:
 
-  Either \`"exposure"\` or \`"mediator"\`; selects the recovery used to
+  Either `"exposure"` or `"mediator"`; selects the recovery used to
   evaluate the effect at a single sensitivity parameter.
 
 - n_boot:
@@ -59,10 +63,10 @@ bound_ci(
 
 ## Value
 
-A named list with elements \`NIE\` and \`NDE\`, each a numeric vector
-with \`lower\`, \`upper\` (the point bounds), \`se_lower\`, \`se_upper\`
-(endpoint SEs), and \`ci_lower\`, \`ci_upper\` (the Imbens-Manski
-confidence interval).
+A named list with elements `NIE` and `NDE`, each a numeric vector with
+`lower`, `upper` (the point bounds), `se_lower`, `se_upper` (endpoint
+SEs), and `ci_lower`, `ci_upper` (the Imbens-Manski confidence
+interval).
 
 ## Details
 
@@ -74,8 +78,8 @@ a full bootstrap of the whole grid.
 ## References
 
 Imbens, G. W. and Manski, C. F. (2004). Confidence Intervals for
-Partially Identified Parameters. \*Econometrica\*, 72(6), 1845-1857.
+Partially Identified Parameters. *Econometrica*, 72(6), 1845-1857.
 
 ## See also
 
-\[bound_ne()\]
+[`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md)

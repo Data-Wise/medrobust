@@ -61,13 +61,19 @@ and indirect effects under differential misclassification.
 
   Summary statistics from the data
 
+- evaluated_sets:
+
+  Data frame of every parameter set the grid search evaluated (`sn0`,
+  `sp0`, `psi_sn`, `psi_sp`) with a logical `compatible` column; `NULL`
+  when no search ran
+
 - call:
 
   The function call that created this object
 
 ## Value
 
-An S7 object of class \`medrobust_bounds\` containing the partial
+An S7 object of class `medrobust_bounds` containing the partial
 identification bounds for the natural direct and indirect effects, the
 parameter sets compatible with the data, and the associated inference
 and diagnostic summaries.
