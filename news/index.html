@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">medrobust</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.2</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,9 +58,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.3" id="medrobust-043-2026-09-25">medrobust 0.4.3 (2026-09-25)<a class="anchor" aria-label="anchor" href="#medrobust-043-2026-09-25"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-4-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-3"></a></h3>
 <ul><li>Bootstrap confidence intervals from <code>bound_ne(bootstrap = TRUE)</code> had zero width. The Latin hypercube search called <code>set.seed(42)</code> on the global random-number stream, so every bootstrap replicate drew the same resample. The search still uses a fixed design, but now restores the caller’s RNG state, so <code><a href="../reference/bound_ne.html">bound_ne()</a></code> no longer resets the random stream in your session.</li>
 <li>
 <code><a href="../reference/compute_bound_se.html">compute_bound_se()</a></code>, <code><a href="../reference/bootstrap_width_summary.html">bootstrap_width_summary()</a></code> and <code><a href="../reference/plot_bootstrap_distribution.html">plot_bootstrap_distribution()</a></code> failed on the bootstrap results stored by <code><a href="../reference/bound_ne.html">bound_ne()</a></code> (an S7 object). They now accept it, as well as the list from <code>compute_bootstrap_ci()</code>.</li>
@@ -74,7 +74,7 @@
 <code>n_evaluated</code>, and hence <code>falsified_proportion</code>, were estimates for the advanced search methods, and badly wrong on the mediator path: <code>"adaptive"</code> reported about 5.3 million evaluations for 10,081 (falsified proportion 0.998 instead of 0.153), and <code>"binary"</code> and <code>"auto"</code> reported a falsified proportion of 0. Both are now counted from the recorded evaluations, on both paths.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-development-version">Documentation<a class="anchor" aria-label="anchor" href="#documentation-development-version"></a></h3>
+<h3 id="documentation-0-4-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-3"></a></h3>
 <ul><li>Help pages written with Markdown syntax (backticks, <code>[fn()]</code> links, <code>*emphasis*</code>) showed it literally, because roxygen Markdown is off in this package. They now use Rd markup. The <code><a href="../reference/bound_ne.html">bound_ne()</a></code> references no longer contain the placeholder “[Author] (2025)”.</li>
 <li>Examples added to the help pages of <code><a href="../reference/bound_ci.html">bound_ci()</a></code>, <code><a href="../reference/sensitivity_region.html">sensitivity_region()</a></code>, <code><a href="../reference/as_sensitivity_region.html">as_sensitivity_region()</a></code>, <code><a href="../reference/format_effect.html">format_effect()</a></code>, <code><a href="../reference/extract_bounds.html">extract_bounds()</a></code>, <code><a href="../reference/test_multiple_hypotheses.html">test_multiple_hypotheses()</a></code> and <code><a href="../reference/new_falsification_summary.html">new_falsification_summary()</a></code>.</li>
 </ul></div>
