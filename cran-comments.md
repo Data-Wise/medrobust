@@ -1,6 +1,3 @@
-> **Re-run on the `v0.4.3` tag before submitting.** The results below are for `v0.4.2`. 0.4.3 fixes
-> bugs in the bootstrap and grid-search code (#47, #48) and adds examples (#46).
-
 ## Submission summary
 
 This is a new submission of **medrobust** (version 0.4.3). The package has not
@@ -13,12 +10,12 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
 
 ## Test environments
 
-* Local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --run-donttest` on the tarball built from the `v0.4.2` tag (9d88d07): 0 errors | 0 warnings | 1 note (new submission)
-* win-builder R-devel (2026-09-21 r90579): https://win-builder.r-project.org/Mr807u3m7up7 — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
-* win-builder R-release (R 4.6.1): https://win-builder.r-project.org/cN9O1Clm9Aif — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
-* win-builder R-oldrelease (R 4.5.3): https://win-builder.r-project.org/hVC0QAFayPu4 — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
-* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release, green on the v0.4.2 tag (9d88d07)
-* r-hub (run 36078406312, on the `v0.4.2` tag):
+* Local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --run-donttest` on the tarball built from the `v0.4.3` tag (fdc3e50): 0 errors | 0 warnings | 1 note (new submission)
+* win-builder R-devel (2026-09-21 r90579): https://win-builder.r-project.org/K93SfiAxbhRT — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-release (R 4.6.1): https://win-builder.r-project.org/mJgJsNKviDv0 — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* win-builder R-oldrelease (R 4.5.3): https://win-builder.r-project.org/STAUUI0loMTW — **Status: 1 NOTE (new submission + DESCRIPTION spellings)**
+* GitHub Actions: macOS-latest, ubuntu-latest, windows-latest — R release, green on the v0.4.3 tag (fdc3e50)
+* r-hub (run 36188626307, on the `v0.4.3` tag):
   - `linux` (R-devel): OK
   - `windows` (R-devel): OK
   - `macos` (R-devel): OK
@@ -26,7 +23,7 @@ data or gold-standard measurements. The package has no dependencies outside CRAN
   - `ubuntu-gcc12`: OK
   - `nosuggests`: OK
   - `gcc-asan`: OK
-  - `macos-arm64` (R-devel): not run — r-hub dependency setup failed on both attempts (no R 4.7
+  - `macos-arm64` (R-devel): not run — r-hub dependency setup failed again on the `v0.4.3` run (no R 4.7
     arm64 binary repository yet); the package check never started. macOS is covered by `macos`
     (R-devel) above and GitHub Actions macOS-latest (release).
 

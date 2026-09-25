@@ -4,15 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 📦 STATUS — v0.4.3 released (2026-09-25), pre-submit checks to re-run
+## 📦 STATUS — v0.4.3 released (2026-09-25), CRAN-submit-ready
 
 > ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
 
 `main` = tag `v0.4.3` (release PR #49, merge `fdc3e50`). 0.4.3 supersedes 0.4.2, whose bootstrap CIs had
 zero width (#47); it also fixes evaluation counts and dropped probe corners in the advanced grid
-searches (#48). Local tarball check on `dev` before the release: 1 NOTE (new submission).
-Next: re-run the pre-submit checks on the `v0.4.3` tag (local tarball, win-builder ×3, r-hub) and
-replace the `v0.4.2` results in `cran-comments.md`; then `devtools::submit_cran()` from `main` once the hold lifts.
+searches (#48).
+Pre-submit checks on the `v0.4.3` tag done 2026-09-25 (local tarball, win-builder ×3, r-hub): new-submission
+NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`.
+Next: `devtools::submit_cran()` from `main` once the hold lifts.
 Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
