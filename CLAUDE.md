@@ -10,8 +10,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `dev`/`main` synced at **0.4.2** (release PR #45, merge `9d88d07` = tag `v0.4.2`). 0.4.2 is docs-only
 (help pages link website articles instead of `vignette()`, #44) on top of 0.4.1 (bug fixes #34, #38, #39).
-Tarball `--as-cran --run-donttest`: 1 NOTE (new submission). Before submitting: re-run win-builder + r-hub
-on `v0.4.2` (`cran-comments.md` results are still v0.4.1), then `devtools::submit_cran()` from `main`.
+Pre-submit checks on the `v0.4.2` tag done 2026-09-24 (local tarball, win-builder ×3, r-hub): new-submission
+NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`.
+Next: `devtools::submit_cran()` from `main` once the hold lifts.
 Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
