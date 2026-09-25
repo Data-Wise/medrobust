@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 📦 STATUS — v0.4.2 released (2026-09-24); 0.4.3 patch needed before CRAN
+## 📦 STATUS — v0.4.3 released (2026-09-25), pre-submit checks to re-run
 
 > ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
 
-`main` = tag `v0.4.2` (release PR #45, merge `9d88d07`). `dev` is ahead with user-visible bug fixes
-(#47, 2026-09-25): bootstrap CIs from `bound_ne(bootstrap = TRUE)` had zero width in ≤ 0.4.2, so
-**do not submit 0.4.2**. Next: release 0.4.3 (`dev → main`), then re-run the pre-submit checks on the
-new tag (local tarball, win-builder ×3, r-hub) and refresh `cran-comments.md` — its results are for
-`v0.4.2`. Then `devtools::submit_cran()` from `main` once the hold lifts.
+`main` = tag `v0.4.3` (release PR #49, merge `fdc3e50`). 0.4.3 supersedes 0.4.2, whose bootstrap CIs had
+zero width (#47); it also fixes evaluation counts and dropped probe corners in the advanced grid
+searches (#48). Local tarball check on `dev` before the release: 1 NOTE (new submission).
+Next: re-run the pre-submit checks on the `v0.4.3` tag (local tarball, win-builder ×3, r-hub) and
+replace the `v0.4.2` results in `cran-comments.md`; then `devtools::submit_cran()` from `main` once the hold lifts.
 Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
@@ -208,4 +208,4 @@ Ecosystem coordination managed in `~/projects/r-packages/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-24 (history: `git log -- CLAUDE.md`; project state: `.STATUS`)
+**Last Updated**: 2026-09-25 (history: `git log -- CLAUDE.md`; project state: `.STATUS`)
