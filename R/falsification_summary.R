@@ -420,6 +420,25 @@ plot_falsification <- function(falsif_summary, bounds_object) {
 #' @param bounds_object An object of class \code{medrobust_bounds}
 #'
 #' @return A data frame containing compatible parameter sets
+#' @examples
+#' \donttest{
+#' sim <- simulate_dm_data(
+#'   n = 2000,
+#'   true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+#'   dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+#'   misclass_type = "mediator", confounders = 1, seed = 1
+#' )
+#' bounds <- bound_ne(
+#'   data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+#'   confounders = "C1", misclassified_variable = "mediator",
+#'   sensitivity_region = list(
+#'     sn0_range = c(0.80, 0.99), sp0_range = c(0.80, 0.99),
+#'     psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)
+#'   ),
+#'   n_grid = 10, verbose = FALSE
+#' )
+#' head(extract_bounds(bounds))
+#' }
 #' @export
 extract_bounds <- function(bounds_object) {
 
@@ -478,6 +497,23 @@ extract_falsified_region <- function(bounds_object) {
 #' @param misclassified_variable Character string
 #'
 #' @return Data frame with test results for each hypothesis
+#' @examples
+#' sim <- simulate_dm_data(
+#'   n = 2000,
+#'   true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+#'   dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+#'   misclass_type = "mediator", confounders = 1, seed = 1
+#' )
+#'
+#' # psi_list must be named: the names label the rows of the result
+#' test_multiple_hypotheses(
+#'   data = sim@observed, exposure = "A", mediator = "M_star", outcome = "Y",
+#'   confounders = "C1", misclassified_variable = "mediator",
+#'   psi_list = list(
+#'     accurate = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+#'     poor     = list(sn0 = 0.6, sp0 = 0.6, psi_sn = 1, psi_sp = 1)
+#'   )
+#' )
 #' @export
 test_multiple_hypotheses <- function(data,
                                      exposure,

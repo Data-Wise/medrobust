@@ -89,6 +89,12 @@ NULL
 #' @param psi_sp_range Numeric vector of length 2: [min, max] for specificity OR
 #'
 #' @return A sensitivity_region S7 object
+#' @examples
+#' region <- sensitivity_region(
+#'   sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+#'   psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+#' )
+#' region
 #' @export
 sensitivity_region <- function(sn0_range, sp0_range, psi_sn_range, psi_sp_range) {
   obj <- .sensitivity_region_class(
@@ -461,6 +467,10 @@ compatibility_test <- new_class(
 #' @param plot ggplot2 object (optional)
 #'
 #' @return A falsification_summary S7 object
+#' @examples
+#' new_falsification_summary(
+#'   overall = 0.25, n_evaluated = 100L, n_compatible = 75L, n_falsified = 25L
+#' )
 #' @export
 new_falsification_summary <- function(overall, n_evaluated, n_compatible, n_falsified,
                                       by_parameter = NULL, joint_falsification = NULL,
@@ -628,6 +638,11 @@ power_analysis_result <- new_class(
 #'
 #' @param region_list List with sn0_range, sp0_range, psi_sn_range, psi_sp_range
 #' @return sensitivity_region S7 object
+#' @examples
+#' as_sensitivity_region(list(
+#'   sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+#'   psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+#' ))
 #' @export
 as_sensitivity_region <- function(region_list) {
   sensitivity_region(

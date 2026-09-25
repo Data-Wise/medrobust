@@ -22,3 +22,10 @@ A sensitivity_region S7 object
 Constructor for sensitivity_region S7 objects. Issues a warning if the
 region may be non-informative (Sn + Sp <= 1).
 }
+\examples{
+region <- sensitivity_region(
+  sn0_range = c(0.80, 0.95), sp0_range = c(0.85, 0.99),
+  psi_sn_range = c(1, 2), psi_sp_range = c(1, 1)
+)
+region
+}
