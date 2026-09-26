@@ -4,16 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
-## 📦 STATUS — v0.4.3 released (2026-09-25), CRAN-submit-ready
+## 📦 STATUS — v0.4.4 released (2026-09-25), CRAN-submit-ready
 
 > ⏸ **CRAN submission ON HOLD** until the associated manuscript is submitted (see `.STATUS` `blocked:`).
 
-`main` = tag `v0.4.3` (release PR #49, merge `fdc3e50`). 0.4.3 supersedes 0.4.2, whose bootstrap CIs had
-zero width (#47); it also fixes evaluation counts and dropped probe corners in the advanced grid
-searches (#48).
-Pre-submit checks on the `v0.4.3` tag done 2026-09-25 (local tarball, win-builder ×3, r-hub): new-submission
-NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`.
-Next: `devtools::submit_cran()` from `main` once the hold lifts.
+`main` = tag `v0.4.4` (release PR #53, merge `6ef7b0e`). 0.4.4 supersedes 0.4.3: `grid_method = "adaptive"`
+could evaluate values outside the sensitivity region (#51, changes adaptive bounds), and BCa bootstrap
+results lost `z0`/`acceleration` (#52). 0.4.3 fixed zero-width bootstrap CIs (#47) and evaluation counts (#48).
+Pre-submit checks on the `v0.4.4` tag done 2026-09-25 (local tarball, win-builder ×3, r-hub): new-submission
+NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`
+on `dev`; it must reach `main` (docs-only PR) before `devtools::submit_cran()` from `main` once the hold lifts.
 Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
