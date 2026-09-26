@@ -719,7 +719,7 @@ bounds_with_ci <- bound_ne(
      ============================================================
     COMPUTATION COMPLETE
     ============================================================
-    Time elapsed: 36.5 seconds
+    Time elapsed: 27.1 seconds
     Compatible parameter sets: 78 / 100 (78.0%)
 
     NIE Bounds (OR scale): [1.012, 1.024]
@@ -1391,10 +1391,10 @@ print(falsif_summary)
            sn0              0.220             0.100             0.400
            sp0              0.220             0.000             1.000
         psi_sn              0.220             0.000             0.500
-        psi_sp              0.900             0.000             1.000
+        psi_sp              0.220             0.220             0.220
 
-    Most constrained parameters: psi_sp, sn0
-    Least constrained parameters: psi_sn, sn0
+    Most constrained parameters: sn0, sp0
+    Least constrained parameters: psi_sn, psi_sp
 
     ====================================================================== 
 

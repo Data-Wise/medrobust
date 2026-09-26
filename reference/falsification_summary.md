@@ -68,9 +68,13 @@ A list of class `falsification_summary` containing:
 
 ## Details
 
-This function analyzes the compatible parameter sets to understand which
-regions of the sensitivity space are ruled out by the testable
-implications. High falsification rates indicate that the data are
+This function uses every parameter set
+[`bound_ne()`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+evaluated (its `evaluated_sets` property) to show which regions of the
+sensitivity space are ruled out by the testable implications. The
+falsification rate of a bin is the share of the sets evaluated in that
+bin that the data falsified; a bin in which no set was evaluated has
+rate `NA`. High falsification rates indicate that the data are
 informative about that particular parameter.
 
 The falsification analysis is useful for:
@@ -127,7 +131,7 @@ bounds <- bound_ne(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 3.32 seconds
+#> Time elapsed: 2.63 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.148, 1.457]

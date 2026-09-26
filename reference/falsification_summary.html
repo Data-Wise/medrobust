@@ -126,8 +126,11 @@ Default is TRUE.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function analyzes the compatible parameter sets to understand which
-regions of the sensitivity space are ruled out by the testable implications.
+    <p>This function uses every parameter set <code><a href="bound_ne.html">bound_ne()</a></code> evaluated (its
+<code>evaluated_sets</code> property) to show which regions of the sensitivity
+space are ruled out by the testable implications. The falsification rate of a
+bin is the share of the sets evaluated in that bin that the data falsified;
+a bin in which no set was evaluated has rate <code>NA</code>.
 High falsification rates indicate that the data are informative about that
 particular parameter.</p>
 <p>The falsification analysis is useful for:</p><ul><li><p>Understanding which misclassification assumptions are most constrained</p></li>
@@ -177,7 +180,7 @@ particular parameter.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ============================================================ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> COMPUTATION COMPLETE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 3.32 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 2.63 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Compatible parameter sets: 100 / 100 (100.0%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NIE Bounds (OR scale): [1.148, 1.457]</span>

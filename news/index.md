@@ -1,5 +1,25 @@
 # Changelog
 
+## medrobust (development version)
+
+### Bug fixes
+
+- `grid_method = "adaptive"` refined around the compatible coarse points
+  by widening Sn0/Sp0 by 10% and clamping only to \[0, 1\], so it
+  evaluated values outside the user’s sensitivity region (for example
+  Sn0 = 1 in a region that stops at 0.99) and let them into the bounds.
+  The refinement now stays inside the region, which can change the
+  reported bounds.
+- [`falsification_summary()`](https://data-wise.github.io/medrobust/reference/falsification_summary.md)
+  computed each bin’s falsification rate by spreading `n_evaluated`
+  evenly over the bins and clipping the result to \[0, 1\], so bins the
+  search never visited showed as 100% falsified, and a fit with points
+  outside the region failed with “some ‘x’ not counted”. Rates are now
+  the share of the parameter sets evaluated in each bin that the data
+  falsified (from `evaluated_sets`), with `NA` for empty bins; the
+  per-bin counts are returned as `n_evaluated` and `n_compatible`. Sets
+  on a range’s upper edge are no longer dropped from the joint grid.
+
 ## medrobust 0.4.3 (2026-09-25)
 
 ### Bug fixes
