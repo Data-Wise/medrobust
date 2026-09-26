@@ -130,7 +130,7 @@ compute_bootstrap_ci <- function(data,
 
   if (n_failed > 0) {
     warning(n_failed, " bootstrap iterations failed and were removed")
-    boot_matrix <- boot_matrix[complete_rows, ]
+    boot_matrix <- boot_matrix[complete_rows, , drop = FALSE]
   }
 
   if (nrow(boot_matrix) < 100) {
@@ -153,6 +153,12 @@ compute_bootstrap_ci <- function(data,
       nde_lower_ci = as.numeric(quantile(boot_nde_lower, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE)),
       nde_upper_ci = as.numeric(quantile(boot_nde_upper, probs = c(alpha/2, 1-alpha/2), na.rm = TRUE))
     )
+
+  } else if (bootstrap_method == "bca" && nrow(boot_matrix) == 0) {
+    # No successful replicate: nothing to correct, so skip the n jackknife fits
+    na_ci <- c(NA_real_, NA_real_)
+    ci_results <- list(nie_lower_ci = na_ci, nie_upper_ci = na_ci,
+                       nde_lower_ci = na_ci, nde_upper_ci = na_ci)
 
   } else if (bootstrap_method == "bca") {
     # BCa method (bias-corrected and accelerated)
@@ -195,7 +201,11 @@ compute_bootstrap_ci <- function(data,
     boot_nie_lower = boot_nie_lower,
     boot_nie_upper = boot_nie_upper,
     boot_nde_lower = boot_nde_lower,
-    boot_nde_upper = boot_nde_upper
+    boot_nde_upper = boot_nde_upper,
+
+    # BCa bias correction and acceleration (NULL for the percentile method)
+    z0 = ci_results$z0,
+    acceleration = ci_results$acceleration
   )
 
   if (verbose) {
@@ -385,14 +395,14 @@ compute_bca_ci <- function(boot_estimates,
 
   # Step 5: Compute BCa confidence intervals
   ci_results <- list(
-    nie_lower_ci = quantile(boot_estimates[, 1],
-                           probs = adjusted_percentiles[, 1], na.rm = TRUE),
-    nie_upper_ci = quantile(boot_estimates[, 2],
-                           probs = adjusted_percentiles[, 2], na.rm = TRUE),
-    nde_lower_ci = quantile(boot_estimates[, 3],
-                           probs = adjusted_percentiles[, 3], na.rm = TRUE),
-    nde_upper_ci = quantile(boot_estimates[, 4],
-                           probs = adjusted_percentiles[, 4], na.rm = TRUE)
+    nie_lower_ci = as.numeric(quantile(boot_estimates[, 1],
+                              probs = adjusted_percentiles[, 1], na.rm = TRUE)),
+    nie_upper_ci = as.numeric(quantile(boot_estimates[, 2],
+                              probs = adjusted_percentiles[, 2], na.rm = TRUE)),
+    nde_lower_ci = as.numeric(quantile(boot_estimates[, 3],
+                              probs = adjusted_percentiles[, 3], na.rm = TRUE)),
+    nde_upper_ci = as.numeric(quantile(boot_estimates[, 4],
+                              probs = adjusted_percentiles[, 4], na.rm = TRUE))
   )
 
   # Add BCa parameters to output

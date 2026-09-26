@@ -1,3 +1,14 @@
+# medrobust (development version)
+
+## Bug fixes
+
+* With `bootstrap_method = "bca"`, the bias correction `z0` and acceleration
+  were computed but never stored: `bound_ne()`'s `bootstrap_results` always had
+  `z0 = NULL` and `acceleration = NULL`. They are now kept. When every bootstrap
+  replicate fails, BCa now returns `NA` intervals without running the jackknife
+  (it spent the time and returned `NaN`), and a single surviving replicate no
+  longer collapses the replicate matrix to a vector.
+
 # medrobust 0.4.3 (2026-09-25)
 
 ## Bug fixes
