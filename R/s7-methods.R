@@ -527,13 +527,13 @@ method(print, .falsification_summary_class) <- function(x, digits = 3, ...) {
     param_table <- data.frame(
       Parameter = names(x@by_parameter),
       Mean_Falsification = sapply(x@by_parameter, function(p) {
-        mean(p$falsification_rate)
+        mean(p$falsification_rate, na.rm = TRUE)
       }),
       Min_Falsification = sapply(x@by_parameter, function(p) {
-        min(p$falsification_rate)
+        min(p$falsification_rate, na.rm = TRUE)
       }),
       Max_Falsification = sapply(x@by_parameter, function(p) {
-        max(p$falsification_rate)
+        max(p$falsification_rate, na.rm = TRUE)
       })
     )
 
