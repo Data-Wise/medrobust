@@ -144,7 +144,10 @@ M_star    0    1
 </h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># The Imbens-Manski interval uses a bootstrap for the endpoint standard errors;</span></span>
+<span><span class="co"># seed it so the results (and the reading below) are reproducible.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">gesthtn</span>, exposure <span class="op">=</span> <span class="st">"A"</span>, mediator <span class="op">=</span> <span class="st">"M_star"</span>, outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
 <span>  confounders <span class="op">=</span> <span class="st">"C1"</span>, misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
 <span>  sensitivity_region <span class="op">=</span> <span class="va">region</span>, effect_scale <span class="op">=</span> <span class="st">"OR"</span>,</span>
@@ -168,18 +171,19 @@ M_star    0    1
 <span><span class="va">b</span><span class="op">@</span><span class="va">analytic_ci</span><span class="op">$</span><span class="va">NDE</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ci_lower"</span>, <span class="st">"ci_upper"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> ci_lower  ci_upper
-0.8955502 1.5123700 </code></pre>
+0.8674146 1.4993183 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">b</span><span class="op">@</span><span class="va">analytic_ci</span><span class="op">$</span><span class="va">NIE</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ci_lower"</span>, <span class="st">"ci_upper"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> ci_lower  ci_upper
-0.9846179 1.3983468 </code></pre>
+0.9837138 1.3875865 </code></pre>
 </div>
 </div>
 </section><section class="level2"><h2 id="reading-the-result">Reading the result<a class="anchor" aria-label="anchor" href="#reading-the-result"></a>
 </h2>
-<p>The indirect-effect identified set summarizes how the mediated effect could range as the misclassification mechanism varies over the sensitivity region; the Imbens–Manski interval adds finite-sample uncertainty. If the NIE set (and CI) lie entirely above 1, the conclusion of positive mediation is <strong>robust to differential misclassification</strong> of the mediator — a statement the naive point estimate cannot support. Widen <code>region</code> to see how the bounds respond to less certainty about the error mechanism.</p>
+<p>Both identified sets lie above 1: over the whole sensitivity region the NDE ranges from about 1.11 to 1.29 and the NIE from about 1.04 to 1.20. Misclassification of gestational hypertension on the birth certificate, even when it depends on preterm status, cannot by itself explain away a positive direct or a positive mediated effect of advanced maternal age on preterm birth — a statement the naive point estimate cannot support.</p>
+<p>The Imbens–Manski intervals add finite-sample uncertainty, and both cover 1 (the NIE interval’s lower limit is about 0.98 to 0.99, the NDE’s about 0.8 to 0.9). With 5,000 births, the data therefore do not establish either effect at the 95% level, even though misclassification alone cannot remove them. Widen <code>region</code> to see how the bounds respond to less certainty about the error mechanism.</p>
 <blockquote>
 <p>Note: <code>gesthtn</code> is a 5,000-row random sample shipped for illustration. A larger sample tightens the Imbens–Manski interval; see <code>system.file("scripts", "prepare_gesthtn.R", package = "medrobust")</code> to regenerate at any size.</p>
 </blockquote>

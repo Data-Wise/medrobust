@@ -64,6 +64,9 @@ region <- sensitivity_region(
 
 ``` r
 
+# The Imbens-Manski interval uses a bootstrap for the endpoint standard errors;
+# seed it so the results (and the reading below) are reproducible.
+set.seed(2026)
 b <- bound_ne(
   data = gesthtn, exposure = "A", mediator = "M_star", outcome = "Y",
   confounders = "C1", misclassified_variable = "mediator",
@@ -93,7 +96,7 @@ b@analytic_ci$NDE[c("ci_lower", "ci_upper")]
 ```
 
      ci_lower  ci_upper
-    0.8955502 1.5123700 
+    0.8674146 1.4993183 
 
 ``` r
 
@@ -101,18 +104,23 @@ b@analytic_ci$NIE[c("ci_lower", "ci_upper")]
 ```
 
      ci_lower  ci_upper
-    0.9846179 1.3983468 
+    0.9837138 1.3875865 
 
 ## Reading the result
 
-The indirect-effect identified set summarizes how the mediated effect
-could range as the misclassification mechanism varies over the
-sensitivity region; the Imbens–Manski interval adds finite-sample
-uncertainty. If the NIE set (and CI) lie entirely above 1, the
-conclusion of positive mediation is **robust to differential
-misclassification** of the mediator — a statement the naive point
-estimate cannot support. Widen `region` to see how the bounds respond to
-less certainty about the error mechanism.
+Both identified sets lie above 1: over the whole sensitivity region the
+NDE ranges from about 1.11 to 1.29 and the NIE from about 1.04 to 1.20.
+Misclassification of gestational hypertension on the birth certificate,
+even when it depends on preterm status, cannot by itself explain away a
+positive direct or a positive mediated effect of advanced maternal age
+on preterm birth — a statement the naive point estimate cannot support.
+
+The Imbens–Manski intervals add finite-sample uncertainty, and both
+cover 1 (the NIE interval’s lower limit is about 0.98 to 0.99, the NDE’s
+about 0.8 to 0.9). With 5,000 births, the data therefore do not
+establish either effect at the 95% level, even though misclassification
+alone cannot remove them. Widen `region` to see how the bounds respond
+to less certainty about the error mechanism.
 
 > Note: `gesthtn` is a 5,000-row random sample shipped for illustration.
 > A larger sample tightens the Imbens–Manski interval; see
