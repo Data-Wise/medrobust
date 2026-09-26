@@ -1,5 +1,20 @@
 # Changelog
 
+## medrobust (development version)
+
+### Documentation
+
+- The `grid_method` and `use_adaptive_grid` help in
+  [`?bound_ne`](https://data-wise.github.io/medrobust/reference/bound_ne.md)
+  now describes what each search does. The bounds are an inner
+  approximation, so `"lhs"` (the default, `ceiling(n_grid^2)` points and
+  no corners) can report much narrower bounds than `"regular"`;
+  `"adaptive"` never evaluates fewer points than `"regular"`; `"sobol"`
+  is a Halton-type sequence, not a Sobol’ sequence; `"binary"` does no
+  binary search and ignores `n_grid`; and on the exposure path `"auto"`
+  runs `"adaptive"` by default. Only the regular grid uses
+  `parallel = TRUE`.
+
 ## medrobust 0.4.4 (2026-09-25)
 
 ### Bug fixes

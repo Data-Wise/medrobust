@@ -185,7 +185,7 @@ bounds <- bound_ne(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 0.38 seconds
+#> Time elapsed: 0.56 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.054, 1.069]

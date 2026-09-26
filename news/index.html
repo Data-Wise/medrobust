@@ -58,6 +58,13 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="medrobust-development-version">medrobust (development version)<a class="anchor" aria-label="anchor" href="#medrobust-development-version"></a></h2>
+<div class="section level3">
+<h3 id="documentation-development-version">Documentation<a class="anchor" aria-label="anchor" href="#documentation-development-version"></a></h3>
+<ul><li>The <code>grid_method</code> and <code>use_adaptive_grid</code> help in <code><a href="../reference/bound_ne.html">?bound_ne</a></code> now describes what each search does. The bounds are an inner approximation, so <code>"lhs"</code> (the default, <code>ceiling(n_grid^2)</code> points and no corners) can report much narrower bounds than <code>"regular"</code>; <code>"adaptive"</code> never evaluates fewer points than <code>"regular"</code>; <code>"sobol"</code> is a Halton-type sequence, not a Sobol’ sequence; <code>"binary"</code> does no binary search and ignores <code>n_grid</code>; and on the exposure path <code>"auto"</code> runs <code>"adaptive"</code> by default. Only the regular grid uses <code>parallel = TRUE</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.4" id="medrobust-044-2026-09-25">medrobust 0.4.4 (2026-09-25)<a class="anchor" aria-label="anchor" href="#medrobust-044-2026-09-25"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-0-4-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-4"></a></h3>

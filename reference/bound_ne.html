@@ -197,26 +197,43 @@ detectCores() - 1. Default is NULL.</p></dd>
 
 
 <dt id="arg-use-adaptive-grid">use_adaptive_grid<a class="anchor" aria-label="anchor" href="#arg-use-adaptive-grid"></a></dt>
-<dd><p>Logical. Whether to use adaptive grid refinement for large grids
-(n_grid &gt;= 20). This dramatically reduces computation time by focusing on compatible
-regions. Default is TRUE.</p></dd>
+<dd><p>Logical. Whether <code>grid_method = "adaptive"</code> may run.
+With <code>FALSE</code>, <code>"adaptive"</code> falls back to the regular grid, and on the
+exposure path <code>"auto"</code> uses its corner probe instead of adaptive refinement.
+Adaptive refinement does not reduce the number of evaluations (see
+<code>grid_method</code>). Default is TRUE.</p></dd>
 
 
 <dt id="arg-grid-method">grid_method<a class="anchor" aria-label="anchor" href="#arg-grid-method"></a></dt>
-<dd><p>Character string specifying grid search algorithm:</p><ul><li><p><code>"lhs"</code> (default): Latin Hypercube Sampling - space-filling design
-    that reduces evaluations by 99% while maintaining broad coverage. Best for
-    most applications (McKay et al., 1979).</p></li>
-<li><p><code>"auto"</code>: Automatically selects best method based on a 16-point probe
-    of the parameter space.</p></li>
-<li><p><code>"regular"</code>: Exhaustive regular grid (n_grid^4 evaluations). Use for
-    exact bounds when computational budget allows.</p></li>
-<li><p><code>"sobol"</code>: Sobol low-discrepancy sequences (Sobol, 1967). Similar to
-    LHS but better for high-dimensional problems.</p></li>
-<li><p><code>"adaptive"</code>: Two-stage coarse-to-fine refinement. Effective when
-    falsification rate is high.</p></li>
-<li><p><code>"binary"</code>: Binary search on parameter boundaries. Efficient when
-    compatibility is monotonic in parameters.</p></li>
-</ul></dd>
+<dd><p>Character string specifying which points of the sensitivity
+region are evaluated. The bounds are the minimum and maximum over the compatible
+points evaluated, so they are an inner approximation of the identified set: a
+method that evaluates fewer points, or no corners, can only report narrower bounds.</p><ul><li><p><code>"lhs"</code> (default): Latin hypercube sample of <code>ceiling(n_grid^2)</code>
+    points (McKay et al., 1979), from a fixed internal design, so the bounds are
+    reproducible. Fast, but it evaluates no corners and its bounds can be much
+    narrower than the regular grid's; check them against <code>"regular"</code> before
+    reporting.</p></li>
+<li><p><code>"regular"</code>: every combination of <code>n_grid</code> equally spaced values
+    per parameter (<code>n_grid^4</code> points, including all corners). The only method
+    that uses <code>parallel = TRUE</code>.</p></li>
+<li><p><code>"sobol"</code>: a Halton-type low-discrepancy sequence (van der Corput in
+    bases 3 to 6) of <code>ceiling(n_grid^2)</code> points; despite the name, not a Sobol'
+    sequence. Deterministic; evaluates no corners.</p></li>
+<li><p><code>"adaptive"</code>: a coarse grid, then a full <code>n_grid^4</code> grid over the
+    bounding box of the compatible coarse points. Never evaluates fewer points than
+    <code>"regular"</code>; stops with an error if no coarse point is compatible. Requires
+    <code>use_adaptive_grid = TRUE</code>.</p></li>
+<li><p><code>"binary"</code>: despite the name, no binary search. Evaluates the 16 corners;
+    if none or all are compatible, adds a 50-point Latin hypercube, otherwise 10,000
+    random points with Beta(0.5, 0.5) coordinates (concentrated near the edges).
+    Ignores <code>n_grid</code>; call <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> first for reproducible bounds.</p></li>
+<li><p><code>"auto"</code>: on the exposure path with <code>use_adaptive_grid = TRUE</code>, runs
+    <code>"adaptive"</code>. Otherwise evaluates the 16 corners and uses the regular grid
+    (all compatible), <code>"binary"</code> (more than 75%), <code>"sobol"</code> (fewer than
+    25%, but not none) or <code>"lhs"</code> (none, or 25% to 75%).</p></li>
+</ul><p>See the grid-search article at
+<a href="https://data-wise.github.io/medrobust/articles/grid-search-algorithms.html">https://data-wise.github.io/medrobust/articles/grid-search-algorithms.html</a>
+for a benchmark.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -286,9 +303,6 @@ Differential Misclassification. <em>Biostatistics</em>.</p>
 <p>McKay, M. D., Beckman, R. J., &amp; Conover, W. J. (1979). A comparison of three
 methods for selecting values of input variables in the analysis of output from
 a computer code. <em>Technometrics</em>, 21(2), 239-245.</p>
-<p>Sobol', I. M. (1967). On the distribution of points in a cube and the approximate
-evaluation of integrals. <em>USSR Computational Mathematics and Mathematical
-Physics</em>, 7(4), 86-112.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -350,7 +364,7 @@ Physics</em>, 7(4), 86-112.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ============================================================ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> COMPUTATION COMPLETE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 1.96 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 2.72 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Compatible parameter sets: 100 / 100 (100.0%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NIE Bounds (OR scale): [1.148, 1.457]</span>
