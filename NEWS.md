@@ -3,9 +3,12 @@
 ## Documentation
 
 * The `grid_method` and `use_adaptive_grid` help in `?bound_ne` now describes what
-  each search does. The bounds are an inner approximation, so `"lhs"` (the default,
-  `ceiling(n_grid^2)` points and no corners) can report much narrower bounds than
-  `"regular"`; `"adaptive"` never evaluates fewer points than `"regular"`; `"sobol"`
+  each search does. The bounds are an inner approximation that tends to widen as
+  `n_grid` grows, for every method including `"regular"`, so the help now advises
+  checking that the bounds stop changing as `n_grid` increases. `"lhs"` (the default)
+  evaluates `ceiling(n_grid^2)` points (2,500 at the default `n_grid = 50`) and no
+  corners, so with few points it can report much narrower bounds; `"adaptive"` never
+  evaluates fewer points than `"regular"`; `"sobol"`
   is a Halton-type sequence, not a Sobol' sequence; `"binary"` does no binary search
   and ignores `n_grid`; and on the exposure path `"auto"` runs `"adaptive"` by
   default. Only the regular grid uses `parallel = TRUE`.
