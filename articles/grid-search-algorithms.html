@@ -84,7 +84,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Advanced Grid Search Algorithms</h1>
-      <p class="subtitle">Optimizing Computational Performance in medrobust</p>
+      <p class="subtitle">How bound_ne() searches the sensitivity region, and what each method costs</p>
       <p class="author">medrobust package</p>
       <p class="date">2026-09-26</p>
 
@@ -99,351 +99,158 @@
 
     <section class="level2"><h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The <code><a href="../reference/bound_ne.html">bound_ne()</a></code> function computes partial identification bounds by evaluating compatibility across a 4-dimensional parameter space (sn0, sp0, ψ_sn, ψ_sp). This vignette describes <strong>6 advanced grid search algorithms</strong> that dramatically reduce computation time while maintaining accuracy.</p>
-<p><strong>Key insight</strong>: These methods reduce evaluations by <strong>90-99%</strong> compared to exhaustive grid search, enabling practical analysis with large grids.</p>
-</section><section class="level2"><h2 id="the-computational-challenge">The Computational Challenge<a class="anchor" aria-label="anchor" href="#the-computational-challenge"></a>
-</h2>
-<section class="level3"><h3 id="exponential-complexity">Exponential Complexity<a class="anchor" aria-label="anchor" href="#exponential-complexity"></a>
-</h3>
-<p>With a regular grid approach:</p>
+<p><code><a href="../reference/bound_ne.html">bound_ne()</a></code> evaluates the misclassification parameters <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Ψ</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>s</mi><msub><mi>n</mi><mn>0</mn></msub><mo>,</mo><mi>s</mi><msub><mi>p</mi><mn>0</mn></msub><mo>,</mo><msub><mi>ψ</mi><mrow><mi>s</mi><mi>n</mi></mrow></msub><mo>,</mo><msub><mi>ψ</mi><mrow><mi>s</mi><mi>p</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Psi = (sn_0, sp_0, \psi_{sn}, \psi_{sp})</annotation></semantics></math> at a set of points in the sensitivity region, keeps the points that are compatible with the data, and reports the minimum and maximum of each effect over them. The reported bounds are therefore an <strong>inner approximation</strong> of the identified set: a point the search never evaluates cannot widen them. The <code>grid_method</code> argument decides which points are evaluated, and that choice trades run time against how close the reported bounds come to the full identified set.</p>
+<p>Two facts shape the choice:</p>
 <ul>
+<li>The effects are often most extreme at the edges of the region, so methods that evaluate the corners and edges (the regular grid) tend to find the widest bounds.</li>
+<li>Each evaluation solves the misclassification model once; cost grows linearly with the number of points evaluated.</li>
+</ul></section><section class="level2"><h2 id="points-evaluated-by-each-method">Points evaluated by each method<a class="anchor" aria-label="anchor" href="#points-evaluated-by-each-method"></a>
+</h2>
+<table class="table caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th><code>grid_method</code></th>
+<th>Points evaluated</th>
+<th>Deterministic?</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>"regular"</code></td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>4</mn></msubsup><annotation encoding="application/x-tex">n_{grid}^4</annotation></semantics></math> (10,000 at <code>n_grid = 10</code>)</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>
+<code>"lhs"</code> (default)</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math> (100 at <code>n_grid = 10</code>)</td>
+<td>yes (fixed internal design)</td>
+</tr>
+<tr class="odd">
+<td><code>"sobol"</code></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math></td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td><code>"adaptive"</code></td>
+<td>a coarse grid, then a full <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>4</mn></msubsup><annotation encoding="application/x-tex">n_{grid}^4</annotation></semantics></math> grid over part of the region</td>
+<td>yes</td>
+</tr>
+<tr class="odd">
+<td><code>"binary"</code></td>
+<td>16 corners, then 50 or 10,000 more points</td>
+<td>no (uses your random stream)</td>
+</tr>
+<tr class="even">
+<td><code>"auto"</code></td>
+<td>depends on the path and a corner probe (see below)</td>
+<td>depends on the method chosen</td>
+</tr>
+</tbody>
+</table>
+<p><code>n_grid</code> must be between 10 and 200.</p>
+</section><section class="level2"><h2 id="the-methods">The methods<a class="anchor" aria-label="anchor" href="#the-methods"></a>
+</h2>
+<section class="level3"><h3 id="regular-grid-regular">Regular grid (<code>"regular"</code>)<a class="anchor" aria-label="anchor" href="#regular-grid-regular"></a>
+</h3>
+<p>Evaluates every combination of <code>n_grid</code> equally spaced values per parameter, including all corners of the region. It is the only method that uses <code>parallel = TRUE</code>; every other method evaluates its points one at a time.</p>
+</section><section class="level3"><h3 id="latin-hypercube-sampling-lhs-the-default">Latin hypercube sampling (<code>"lhs"</code>, the default)<a class="anchor" aria-label="anchor" href="#latin-hypercube-sampling-lhs-the-default"></a>
+</h3>
+<p>Divides each parameter range into <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">N = \lceil n_{grid}^2 \rceil</annotation></semantics></math> intervals, draws one value in each, and permutes the columns (McKay et al., 1979). The design is generated with a fixed internal seed, so the same inputs always give the same bounds, and your own random number stream is left untouched. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math> interior points and no corners, LHS is fast but can report bounds well inside the regular-grid bounds (see the benchmark below).</p>
+</section><section class="level3"><h3 id="low-discrepancy-sequence-sobol">Low-discrepancy sequence (<code>"sobol"</code>)<a class="anchor" aria-label="anchor" href="#low-discrepancy-sequence-sobol"></a>
+</h3>
+<p>Despite its name, this method does not use a Sobol’ sequence. It uses a simple radical-inverse (van der Corput) sequence with a different base for each parameter (bases 3 to 6), a Halton-type design with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math> points. Like LHS it is deterministic and evaluates no corners.</p>
+</section><section class="level3"><h3 id="adaptive-refinement-adaptive">Adaptive refinement (<code>"adaptive"</code>)<a class="anchor" aria-label="anchor" href="#adaptive-refinement-adaptive"></a>
+</h3>
+<ol type="1">
+<li>Evaluates a coarse grid (3 points per parameter at <code>n_grid = 10</code>, so 81 points).</li>
+<li>Takes the bounding box of the compatible coarse points, widening the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><msub><mi>n</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">sn_0</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><msub><mi>p</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">sp_0</annotation></semantics></math> ranges by 10% of their width while staying inside the sensitivity region.</li>
+<li>Evaluates a full <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>4</mn></msubsup><annotation encoding="application/x-tex">n_{grid}^4</annotation></semantics></math> grid over that box, skipping points already evaluated.</li>
+</ol>
+<p>The refinement concentrates the fine grid where compatible points were found, but it never evaluates fewer points than the regular grid: when most of the region is compatible, the box is the whole region and adaptive costs slightly more than regular. If no coarse point is compatible, <code><a href="../reference/bound_ne.html">bound_ne()</a></code> stops with an error. <code>"adaptive"</code> runs only when <code>use_adaptive_grid = TRUE</code> (the default); otherwise the regular grid is used.</p>
+</section><section class="level3"><h3 id="corner-and-edge-sampling-binary">Corner-and-edge sampling (<code>"binary"</code>)<a class="anchor" aria-label="anchor" href="#corner-and-edge-sampling-binary"></a>
+</h3>
+<p>Despite its name, this method does no binary search.</p>
+<ol type="1">
+<li>Evaluates the 16 corners of the region.</li>
+<li>If none or all 16 corners are compatible, evaluates a 50-point Latin hypercube and stops (66 points in total).</li>
+<li>Otherwise evaluates 10,000 random points whose coordinates are drawn from a Beta(0.5, 0.5) distribution rescaled to each range, which concentrates them near the edges.</li>
+</ol>
+<p><code>n_grid</code> has no effect on this method. Because step 3 draws from your random number stream, call <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> first if you need reproducible bounds. The random points can fall between grid values, so the bounds can be slightly wider than the regular grid’s.</p>
+</section><section class="level3"><h3 id="automatic-choice-auto">Automatic choice (<code>"auto"</code>)<a class="anchor" aria-label="anchor" href="#automatic-choice-auto"></a>
+</h3>
+<p>The behavior differs between the two misclassification paths.</p>
+<ul>
+<li><p><strong>Exposure misclassification</strong>: with the defaults (<code>use_adaptive_grid = TRUE</code>), <code>"auto"</code> runs the adaptive method above.</p></li>
 <li>
-<strong>4 dimensions</strong>: sn0, sp0, ψ_sn, ψ_sp</li>
-<li>
-<strong>Grid resolution</strong>: <code>n_grid</code> points per dimension</li>
-<li>
-<strong>Total evaluations</strong>: n_grid<sup>4</sup>
+<p><strong>Mediator misclassification</strong>, or the exposure path with <code>use_adaptive_grid = FALSE</code>: evaluates the 16 corners, then chooses by the share that is compatible:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th>Compatible corners</th>
+<th>Method used</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>all 16</td>
+<td>regular grid</td>
+</tr>
+<tr class="even">
+<td>none</td>
+<td>LHS</td>
+</tr>
+<tr class="odd">
+<td>fewer than 25%</td>
+<td><code>"sobol"</code></td>
+</tr>
+<tr class="even">
+<td>more than 75%</td>
+<td><code>"binary"</code></td>
+</tr>
+<tr class="odd">
+<td>25% to 75%</td>
+<td>LHS</td>
+</tr>
+</tbody>
+</table>
+<p>The LHS and <code>"sobol"</code> sample size is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>500</mn><mo>,</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\min(500, n_{grid}^2)</annotation></semantics></math> on the exposure path and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo>,</mo><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\min(n_{grid}^2, 10\,000)</annotation></semantics></math> on the mediator path.</p>
 </li>
-</ul>
-<p><strong>Examples</strong>:</p>
-<p>This exponential growth makes fine-grained grids (n_grid ≥ 50) impractical with exhaustive search.</p>
-</section><section class="level3"><h3 id="the-solution-smart-sampling">The Solution: Smart Sampling<a class="anchor" aria-label="anchor" href="#the-solution-smart-sampling"></a>
-</h3>
-<p>Instead of evaluating all n_grid<sup>4</sup> points, advanced algorithms sample strategically:</p>
-<ul>
-<li>
-<strong>Space-filling designs</strong> (LHS, Sobol): Ensure coverage with fewer points</li>
-<li>
-<strong>Adaptive refinement</strong>: Focus on compatible regions</li>
-<li>
-<strong>Boundary search</strong>: Find edges efficiently</li>
-<li>
-<strong>Auto-selection</strong>: Choose best method automatically</li>
-</ul></section></section><section class="level2"><h2 id="available-grid-methods">Available Grid Methods<a class="anchor" aria-label="anchor" href="#available-grid-methods"></a>
+</ul></section></section><section class="level2"><h2 id="benchmark">Benchmark<a class="anchor" aria-label="anchor" href="#benchmark"></a>
 </h2>
-<section class="level3"><h3 id="latin-hypercube-sampling-lhs-default">1. Latin Hypercube Sampling (<code>"lhs"</code>) ⭐ <strong>DEFAULT</strong>
-<a class="anchor" aria-label="anchor" href="#latin-hypercube-sampling-lhs-default"></a>
-</h3>
-<p><strong>What it is</strong>: A space-filling experimental design that ensures uniform coverage across all dimensions.</p>
-<p><strong>How it works</strong>: 1. Divide each parameter range into N equal intervals 2. Sample once from each interval (guaranteed coverage) 3. Randomly permute assignments across dimensions 4. Result: N well-distributed points in 4D space</p>
-<p><strong>Performance</strong>:</p>
-<p><strong>When to use</strong>: - Default choice for most analyses - Exploratory data analysis - Large grids (n_grid ≥ 20) - Need broad parameter space coverage</p>
-<p><strong>Example</strong>:</p>
+<p>The comparison below runs when this page is built, on simulated data with exposure misclassification (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">n = 1000</annotation></semantics></math>, two confounders) and a sensitivity region in which about a third of the points are falsified.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Default: LHS is used automatically</span></span>
-<span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span> <span class="co"># LHS evaluates ~2,500 points instead of 6.25M</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/data-wise/medrobust" class="external-link">medrobust</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_dm_data.html">simulate_dm_data</a></span><span class="op">(</span></span>
+<span>  n <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  true_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>beta_AM <span class="op">=</span> <span class="fl">0.5</span>, theta_AY <span class="op">=</span> <span class="fl">0.3</span>, theta_MY <span class="op">=</span> <span class="fl">0.8</span>, p_A <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  dm_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sn0 <span class="op">=</span> <span class="fl">0.85</span>, sp0 <span class="op">=</span> <span class="fl">0.85</span>, psi_sn <span class="op">=</span> <span class="fl">1.5</span>, psi_sp <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span>,</span>
+<span>  misclass_type <span class="op">=</span> <span class="st">"exposure"</span>,</span>
+<span>  confounders <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sens_region</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity_region.html">sensitivity_region</a></span><span class="op">(</span></span>
+<span>  sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.70</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
+<span>  sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.70</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
+<span>  psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3.0</span><span class="op">)</span>,</span>
+<span>  psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2.0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="regular-grid-regular">2. Regular Grid (<code>"regular"</code>)<a class="anchor" aria-label="anchor" href="#regular-grid-regular"></a>
-</h3>
-<p><strong>What it is</strong>: Exhaustive evaluation of all n_grid<sup>4</sup> combinations.</p>
-<p><strong>Performance</strong>:</p>
-<ul>
-<li>Evaluations: n_grid<sup>4</sup> (always)</li>
-<li>Speed: Baseline (1x)</li>
-<li>Accuracy: Exact min/max over grid</li>
-</ul>
-<p><strong>When to use</strong>:</p>
-<ul>
-<li>Publication-quality results requiring exact bounds</li>
-<li>Small grids (n_grid ≤ 10) where speed is acceptable</li>
-<li>When computational budget allows</li>
-<li>Critical policy decisions</li>
-</ul>
-<p><strong>Example</strong>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Exact bounds (slow for large grids)</span></span>
-<span><span class="va">bounds_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"regular"</span> <span class="co"># 10,000 evaluations</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="sobol-sequences-sobol">3. Sobol Sequences (<code>"sobol"</code>)<a class="anchor" aria-label="anchor" href="#sobol-sequences-sobol"></a>
-</h3>
-<p><strong>What it is</strong>: Low-discrepancy quasi-random sequences ensuring even coverage.</p>
-<p><strong>How it differs from LHS</strong>: - Deterministic (no random seed needed) - Better uniformity in high dimensions - Slightly better coverage for &gt;4 dimensions</p>
-<p><strong>Performance</strong>: - Evaluations: sqrt(n_grid<sup>4</sup>) (same as LHS) - Speed: 50-100x faster than regular - Accuracy: Similar to LHS</p>
-<p><strong>When to use</strong>: - High-dimensional extensions (future features) - Need reproducibility without setting seed - Sparse compatible regions</p>
-<p><strong>Example</strong>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bounds_sobol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"sobol"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="adaptive-grid-adaptive">4. Adaptive Grid (<code>"adaptive"</code>)<a class="anchor" aria-label="anchor" href="#adaptive-grid-adaptive"></a>
-</h3>
-<p><strong>What it is</strong>: Two-stage coarse-to-fine refinement.</p>
-<p><strong>How it works</strong>: 1. <strong>Coarse stage</strong>: Evaluate small grid (e.g., 3×3×3×3) 2. <strong>Identify compatible regions</strong>: Find where constraints are satisfied 3. <strong>Fine stage</strong>: Refine only around compatible regions 4. <strong>Result</strong>: Focus computational effort where it matters</p>
-<p><strong>Performance</strong>: - Evaluations: 1-20% of full grid (when falsification is high) - Speed: 5-10x faster - Accuracy: Good for identifying compatible regions</p>
-<p><strong>When to use</strong>:</p>
-<ul>
-<li>High falsification rate expected (&gt;80% incompatible)</li>
-<li>Sparse compatible regions</li>
-<li>Medium-sized grids (10 ≤ n_grid ≤ 30)</li>
-</ul>
-<p><strong>Example</strong>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bounds_adaptive</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"adaptive"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="binary-search-on-bounds-binary">5. Binary Search on Bounds (<code>"binary"</code>)<a class="anchor" aria-label="anchor" href="#binary-search-on-bounds-binary"></a>
-</h3>
-<p><strong>What it is</strong>: Find exact boundaries between compatible/incompatible regions.</p>
-<p><strong>How it works</strong>: 1. Test corner points of parameter space 2. For each parameter, binary search to find boundaries 3. Sample densely near boundaries (Beta distribution) 4. Focus on finding min/max effect values</p>
-<p><strong>Performance</strong>: - Evaluations: O(log n) per dimension when monotonic - Speed: 10-50x faster - Accuracy: Excellent for boundaries</p>
-<p><strong>When to use</strong>: - Compatibility is monotonic in parameters - Need precise boundary estimates - Computational constraints</p>
-<p><strong>Limitations</strong>: - Assumes monotonicity (not always satisfied) - May miss complex interior structures - Falls back to LHS if assumptions fail</p>
-<p><strong>Example</strong>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bounds_binary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"binary"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="auto-selection-auto">6. Auto-Selection (<code>"auto"</code>)<a class="anchor" aria-label="anchor" href="#auto-selection-auto"></a>
-</h3>
-<p><strong>What it is</strong>: Automatically selects best method based on problem characteristics.</p>
-<p><strong>How it works</strong>: 1. Probe 16 corner points of parameter space 2. Estimate compatibility rate 3. Select method based on heuristics: - 100% compatible → Regular grid (all points useful) - 0% compatible → LHS (need dense search) - &lt;25% compatible → Sobol (sparse search) - &gt;75% compatible → Binary search (find edges) - 25-75% compatible → LHS (balanced)</p>
-<p><strong>Performance</strong>: - Evaluations: 100-500 typically - Speed: Optimal for problem - Overhead: Minimal (16 evaluations)</p>
-<p><strong>When to use</strong>: - Unsure which method is best - Problem characteristics unknown - Exploratory analysis</p>
-<p><strong>Example</strong>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bounds_auto</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"auto"</span> <span class="co"># Adapts to your data</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section></section><section class="level2"><h2 id="performance-comparison">Performance Comparison<a class="anchor" aria-label="anchor" href="#performance-comparison"></a>
-</h2>
-<section class="level3"><h3 id="test-case-exposure-misclassification">Test Case: Exposure Misclassification<a class="anchor" aria-label="anchor" href="#test-case-exposure-misclassification"></a>
-</h3>
-<p><strong>Results</strong> (n=1000, n_grid=10, 2 confounders):</p>
-<p><strong>Key observations</strong>: - LHS is <strong>67x faster</strong> than regular grid - Bounds are similar across methods (slight variations due to sampling) - All methods identify the same general bound ranges</p>
-</section><section class="level3"><h3 id="large-grid-performance-n_grid50">Large Grid Performance (n_grid=50)<a class="anchor" aria-label="anchor" href="#large-grid-performance-n_grid50"></a>
-</h3>
-</section></section><section class="level2"><h2 id="recommended-workflow">Recommended Workflow<a class="anchor" aria-label="anchor" href="#recommended-workflow"></a>
-</h2>
-<section class="level3"><h3 id="three-stage-analysis">Three-Stage Analysis<a class="anchor" aria-label="anchor" href="#three-stage-analysis"></a>
-</h3>
-<section class="level4"><h4 id="stage-1-quick-exploration">Stage 1: Quick Exploration<a class="anchor" aria-label="anchor" href="#stage-1-quick-exploration"></a>
-</h4>
-<p>Use LHS with moderate grid for initial insights:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fast exploration (~30 seconds)</span></span>
-<span><span class="va">bounds_quick</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span>, <span class="co"># Fast exploration</span></span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regular"</span>, <span class="st">"lhs"</span>, <span class="st">"sobol"</span>, <span class="st">"adaptive"</span>, <span class="st">"binary"</span>, <span class="st">"auto"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bounds_quick</span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level4"><h4 id="stage-2-refinement">Stage 2: Refinement<a class="anchor" aria-label="anchor" href="#stage-2-refinement"></a>
-</h4>
-<p>Increase resolution or use auto-selection:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Refined analysis (~2 minutes)</span></span>
-<span><span class="va">bounds_refined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"auto"</span>, <span class="co"># Adapts to data characteristics</span></span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level4"><h4 id="stage-3-publication-quality-results">Stage 3: Publication-Quality Results<a class="anchor" aria-label="anchor" href="#stage-3-publication-quality-results"></a>
-</h4>
-<p>Use regular grid with parallel processing:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Exact bounds with parallel processing (~10-20 minutes)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
-<span><span class="va">n_cores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
-<span></span>
-<span><span class="va">bounds_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">100</span>, <span class="co"># High resolution</span></span>
-<span>  grid_method <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># Exact bounds</span></span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n_cores <span class="op">=</span> <span class="va">n_cores</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section></section></section><section class="level2"><h2 id="accuracy-vs--speed-trade-offs">Accuracy vs. Speed Trade-offs<a class="anchor" aria-label="anchor" href="#accuracy-vs--speed-trade-offs"></a>
-</h2>
-<section class="level3"><h3 id="bound-width-differences">Bound Width Differences<a class="anchor" aria-label="anchor" href="#bound-width-differences"></a>
-</h3>
-<p>Sampling methods (LHS, Sobol) produce approximate bounds:</p>
-</section><section class="level3"><h3 id="when-is-approximation-acceptable">When is approximation acceptable?<a class="anchor" aria-label="anchor" href="#when-is-approximation-acceptable"></a>
-</h3>
-<p><strong>✅ Use sampling methods (LHS, Sobol) for</strong>: - Exploratory data analysis - Sensitivity checking - Interactive workflows - Preliminary results - Computational constraints</p>
-<p><strong>❌ Use exact methods (regular grid) for</strong>: - Final publication results - Critical policy decisions - Small grids (n_grid ≤ 10, cost is low) - When exact bounds are required</p>
-</section></section><section class="level2"><h2 id="combining-with-parallel-processing">Combining with Parallel Processing<a class="anchor" aria-label="anchor" href="#combining-with-parallel-processing"></a>
-</h2>
-<p>All grid methods benefit from parallelization:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># LHS + Parallel = Fastest combination</span></span>
-<span><span class="va">bounds_fast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span>, <span class="co"># 99% fewer evaluations</span></span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Additional speedup</span></span>
-<span>  n_cores <span class="op">=</span> <span class="fl">8</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Expected time: ~10-20 seconds</span></span>
-<span><span class="co"># vs. ~30 hours with sequential regular grid</span></span></code></pre></div>
-</div>
-<p><strong>Performance multipliers</strong>: - LHS alone: 50-100x faster - Parallel (8 cores): 5-7x faster - <strong>Combined: 250-700x faster!</strong></p>
-</section><section class="level2"><h2 id="selection-guide">Selection Guide<a class="anchor" aria-label="anchor" href="#selection-guide"></a>
-</h2>
-</section><section class="level2"><h2 id="algorithm-implementation-details">Algorithm Implementation Details<a class="anchor" aria-label="anchor" href="#algorithm-implementation-details"></a>
-</h2>
-<section class="level3"><h3 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
-</h3>
-<p><strong>Sampling methods</strong> (LHS, Sobol):</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set seed for reproducibility</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">bounds1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span><span class="va">...</span>, grid_method <span class="op">=</span> <span class="st">"lhs"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">bounds2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span><span class="va">...</span>, grid_method <span class="op">=</span> <span class="st">"lhs"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># bounds1 and bounds2 will be identical</span></span></code></pre></div>
-</div>
-<p><strong>Sobol sequences</strong>: Deterministic, no seed needed for reproducibility.</p>
-</section><section class="level3"><h3 id="memory-efficiency">Memory Efficiency<a class="anchor" aria-label="anchor" href="#memory-efficiency"></a>
-</h3>
-<p>All methods use: - <strong>Pre-computed probabilities</strong>: Calculate observed distributions once - <strong>Vectorized operations</strong>: Process combinations in batches - <strong>Early termination</strong>: Stop evaluation at first constraint violation - <strong>Streaming results</strong>: Don’t store incompatible parameter sets</p>
-</section><section class="level3"><h3 id="computational-complexity">Computational Complexity<a class="anchor" aria-label="anchor" href="#computational-complexity"></a>
-</h3>
-<p>Where: - n_grid: grid resolution - n_coarse: coarse grid size (typically 3-5) - k: proportion of compatible coarse regions - n_boundary: points near boundaries - n_compatible: number of compatible parameter sets (stored)</p>
-</section></section><section class="level2"><h2 id="practical-examples">Practical Examples<a class="anchor" aria-label="anchor" href="#practical-examples"></a>
-</h2>
-<section class="level3"><h3 id="example-1-quick-sensitivity-check">Example 1: Quick sensitivity check<a class="anchor" aria-label="anchor" href="#example-1-quick-sensitivity-check"></a>
-</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 30-second sensitivity check</span></span>
-<span><span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">mydata</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"treatment"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"mediator_measure"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"outcome"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"baseline"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>    sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>    psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
-<span>    psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span> <span class="co"># Fast</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="example-2-publication-ready-analysis">Example 2: Publication-ready analysis<a class="anchor" aria-label="anchor" href="#example-2-publication-ready-analysis"></a>
-</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># High-resolution exact bounds</span></span>
-<span><span class="va">bounds_pub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">mydata</span>,</span>
-<span>  exposure <span class="op">=</span> <span class="st">"treatment"</span>,</span>
-<span>  mediator <span class="op">=</span> <span class="st">"mediator_measure"</span>,</span>
-<span>  outcome <span class="op">=</span> <span class="st">"outcome"</span>,</span>
-<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"baseline"</span><span class="op">)</span>,</span>
-<span>  misclassified_variable <span class="op">=</span> <span class="st">"mediator"</span>,</span>
-<span>  sensitivity_region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    sn0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>    sp0_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>    psi_sn_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
-<span>    psi_sp_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">100</span>, <span class="co"># High resolution</span></span>
-<span>  grid_method <span class="op">=</span> <span class="st">"regular"</span>, <span class="co"># Exact</span></span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n_cores <span class="op">=</span> <span class="fl">8</span>,</span>
-<span>  bootstrap <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Add CIs</span></span>
-<span>  bootstrap_reps <span class="op">=</span> <span class="fl">1000</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level3"><h3 id="example-3-comparing-methods">Example 3: Comparing methods<a class="anchor" aria-label="anchor" href="#example-3-comparing-methods"></a>
-</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Compare different grid methods</span></span>
-<span><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lhs"</span>, <span class="st">"sobol"</span>, <span class="st">"binary"</span>, <span class="st">"regular"</span><span class="op">)</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">method</span> <span class="kw">in</span> <span class="va">methods</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nTesting method:"</span>, <span class="va">method</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">results</span><span class="op">[[</span><span class="va">method</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="va">bounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
-<span>      data <span class="op">=</span> <span class="va">mydata</span>,</span>
+<span><span class="va">rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">methods</span>, <span class="kw">function</span><span class="op">(</span><span class="va">method</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="co"># "binary" draws from the session's random stream</span></span>
+<span>  <span class="va">secs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
+<span>    <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<span>      data <span class="op">=</span> <span class="va">test_data</span><span class="op">@</span><span class="va">observed</span>,</span>
 <span>      exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
 <span>      mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
 <span>      outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
@@ -454,36 +261,215 @@
 <span>      grid_method <span class="op">=</span> <span class="va">method</span>,</span>
 <span>      verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    Method <span class="op">=</span> <span class="va">method</span>,</span>
+<span>    Evaluated <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">n_evaluated</span>,</span>
+<span>    Compatible <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">n_compatible</span>,</span>
+<span>    Seconds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">secs</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    NIE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"[%.3f, %.3f]"</span>, <span class="va">b</span><span class="op">@</span><span class="va">NIE_lower</span>, <span class="va">b</span><span class="op">@</span><span class="va">NIE_upper</span><span class="op">)</span>,</span>
+<span>    NDE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"[%.3f, %.3f]"</span>, <span class="va">b</span><span class="op">@</span><span class="va">NDE_lower</span>, <span class="va">b</span><span class="op">@</span><span class="va">NDE_upper</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Time:"</span>, <span class="va">results</span><span class="op">[[</span><span class="va">method</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  NIE bounds:"</span>, <span class="va">bounds</span><span class="op">@</span><span class="va">NIE_lower</span>, <span class="st">"-"</span>, <span class="va">bounds</span><span class="op">@</span><span class="va">NIE_upper</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  NDE bounds:"</span>, <span class="va">bounds</span><span class="op">@</span><span class="va">NDE_lower</span>, <span class="st">"-"</span>, <span class="va">bounds</span><span class="op">@</span><span class="va">NDE_upper</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">rows</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<table class="table caption-top">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Evaluated</th>
+<th style="text-align: right;">Compatible</th>
+<th style="text-align: right;">Seconds</th>
+<th style="text-align: left;">NIE</th>
+<th style="text-align: left;">NDE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">regular</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">6390</td>
+<td style="text-align: right;">26.6</td>
+<td style="text-align: left;">[1.050, 1.098]</td>
+<td style="text-align: left;">[0.776, 4.977]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lhs</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">[1.053, 1.078]</td>
+<td style="text-align: left;">[1.069, 2.755]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sobol</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: left;">[1.052, 1.092]</td>
+<td style="text-align: left;">[1.072, 2.940]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">adaptive</td>
+<td style="text-align: right;">10065</td>
+<td style="text-align: right;">6423</td>
+<td style="text-align: right;">27.9</td>
+<td style="text-align: left;">[1.050, 1.098]</td>
+<td style="text-align: left;">[0.776, 4.977]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">10016</td>
+<td style="text-align: right;">5888</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: left;">[1.050, 1.100]</td>
+<td style="text-align: left;">[0.811, 5.032]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">auto</td>
+<td style="text-align: right;">10065</td>
+<td style="text-align: right;">6423</td>
+<td style="text-align: right;">28.0</td>
+<td style="text-align: left;">[1.050, 1.098]</td>
+<td style="text-align: left;">[0.776, 4.977]</td>
+</tr>
+</tbody>
+</table>
 </div>
-</section></section><section class="level2"><h2 id="future-enhancements">Future Enhancements<a class="anchor" aria-label="anchor" href="#future-enhancements"></a>
+</div>
+<p>Reading the table:</p>
+<ul>
+<li>
+<strong>LHS and <code>"sobol"</code></strong> evaluate 100 points and finish in well under a second, but their bounds sit well inside the regular-grid bounds. Here the NDE lower bound moves from below 1 to above 1, which would change the conclusion.</li>
+<li>
+<strong><code>"adaptive"</code> and <code>"auto"</code></strong> (which runs adaptive on this path) cost as much as the regular grid and give the same bounds: the compatible points span the whole region, so the refinement box is the whole region.</li>
+<li>
+<strong><code>"binary"</code></strong> found some corners incompatible, so it drew 10,000 random points. Its bounds are close to the regular grid’s and can extend slightly beyond them, because the random points fall between grid values.</li>
+<li>Times are from the machine that built this page and scale with the number of points evaluated.</li>
+</ul></section><section class="level2"><h2 id="choosing-a-method">Choosing a method<a class="anchor" aria-label="anchor" href="#choosing-a-method"></a>
 </h2>
-<p>Potential algorithm additions:</p>
-<ol type="1">
+<ul>
 <li>
-<strong>Bayesian Optimization</strong>: Learn from evaluations to guide search toward optimal regions</li>
+<strong>For reported results, use <code>"regular"</code></strong> (with <code>parallel = TRUE</code> for larger grids), or check that the LHS bounds do not change when you increase <code>n_grid</code> or switch to <code>"regular"</code>. A regular grid at <code>n_grid = 10</code> evaluates 10,000 points; <code>n_grid = 20</code> evaluates 160,000.</li>
 <li>
-<strong>Particle Swarm</strong>: Use swarm intelligence for global optimization</li>
+<strong>For quick exploration, <code>"lhs"</code></strong> is fast and reproducible, but treat its bounds as inner approximations that can be much narrower than the identified set.</li>
 <li>
-<strong>Gradient-based methods</strong>: When bounds are differentiable</li>
+<strong><code>"adaptive"</code> does not save time</strong> in this implementation; it spends the same fine grid on a smaller box. Use it only if you want a finer grid over the compatible part of the region at the regular-grid price.</li>
 <li>
-<strong>Hybrid approaches</strong>: Combine methods (e.g., Sobol initialization + adaptive refinement)</li>
+<strong><code>"binary"</code></strong> is a reasonable check on the regular grid because it probes the edges, but set a seed, and note that it ignores <code>n_grid</code>.</li>
 <li>
-<strong>Uncertainty-guided sampling</strong>: Add points where bound uncertainty is highest</li>
-</ol></section><section class="level2"><h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<strong><code>"auto"</code></strong> is not a shortcut on the exposure path: with the defaults it runs the adaptive method.</li>
+</ul></section><section class="level2"><h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
+</h2>
+<table class="table caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th>Method</th>
+<th>Same bounds on every run?</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<code>"regular"</code>, <code>"adaptive"</code>
+</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td><code>"lhs"</code></td>
+<td>yes; the design uses a fixed internal seed and restores your random stream</td>
+</tr>
+<tr class="odd">
+<td><code>"sobol"</code></td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td><code>"binary"</code></td>
+<td>only if you call <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> first</td>
+</tr>
+</tbody>
+</table></section><section class="level2"><h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Quick look (default method)</span></span>
+<span><span class="va">bounds_quick</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
+<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
+<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
+<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
+<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
+<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
+<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Reported result: full regular grid, in parallel</span></span>
+<span><span class="va">bounds_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
+<span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
+<span>  outcome <span class="op">=</span> <span class="st">"Y"</span>,</span>
+<span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
+<span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
+<span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
+<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  grid_method <span class="op">=</span> <span class="st">"regular"</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="fl">4</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <p>McKay, M. D., Beckman, R. J., &amp; Conover, W. J. (1979). A comparison of three methods for selecting values of input variables in the analysis of output from a computer code. <em>Technometrics</em>, 21(2), 239-245. <a href="https://doi.org/10.2307/1268522" class="external-link">https://doi.org/10.2307/1268522</a></p>
-<p>Sobol’, I. M. (1967). On the distribution of points in a cube and the approximate evaluation of integrals. <em>USSR Computational Mathematics and Mathematical Physics</em>, 7(4), 86-112. <a href="https://doi.org/10.1016/0041-5553(67)90144-9" class="external-link">https://doi.org/10.1016/0041-5553(67)90144-9</a></p>
 </section><section class="level2"><h2 id="session-information">Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.6.1 (2026-06-24)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.5 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] medrobust_0.4.4</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       </span></span>
+<span><span class="co">#&gt;  [5] xfun_0.61          otel_0.2.0         generics_0.1.4     S7_0.2.2          </span></span>
+<span><span class="co">#&gt;  [9] jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9    scales_1.4.0      </span></span>
+<span><span class="co">#&gt; [13] rmarkdown_2.32     grid_4.6.1         evaluate_1.0.5     tibble_3.3.1      </span></span>
+<span><span class="co">#&gt; [17] fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5    compiler_4.6.1    </span></span>
+<span><span class="co">#&gt; [21] dplyr_1.2.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    farver_2.1.2      </span></span>
+<span><span class="co">#&gt; [25] digest_0.6.39      R6_2.6.1           tidyselect_1.2.1   parallel_4.6.1    </span></span>
+<span><span class="co">#&gt; [29] pillar_1.11.1      magrittr_2.0.5     withr_3.0.3        tools_4.6.1       </span></span>
+<span><span class="co">#&gt; [33] gtable_0.3.6       ggplot2_4.0.3</span></span></code></pre></div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
