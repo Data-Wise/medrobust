@@ -510,13 +510,30 @@ parameters
 
 ### Step 6: Bootstrap Inference
 
-For inference, we can compute bootstrap confidence intervals:
+For inference, we can compute bootstrap confidence intervals. The
+bootstrap needs every combination of $`A^*`$, $`M`$, $`Y`$ and the
+confounders to appear in each resample: when a resample loses a cell, no
+parameter set is compatible with it, and that replicate is dropped. With
+two confounders and $`n = 1000`$, the rarest cell in `sim_data` holds a
+single observation, so about half the replicates would be dropped. We
+therefore draw a larger sample ($`n = 5000`$) from the same
+data-generating process:
 
 ``` r
 
+# Same true effects and misclassification as sim_data, larger n
+sim_data_boot <- simulate_dm_data(
+  n = 5000,
+  true_params = true_params,
+  dm_params = dm_params,
+  misclass_type = "exposure",
+  confounders = 2,
+  seed = 123
+)
+
 # This takes longer, so we use fewer bootstrap replications for the vignette
 bounds_with_ci <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data_boot@observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -528,205 +545,9 @@ bounds_with_ci <- bound_ne(
   bootstrap_reps = 100, # Use 1000+ for production
   parallel = FALSE, # Set to FALSE for CRAN vignette check
   confidence_level = 0.95,
-  verbose = TRUE,
+  verbose = FALSE,
   grid_method = "lhs" # (default) Latin Hypercube Sampling for efficiency
 )
-```
-
-    Validating inputs...
-    Preparing data...
-
-    Computing bounds for exposure misclassification...
-    Grid resolution: 10 points per dimension
-    Total parameter sets to evaluate: 10000
-
-    Pre-computing observed probabilities...
-
-    === Latin Hypercube Sampling ===
-    Samples: 100
-
-      |
-      |                                                                      |   0%
-      |
-      |====                                                                  |   5%
-      |
-      |=======                                                               |  10%
-      |
-      |==========                                                            |  15%
-      |
-      |==============                                                        |  20%
-      |
-      |==================                                                    |  25%
-      |
-      |=====================                                                 |  30%
-      |
-      |========================                                              |  35%
-      |
-      |============================                                          |  40%
-      |
-      |================================                                      |  45%
-      |
-      |===================================                                   |  50%
-      |
-      |======================================                                |  55%
-      |
-      |==========================================                            |  60%
-      |
-      |==============================================                        |  65%
-      |
-      |=================================================                     |  70%
-      |
-      |====================================================                  |  75%
-      |
-      |========================================================              |  80%
-      |
-      |============================================================          |  85%
-      |
-      |===============================================================       |  90%
-      |
-      |==================================================================    |  95%
-      |
-      |======================================================================| 100%
-    Compatible: 78/100 (78.0%)
-
-    Computing bootstrap confidence intervals...
-
-    Bootstrap Progress:
-
-      |
-      |                                                                      |   0%
-      |
-      |=                                                                     |   2%
-      |
-      |===                                                                   |   4%
-      |
-      |====                                                                  |   6%
-      |
-      |======                                                                |   8%
-      |
-      |=======                                                               |  10%
-      |
-      |========                                                              |  12%
-      |
-      |==========                                                            |  14%
-      |
-      |===========                                                           |  16%
-      |
-      |=============                                                         |  18%
-      |
-      |==============                                                        |  20%
-      |
-      |===============                                                       |  22%
-      |
-      |=================                                                     |  24%
-      |
-      |==================                                                    |  26%
-      |
-      |====================                                                  |  28%
-      |
-      |=====================                                                 |  30%
-      |
-      |======================                                                |  32%
-      |
-      |========================                                              |  34%
-      |
-      |=========================                                             |  36%
-      |
-      |===========================                                           |  38%
-      |
-      |============================                                          |  40%
-      |
-      |=============================                                         |  42%
-      |
-      |===============================                                       |  44%
-      |
-      |================================                                      |  46%
-      |
-      |==================================                                    |  48%
-      |
-      |===================================                                   |  50%
-      |
-      |====================================                                  |  52%
-      |
-      |======================================                                |  54%
-      |
-      |=======================================                               |  56%
-      |
-      |=========================================                             |  58%
-      |
-      |==========================================                            |  60%
-      |
-      |===========================================                           |  62%
-      |
-      |=============================================                         |  64%
-      |
-      |==============================================                        |  66%
-      |
-      |================================================                      |  68%
-      |
-      |=================================================                     |  70%
-      |
-      |==================================================                    |  72%
-      |
-      |====================================================                  |  74%
-      |
-      |=====================================================                 |  76%
-      |
-      |=======================================================               |  78%
-      |
-      |========================================================              |  80%
-      |
-      |=========================================================             |  82%
-      |
-      |===========================================================           |  84%
-      |
-      |============================================================          |  86%
-      |
-      |==============================================================        |  88%
-      |
-      |===============================================================       |  90%
-      |
-      |================================================================      |  92%
-      |
-      |==================================================================    |  94%
-      |
-      |===================================================================   |  96%
-      |
-      |===================================================================== |  98%
-      |
-      |======================================================================| 100%
-
-    Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
-    mediator, : 49 bootstrap iterations failed and were removed
-
-    Warning in compute_bootstrap_ci(data = data, exposure = exposure, mediator =
-    mediator, : Fewer than 100 successful bootstrap iterations. Results may be
-    unreliable.
-
-
-     ------------------------------------------------------------
-    Bootstrap Results (100 replicates, 51 successful, 49 failed)
-    ------------------------------------------------------------
-
-    NIE Lower Bound 95% CI: [0.880, 1.071]
-    NIE Upper Bound 95% CI: [0.937, 1.110]
-
-    NDE Lower Bound 95% CI: [0.726, 1.795]
-    NDE Upper Bound 95% CI: [1.100, 3.022]
-    ------------------------------------------------------------
-
-
-     ============================================================
-    COMPUTATION COMPLETE
-    ============================================================
-    Time elapsed: 36.12 seconds
-    Compatible parameter sets: 78 / 100 (78.0%)
-
-    NIE Bounds (OR scale): [1.012, 1.024]
-    NDE Bounds (OR scale): [1.173, 1.874]
-    ============================================================ 
-
-``` r
 
 print(bounds_with_ci)
 ```
@@ -742,23 +563,23 @@ print(bounds_with_ci)
     ----------------------------------------------------------------------
     NATURAL INDIRECT EFFECT (NIE)
     ----------------------------------------------------------------------
-      Lower Bound: 1.0116
-      Upper Bound: 1.0238
-      Width:       0.0122
+      Lower Bound: 1.0303
+      Upper Bound: 1.0446
+      Width:       0.0143
 
     ----------------------------------------------------------------------
     NATURAL DIRECT EFFECT (NDE)
     ----------------------------------------------------------------------
-      Lower Bound: 1.1729
-      Upper Bound: 1.8744
-      Width:       0.7016
+      Lower Bound: 0.9783
+      Upper Bound: 1.5257
+      Width:       0.5474
 
     ----------------------------------------------------------------------
     SENSITIVITY ANALYSIS
     ----------------------------------------------------------------------
       Parameter sets evaluated: 100
-      Compatible sets:          78 (78.0%)
-      Falsified sets:           22 (22.0%)
+      Compatible sets:          100 (100.0%)
+      Falsified sets:           0 (0.0%)
 
     ----------------------------------------------------------------------
     BOOTSTRAP CONFIDENCE INTERVALS
@@ -767,10 +588,10 @@ print(bounds_with_ci)
       Replications: 100
       Confidence Level: 95.0%
 
-      NIE Lower: [0.8796, 1.0712]
-      NIE Upper: [0.9375, 1.1095]
-      NDE Lower: [0.7263, 1.7945]
-      NDE Upper: [1.0999, 3.0215]
+      NIE Lower: [1.0039, 1.0577]
+      NIE Upper: [1.0170, 1.0892]
+      NDE Lower: [0.8000, 1.1956]
+      NDE Upper: [1.2127, 1.9946]
 
     ======================================================================
     Use summary() for detailed diagnostics
@@ -804,11 +625,11 @@ print(ci_result)
 
     $NIE
          lower      upper   se_lower   se_upper   ci_lower   ci_upper
-    1.01161600 1.02378807 0.05784834 0.05282198 0.90369604 1.12233101
+    1.01161600 1.02378807 0.04217015 0.05050397 0.93344855 1.11740326
 
     $NDE
         lower     upper  se_lower  se_upper  ci_lower  ci_upper
-    1.1728607 1.8744329 0.2918200 0.4671135 0.6905668 2.6464362 
+    1.1728607 1.8744329 0.2684890 0.4993419 0.7283274 2.7011862 
 
 The Imbens–Manski (2004) construction widens each endpoint by its
 bootstrap standard error rather than building a joint confidence set,
@@ -1421,7 +1242,7 @@ Table 7: Falsification summary for the sensitivity analysis
 
 ### Bootstrap Replications
 
-- Use `n_bootstrap = 1000` or more for final results
+- Use `bootstrap_reps = 1000` or more for final results
 - Percentile method is fast and simple
 - BCa method provides better coverage but is slower
 
