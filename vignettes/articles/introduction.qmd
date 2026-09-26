@@ -307,16 +307,31 @@ print(compatibility)
 
 ### Step 6: Bootstrap Inference
 
-For inference, we can compute bootstrap confidence intervals:
+For inference, we can compute bootstrap confidence intervals. The bootstrap
+needs every combination of $A^*$, $M$, $Y$ and the confounders to appear in each
+resample: when a resample loses a cell, no parameter set is compatible with it, and
+that replicate is dropped. With two confounders and $n = 1000$, the rarest cell in
+`sim_data` holds a single observation, so about half the replicates would be dropped.
+We therefore draw a larger sample ($n = 5000$) from the same data-generating process:
 
 ```{r}
 #| label: bootstrap-bounds
 #| tbl-cap: "Computed bounds with bootstrap confidence intervals"
 #| message: false
 
+# Same true effects and misclassification as sim_data, larger n
+sim_data_boot <- simulate_dm_data(
+  n = 5000,
+  true_params = true_params,
+  dm_params = dm_params,
+  misclass_type = "exposure",
+  confounders = 2,
+  seed = 123
+)
+
 # This takes longer, so we use fewer bootstrap replications for the vignette
 bounds_with_ci <- bound_ne(
-  data = sim_data@observed,
+  data = sim_data_boot@observed,
   exposure = "A_star",
   mediator = "M",
   outcome = "Y",
@@ -328,7 +343,7 @@ bounds_with_ci <- bound_ne(
   bootstrap_reps = 100, # Use 1000+ for production
   parallel = FALSE, # Set to FALSE for CRAN vignette check
   confidence_level = 0.95,
-  verbose = TRUE,
+  verbose = FALSE,
   grid_method = "lhs" # (default) Latin Hypercube Sampling for efficiency
 )
 
@@ -696,7 +711,7 @@ print(falsif_summary)
 
 ### Bootstrap Replications
 
-- Use `n_bootstrap = 1000` or more for final results
+- Use `bootstrap_reps = 1000` or more for final results
 - Percentile method is fast and simple
 - BCa method provides better coverage but is slower
 
