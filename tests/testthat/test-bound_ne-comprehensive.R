@@ -131,44 +131,52 @@ test_that("bound_ne works for mediator misclassification with regular grid", {
 
 # Skipped: Regular grid test for mediator (too slow for routine testing)
 
-# Test 3: Bootstrap - Exposure Misclassification ----
-# Note: Bootstrap tests skipped - they require larger datasets for stable results
-# The small test datasets (n=100) lead to high bootstrap failure rates
+# Test 3: Bootstrap - BCa ----
+# A real BCa run refits the bounds once per observation for the jackknife
+# (about 100 s at n = 300), so the pass-through is tested with a stubbed
+# compute_bca_ci(). bound_ne() used to drop z0 and acceleration: they were
+# computed but never copied into the results.
 
-test_that("bootstrap works for exposure misclassification with BCa method", {
-  skip_if(TRUE, "BCa test skipped - takes too long for regular testing")
+test_that("BCa z0 and acceleration reach bound_ne()'s bootstrap_results", {
+  local_mocked_bindings(compute_bca_ci = function(...) {
+    ci <- c(0.9, 1.1)
+    list(nie_lower_ci = ci, nie_upper_ci = ci, nde_lower_ci = ci,
+         nde_upper_ci = ci, z0 = c(0.1, 0.2, 0.3, 0.4),
+         acceleration = c(0.01, 0.02, 0.03, 0.04))
+  })
+  d <- simulate_dm_data(
+    n = 1500,
+    true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
+    dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
+    misclass_type = "exposure", confounders = 1, seed = 1
+  )@observed
+  bounds <- suppressWarnings(bound_ne(
+    d, "A_star", "M", "Y", "C1", misclassified_variable = "exposure",
+    sensitivity_region = list(sn0_range = c(0.6, 0.99), sp0_range = c(0.6, 0.99),
+                              psi_sn_range = c(0.8, 1.5), psi_sp_range = c(0.8, 1.5)),
+    n_grid = 10, grid_method = "lhs", bootstrap = TRUE, bootstrap_reps = 5,
+    bootstrap_method = "bca", verbose = FALSE
+  ))
+  br <- bounds@bootstrap_results
+  expect_equal(br@method, "bca")
+  expect_equal(br@n_failed, 0L)
+  expect_equal(br@z0, c(0.1, 0.2, 0.3, 0.4))
+  expect_equal(br@acceleration, c(0.01, 0.02, 0.03, 0.04))
+})
 
-  test_data <- setup_test_data()
-  sens_region <- setup_sensitivity_region()
-
-  bounds <- bound_ne(
-    data = test_data,
-    exposure = "A_star",
-    mediator = "M",
-    outcome = "Y",
-    confounders = c("C1", "C2"),
+test_that("BCa with no successful replicate returns NA intervals quickly", {
+  # Resamples of the n = 100 test data never yield compatible sets
+  bounds <- suppressWarnings(bound_ne(
+    setup_test_data(), "A_star", "M", "Y", c("C1", "C2"),
     misclassified_variable = "exposure",
-    sensitivity_region = sens_region,
-    n_grid = 10,
-    grid_method = "lhs",
-    bootstrap = TRUE,
-    bootstrap_reps = 100,
-    bootstrap_method = "bca",
-    parallel = FALSE,
-    verbose = FALSE
-  )
-
-  # Check bootstrap results exist
-  expect_false(is.null(bounds@bootstrap_results))
-  expect_equal(bounds@bootstrap_results@method, "bca")
-
-  # Check BCa-specific components exist
-  expect_type(bounds@bootstrap_results@z0, "double")
-  expect_type(bounds@bootstrap_results@acceleration, "double")
-
-  # z0 and acceleration should be length 4 (nie_lower, nie_upper, nde_lower, nde_upper)
-  expect_equal(length(bounds@bootstrap_results@z0), 4)
-  expect_equal(length(bounds@bootstrap_results@acceleration), 4)
+    sensitivity_region = setup_sensitivity_region(), n_grid = 10,
+    grid_method = "lhs", bootstrap = TRUE, bootstrap_reps = 5,
+    bootstrap_method = "bca", verbose = FALSE
+  ))
+  br <- bounds@bootstrap_results
+  expect_equal(br@n_failed, 5L)
+  expect_equal(br@nie_lower_ci, c(NA_real_, NA_real_))
+  expect_null(br@z0)
 })
 
 # Test 4: Bootstrap - Mediator Misclassification ----
