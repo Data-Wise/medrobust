@@ -15,6 +15,12 @@
   `evaluated_sets`), with `NA` for empty bins; the per-bin counts are returned
   as `n_evaluated` and `n_compatible`. Sets on a range's upper edge are no
   longer dropped from the joint grid.
+* With `bootstrap_method = "bca"`, the bias correction `z0` and acceleration
+  were computed but never stored: `bound_ne()`'s `bootstrap_results` always had
+  `z0 = NULL` and `acceleration = NULL`. They are now kept. When every bootstrap
+  replicate fails, BCa now returns `NA` intervals without running the jackknife
+  (it spent the time and returned `NaN`), and a single surviving replicate no
+  longer collapses the replicate matrix to a vector.
 
 # medrobust 0.4.3 (2026-09-25)
 
