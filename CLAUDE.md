@@ -12,8 +12,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 could evaluate values outside the sensitivity region (#51, changes adaptive bounds), and BCa bootstrap
 results lost `z0`/`acceleration` (#52). 0.4.3 fixed zero-width bootstrap CIs (#47) and evaluation counts (#48).
 Pre-submit checks on the `v0.4.4` tag done 2026-09-25 (local tarball, win-builder ×3, r-hub): new-submission
-NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`
-on `dev`; it must reach `main` (docs-only PR) before `devtools::submit_cran()` from `main` once the hold lifts.
+NOTE only; r-hub `macos-arm64` R-devel not run (r-hub setup, no R 4.7 arm64 repo). All in `cran-comments.md`,
+which is on `main` (#54, docs-only), so `devtools::submit_cran()` from `main` is the next step once the hold lifts.
+`dev` is ahead of `main` with docs only (articles, README, `?bound_ne` grid help #55); none of it changes 0.4.4.
 Acceptance unblocks **medsim**.
 Authoritative state lives in `.STATUS`.
 
@@ -209,4 +210,4 @@ Ecosystem coordination managed in `~/projects/r-packages/mediation-planning/`:
 
 ---
 
-**Last Updated**: 2026-09-25 (history: `git log -- CLAUDE.md`; project state: `.STATUS`)
+**Last Updated**: 2026-09-26 (history: `git log -- CLAUDE.md`; project state: `.STATUS`)
