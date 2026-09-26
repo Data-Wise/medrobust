@@ -193,6 +193,15 @@ adaptive_grid_search <- function(sensitivity_region, evaluate_func,
   refined_regions$sn0_range <- expand_range(refined_regions$sn0_range)
   refined_regions$sp0_range <- expand_range(refined_regions$sp0_range)
 
+  # Keep the refinement inside the user's region: the expansion above only
+  # clamps to [0, 1], so without this it evaluates excluded Sn/Sp values
+  refined_regions$sn0_range <- pmin(pmax(refined_regions$sn0_range,
+                                         sensitivity_region$sn0_range[1]),
+                                    sensitivity_region$sn0_range[2])
+  refined_regions$sp0_range <- pmin(pmax(refined_regions$sp0_range,
+                                         sensitivity_region$sp0_range[1]),
+                                    sensitivity_region$sp0_range[2])
+
   # For psi parameters, respect original bounds
   refined_regions$psi_sn_range <- pmax(refined_regions$psi_sn_range,
                                        sensitivity_region$psi_sn_range[1])
