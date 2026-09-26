@@ -77,6 +77,9 @@ reporting.
 ## Partial-identification bounds as $\psi_{Sn}$ grows
 
 ```{r bounds}
+# The Imbens-Manski interval uses a bootstrap for the endpoint standard errors;
+# seed it so the table (and the reading below) is reproducible.
+set.seed(2026)
 fmt <- function(x) sprintf("%.3f", x)
 rows <- list()
 for (psi in c(1.0, 1.5, 2.0, 3.0)) {
@@ -113,14 +116,24 @@ res
 
 ## Reading the result
 
-Read down the $\psi_{Sn}$ column. At **non-differential to mild** reporting error
-($\psi_{Sn} \le 1.5$) the NDE identified set (and its Imbens--Manski interval) excludes
-1 --- the direct effect of inactivity on CVD is **robust** to that much
-misclassification. As the differential ceiling rises to $\psi_{Sn} \ge 2$, the NDE set
-widens to **cover 1**: once reporting accuracy is allowed to depend strongly on the
-outcome, the data can no longer rule out a null direct effect. The NIE (mediated through
-hs-CRP) is **small and not distinguishable from the null** throughout --- inflammation
-carries little of the total association in this cross-section.
+Read down the $\psi_{Sn}$ column, first the identified sets, then the intervals.
+
+**Direct effect.** At **non-differential to mild** reporting error
+($\psi_{Sn} \le 1.5$) the NDE identified set lies well above 1 (lower bound about 1.44 or
+higher): the direct effect of inactivity on CVD is **robust** to that much
+misclassification. As the differential ceiling rises, the lower bound falls fast --- to
+about 1.00 at $\psi_{Sn} = 2$ and below 1 at $\psi_{Sn} = 3$ --- so once reporting
+accuracy may depend strongly on the outcome, the data can no longer rule out a null direct
+effect. The Imbens--Manski interval adds sampling uncertainty: it excludes 1 at
+$\psi_{Sn} = 1$, its lower limit sits near 1 at $\psi_{Sn} = 1.5$ (above 1 in this run,
+but close enough that another bootstrap seed can move it below), and it covers 1 from
+$\psi_{Sn} = 2$ on.
+
+**Indirect effect.** The NIE (mediated through hs-CRP) is **small**: its identified set
+stays just above 1 at every $\psi_{Sn}$ (OR about 1.015 to 1.023), so misclassification
+of the exposure barely moves it. Its Imbens--Manski interval, however, has a lower limit of
+about 1.00 throughout, so sampling uncertainty cannot rule out a null indirect effect ---
+inflammation carries little of the total association in this cross-section.
 
 The lesson mirrors `gesthtn` from the other side: a naive point estimate that treats the
 self-report as truth overstates certainty, while the bounds make the
