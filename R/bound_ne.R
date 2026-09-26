@@ -37,25 +37,43 @@
 #' @param cache_dir Character string. Directory for cache files. If NULL, uses temp directory.
 #' @param verbose Logical. Whether to print progress messages. Default is TRUE.
 #' @param stratify_by Character vector. Additional variables to stratify by (advanced use).
-#' @param use_adaptive_grid Logical. Whether to use adaptive grid refinement for large grids
-#'   (n_grid >= 20). This dramatically reduces computation time by focusing on compatible
-#'   regions. Default is TRUE.
-#' @param grid_method Character string specifying grid search algorithm:
+#' @param use_adaptive_grid Logical. Whether \code{grid_method = "adaptive"} may run.
+#'   With \code{FALSE}, \code{"adaptive"} falls back to the regular grid, and on the
+#'   exposure path \code{"auto"} uses its corner probe instead of adaptive refinement.
+#'   Adaptive refinement does not reduce the number of evaluations (see
+#'   \code{grid_method}). Default is TRUE.
+#' @param grid_method Character string specifying which points of the sensitivity
+#'   region are evaluated. The bounds are the minimum and maximum over the compatible
+#'   points evaluated, so they are an inner approximation of the identified set: a
+#'   method that evaluates fewer points, or no corners, can only report narrower bounds.
 #'   \itemize{
-#'     \item \code{"lhs"} (default): Latin Hypercube Sampling - space-filling design
-#'       that reduces evaluations by 99\% while maintaining broad coverage. Best for
-#'       most applications (McKay et al., 1979).
-#'     \item \code{"auto"}: Automatically selects best method based on a 16-point probe
-#'       of the parameter space.
-#'     \item \code{"regular"}: Exhaustive regular grid (n_grid^4 evaluations). Use for
-#'       exact bounds when computational budget allows.
-#'     \item \code{"sobol"}: Sobol low-discrepancy sequences (Sobol, 1967). Similar to
-#'       LHS but better for high-dimensional problems.
-#'     \item \code{"adaptive"}: Two-stage coarse-to-fine refinement. Effective when
-#'       falsification rate is high.
-#'     \item \code{"binary"}: Binary search on parameter boundaries. Efficient when
-#'       compatibility is monotonic in parameters.
+#'     \item \code{"lhs"} (default): Latin hypercube sample of \code{ceiling(n_grid^2)}
+#'       points (McKay et al., 1979), from a fixed internal design, so the bounds are
+#'       reproducible. Fast, but it evaluates no corners and its bounds can be much
+#'       narrower than the regular grid's; check them against \code{"regular"} before
+#'       reporting.
+#'     \item \code{"regular"}: every combination of \code{n_grid} equally spaced values
+#'       per parameter (\code{n_grid^4} points, including all corners). The only method
+#'       that uses \code{parallel = TRUE}.
+#'     \item \code{"sobol"}: a Halton-type low-discrepancy sequence (van der Corput in
+#'       bases 3 to 6) of \code{ceiling(n_grid^2)} points; despite the name, not a Sobol'
+#'       sequence. Deterministic; evaluates no corners.
+#'     \item \code{"adaptive"}: a coarse grid, then a full \code{n_grid^4} grid over the
+#'       bounding box of the compatible coarse points. Never evaluates fewer points than
+#'       \code{"regular"}; stops with an error if no coarse point is compatible. Requires
+#'       \code{use_adaptive_grid = TRUE}.
+#'     \item \code{"binary"}: despite the name, no binary search. Evaluates the 16 corners;
+#'       if none or all are compatible, adds a 50-point Latin hypercube, otherwise 10,000
+#'       random points with Beta(0.5, 0.5) coordinates (concentrated near the edges).
+#'       Ignores \code{n_grid}; call \code{set.seed()} first for reproducible bounds.
+#'     \item \code{"auto"}: on the exposure path with \code{use_adaptive_grid = TRUE}, runs
+#'       \code{"adaptive"}. Otherwise evaluates the 16 corners and uses the regular grid
+#'       (all compatible), \code{"binary"} (more than 75\%), \code{"sobol"} (fewer than
+#'       25\%, but not none) or \code{"lhs"} (none, or 25\% to 75\%).
 #'   }
+#'   See the grid-search article at
+#'   \url{https://data-wise.github.io/medrobust/articles/grid-search-algorithms.html}
+#'   for a benchmark.
 #'
 #' @return An object of class \code{medrobust_bounds} containing:
 #'   \item{NIE_lower}{Lower bound for Natural Indirect Effect}
@@ -142,10 +160,6 @@
 #' McKay, M. D., Beckman, R. J., & Conover, W. J. (1979). A comparison of three
 #' methods for selecting values of input variables in the analysis of output from
 #' a computer code. \emph{Technometrics}, 21(2), 239-245.
-#'
-#' Sobol', I. M. (1967). On the distribution of points in a cube and the approximate
-#' evaluation of integrals. \emph{USSR Computational Mathematics and Mathematical
-#' Physics}, 7(4), 86-112.
 #'
 #' @seealso \code{\link{check_compatibility}}, \code{\link{sensitivity_plot}},
 #'   \code{\link{falsification_summary}}

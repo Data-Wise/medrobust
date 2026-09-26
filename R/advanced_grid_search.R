@@ -103,8 +103,9 @@ latin_hypercube_search <- function(sensitivity_region, evaluate_func,
 #' Sobol Sequence Grid Search
 #'
 #' @description
-#' Low-discrepancy quasi-random sequence that provides better coverage
-#' than random sampling and LHS for high-dimensional spaces.
+#' Evaluates a Halton-type low-discrepancy sequence from
+#' \code{generate_sobol_sequence()} (van der Corput in bases 3 to 6; not a
+#' Sobol' sequence). Deterministic.
 #'
 #' @keywords internal
 #' @noRd
@@ -207,9 +208,10 @@ generate_sobol_sequence <- function(n, d) {
 #' Binary Search for Bound Edges
 #'
 #' @description
-#' For each parameter, performs binary search to find the exact boundary
-#' between compatible and incompatible regions. Very efficient when
-#' compatibility is monotonic in parameters.
+#' Despite the name, no binary search: evaluates the 16 corners, then a
+#' 50-point LHS if none or all are compatible, otherwise 10,000 random points
+#' with Beta(0.5, 0.5) coordinates (concentrated near the edges). Uses the
+#' session RNG; \code{precision} is unused.
 #'
 #' @keywords internal
 #' @noRd
