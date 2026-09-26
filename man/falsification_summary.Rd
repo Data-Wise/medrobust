@@ -39,8 +39,11 @@ space are empirically falsified by the data. Helps understand which
 assumptions about misclassification are most constrained by the observed data.
 }
 \details{
-This function analyzes the compatible parameter sets to understand which
-regions of the sensitivity space are ruled out by the testable implications.
+This function uses every parameter set \code{bound_ne()} evaluated (its
+\code{evaluated_sets} property) to show which regions of the sensitivity
+space are ruled out by the testable implications. The falsification rate of a
+bin is the share of the sets evaluated in that bin that the data falsified;
+a bin in which no set was evaluated has rate \code{NA}.
 High falsification rates indicate that the data are informative about that
 particular parameter.
 

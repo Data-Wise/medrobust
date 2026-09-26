@@ -23,8 +23,11 @@
 #'   \item{plot}{ggplot2 object (if plot=TRUE)}
 #'
 #' @details
-#' This function analyzes the compatible parameter sets to understand which
-#' regions of the sensitivity space are ruled out by the testable implications.
+#' This function uses every parameter set \code{bound_ne()} evaluated (its
+#' \code{evaluated_sets} property) to show which regions of the sensitivity
+#' space are ruled out by the testable implications. The falsification rate of a
+#' bin is the share of the sets evaluated in that bin that the data falsified;
+#' a bin in which no set was evaluated has rate \code{NA}.
 #' High falsification rates indicate that the data are informative about that
 #' particular parameter.
 #'
@@ -83,6 +86,12 @@ falsification_summary <- function(bounds_object,
     stop("No compatible parameter sets found")
   }
 
+  evaluated <- bounds_object@evaluated_sets
+  if (is.null(evaluated)) {
+    stop("bounds_object has no record of the evaluated parameter sets; ",
+         "refit it with the current version of bound_ne().", call. = FALSE)
+  }
+
   # Overall falsification
   overall_falsif <- bounds_object@falsified_proportion
   n_evaluated <- bounds_object@n_evaluated
@@ -96,24 +105,24 @@ falsification_summary <- function(bounds_object,
 
   if (by_parameter) {
     param_falsif <- compute_parameter_falsification(
-      compat = compat,
+      evaluated = evaluated,
       sens_region = sens_region,
-      n_bins = n_bins,
-      n_evaluated = n_evaluated
+      n_bins = n_bins
     )
 
     # Identify most/least constrained
-    avg_falsif <- sapply(param_falsif, function(x) mean(x$falsification_rate))
+    avg_falsif <- sapply(param_falsif, function(x) {
+      mean(x$falsification_rate, na.rm = TRUE)
+    })
     most_constrained <- names(sort(avg_falsif, decreasing = TRUE))[1:2]
     least_constrained <- names(sort(avg_falsif, decreasing = FALSE))[1:2]
   }
 
   # Joint falsification patterns (2D)
   joint_falsif <- compute_joint_falsification(
-    compat = compat,
+    evaluated = evaluated,
     sens_region = sens_region,
-    n_bins = n_bins,
-    n_evaluated = n_evaluated
+    n_bins = n_bins
   )
 
   # Generate plot
@@ -150,39 +159,30 @@ falsification_summary <- function(bounds_object,
 
 #' Compute Parameter-Specific Falsification Rates
 #'
+#' The rate in a bin is the share of the parameter sets evaluated in that bin
+#' that the data falsified. A bin with no evaluated sets has rate NA.
+#'
 #' @keywords internal
 #' @noRd
-compute_parameter_falsification <- function(compat, sens_region, n_bins, n_evaluated) {
+compute_parameter_falsification <- function(evaluated, sens_region, n_bins) {
 
   params <- c("sn0", "sp0", "psi_sn", "psi_sp")
   param_falsif <- list()
 
   for (param in params) {
-    # Create bins - access S7 properties with @
-    param_range <- switch(param,
-      sn0 = sens_region@sn0_range,
-      sp0 = sens_region@sp0_range,
-      psi_sn = sens_region@psi_sn_range,
-      psi_sp = sens_region@psi_sp_range
-    )
-    breaks <- seq(param_range[1], param_range[2], length.out = n_bins + 1)
+    breaks <- .param_breaks(sens_region, param, n_bins)
     bin_centers <- (breaks[-1] + breaks[-(n_bins + 1)]) / 2
 
-    # Count compatible sets in each bin
-    compat_counts <- hist(compat[[param]], breaks = breaks, plot = FALSE)$counts
-
-    # Total possible in each bin (assuming uniform grid)
-    # This is approximate - exact count would require recreating full grid
-    total_per_bin <- n_evaluated / n_bins
-
-    falsif_rate <- 1 - (compat_counts / total_per_bin)
-    falsif_rate[falsif_rate < 0] <- 0  # Correct for approximation errors
-    falsif_rate[falsif_rate > 1] <- 1
+    bin <- .bin_index(evaluated[[param]], breaks)
+    n_eval <- tabulate(bin, nbins = n_bins)
+    n_compat <- tabulate(bin[evaluated$compatible], nbins = n_bins)
 
     param_falsif[[param]] <- data.frame(
       parameter = param,
       value = bin_centers,
-      falsification_rate = falsif_rate
+      falsification_rate = ifelse(n_eval > 0, 1 - n_compat / n_eval, NA_real_),
+      n_evaluated = n_eval,
+      n_compatible = n_compat
     )
   }
 
@@ -192,9 +192,11 @@ compute_parameter_falsification <- function(compat, sens_region, n_bins, n_evalu
 
 #' Compute Joint Falsification Patterns
 #'
+#' Same rate as compute_parameter_falsification(), on a 2D grid of bins.
+#'
 #' @keywords internal
 #' @noRd
-compute_joint_falsification <- function(compat, sens_region, n_bins, n_evaluated) {
+compute_joint_falsification <- function(evaluated, sens_region, n_bins) {
 
   # Focus on key parameter pairs
   param_pairs <- list(
@@ -209,39 +211,27 @@ compute_joint_falsification <- function(compat, sens_region, n_bins, n_evaluated
     param1 <- pair[1]
     param2 <- pair[2]
 
-    # Create 2D bins - access S7 properties with @
-    range1 <- switch(param1,
-      sn0 = sens_region@sn0_range,
-      sp0 = sens_region@sp0_range,
-      psi_sn = sens_region@psi_sn_range,
-      psi_sp = sens_region@psi_sp_range
-    )
-    range2 <- switch(param2,
-      sn0 = sens_region@sn0_range,
-      sp0 = sens_region@sp0_range,
-      psi_sn = sens_region@psi_sn_range,
-      psi_sp = sens_region@psi_sp_range
-    )
+    breaks1 <- .param_breaks(sens_region, param1, n_bins)
+    breaks2 <- .param_breaks(sens_region, param2, n_bins)
 
-    breaks1 <- seq(range1[1], range1[2], length.out = n_bins + 1)
-    breaks2 <- seq(range2[1], range2[2], length.out = n_bins + 1)
+    bin1 <- .bin_index(evaluated[[param1]], breaks1)
+    bin2 <- .bin_index(evaluated[[param2]], breaks2)
+    inside <- bin1 > 0 & bin1 <= n_bins & bin2 > 0 & bin2 <= n_bins
+    cell <- (bin2[inside] - 1L) * n_bins + bin1[inside]
+    n_eval <- matrix(tabulate(cell, nbins = n_bins^2), n_bins, n_bins)
+    n_compat <- matrix(tabulate(cell[evaluated$compatible[inside]],
+                                nbins = n_bins^2), n_bins, n_bins)
 
-    # Compute 2D histogram
-    h2d <- hist2d(compat[[param1]], compat[[param2]],
-                  breaks1 = breaks1, breaks2 = breaks2)
-
-    # Compute falsification rate
-    total_per_cell <- n_evaluated / (n_bins^2)  # Approximate
-    falsif_rate_2d <- 1 - (h2d$counts / total_per_cell)
-    falsif_rate_2d[falsif_rate_2d < 0] <- 0
-    falsif_rate_2d[falsif_rate_2d > 1] <- 1
+    falsif_rate_2d <- 1 - n_compat / n_eval
+    falsif_rate_2d[n_eval == 0] <- NA_real_
 
     joint_falsif[[paste0(param1, "_", param2)]] <- list(
       param1 = param1,
       param2 = param2,
       bin_centers1 = (breaks1[-1] + breaks1[-(n_bins + 1)]) / 2,
       bin_centers2 = (breaks2[-1] + breaks2[-(n_bins + 1)]) / 2,
-      falsification_rate = falsif_rate_2d
+      falsification_rate = falsif_rate_2d,
+      n_evaluated = n_eval
     )
   }
 
@@ -249,27 +239,16 @@ compute_joint_falsification <- function(compat, sens_region, n_bins, n_evaluated
 }
 
 
-#' Helper: 2D Histogram
-#'
-#' @keywords internal
-#' @noRd
-hist2d <- function(x, y, breaks1, breaks2) {
-  # Simple 2D histogram
-  n_bins1 <- length(breaks1) - 1
-  n_bins2 <- length(breaks2) - 1
+# Equal-width bin edges spanning one parameter's sensitivity range.
+.param_breaks <- function(sens_region, param, n_bins) {
+  range <- S7::prop(sens_region, paste0(param, "_range"))
+  seq(range[1], range[2], length.out = n_bins + 1)
+}
 
-  counts <- matrix(0, nrow = n_bins1, ncol = n_bins2)
-
-  for (i in 1:length(x)) {
-    bin1 <- findInterval(x[i], breaks1)
-    bin2 <- findInterval(y[i], breaks2)
-
-    if (bin1 > 0 && bin1 <= n_bins1 && bin2 > 0 && bin2 <= n_bins2) {
-      counts[bin1, bin2] <- counts[bin1, bin2] + 1
-    }
-  }
-
-  return(list(counts = counts))
+# Bin index 1..n_bins; values on the upper edge go in the last bin, not
+# outside it (findInterval()'s default drops them).
+.bin_index <- function(x, breaks) {
+  findInterval(x, breaks, rightmost.closed = TRUE)
 }
 
 
@@ -335,13 +314,13 @@ plot_falsification <- function(falsif_summary, bounds_object) {
                                 ggplot2::aes(x = value,
                                             y = falsification_rate,
                                             color = parameter_label)) +
-      ggplot2::geom_line(linewidth = 1) +
-      ggplot2::geom_point(size = 2) +
+      ggplot2::geom_line(linewidth = 1, na.rm = TRUE) +
+      ggplot2::geom_point(size = 2, na.rm = TRUE) +
       ggplot2::facet_wrap(~ parameter_label, scales = "free_x", nrow = 2) +
       ggplot2::scale_y_continuous(labels = scales::percent_format()) +
       ggplot2::labs(
         title = "Parameter-Specific Falsification Rates",
-        subtitle = "Proportion of sensitivity region falsified at each parameter value",
+        subtitle = "Share of evaluated parameter sets falsified in each bin",
         x = "Parameter Value",
         y = "Falsification Rate"
       ) +
