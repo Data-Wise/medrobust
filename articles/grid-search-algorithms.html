@@ -104,6 +104,7 @@
 <ul>
 <li>The effects are often most extreme at the edges of the region, so methods that evaluate the corners and edges (the regular grid) tend to find the widest bounds.</li>
 <li>Each evaluation solves the misclassification model once; cost grows linearly with the number of points evaluated.</li>
+<li>Every method, the regular grid included, tends to report wider bounds as <code>n_grid</code> grows. No setting is exact, so the useful question is whether the bounds have stopped changing.</li>
 </ul></section><section class="level2"><h2 id="points-evaluated-by-each-method">Points evaluated by each method<a class="anchor" aria-label="anchor" href="#points-evaluated-by-each-method"></a>
 </h2>
 <table class="table caption-top">
@@ -128,7 +129,7 @@
 <td>
 <code>"lhs"</code> (default)</td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math> (100 at <code>n_grid = 10</code>)</td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math> (100 at <code>n_grid = 10</code>; 2,500 at the default <code>n_grid = 50</code>)</td>
 <td>yes (fixed internal design)</td>
 </tr>
 <tr class="odd">
@@ -153,7 +154,7 @@
 </tr>
 </tbody>
 </table>
-<p><code>n_grid</code> must be between 10 and 200.</p>
+<p><code>n_grid</code> must be between 10 and 200; the default is 50.</p>
 </section><section class="level2"><h2 id="the-methods">The methods<a class="anchor" aria-label="anchor" href="#the-methods"></a>
 </h2>
 <section class="level3"><h3 id="regular-grid-regular">Regular grid (<code>"regular"</code>)<a class="anchor" aria-label="anchor" href="#regular-grid-regular"></a>
@@ -161,7 +162,7 @@
 <p>Evaluates every combination of <code>n_grid</code> equally spaced values per parameter, including all corners of the region. It is the only method that uses <code>parallel = TRUE</code>; every other method evaluates its points one at a time.</p>
 </section><section class="level3"><h3 id="latin-hypercube-sampling-lhs-the-default">Latin hypercube sampling (<code>"lhs"</code>, the default)<a class="anchor" aria-label="anchor" href="#latin-hypercube-sampling-lhs-the-default"></a>
 </h3>
-<p>Divides each parameter range into <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">N = \lceil n_{grid}^2 \rceil</annotation></semantics></math> intervals, draws one value in each, and permutes the columns (McKay et al., 1979). The design is generated with a fixed internal seed, so the same inputs always give the same bounds, and your own random number stream is left untouched. With <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math> interior points and no corners, LHS is fast but can report bounds well inside the regular-grid bounds (see the benchmark below).</p>
+<p>Divides each parameter range into <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">N = \lceil n_{grid}^2 \rceil</annotation></semantics></math> intervals, draws one value in each, and permutes the columns (McKay et al., 1979). The design is generated with a fixed internal seed, so the same inputs always give the same bounds, and your own random number stream is left untouched. It evaluates no corners, and with few points (small <code>n_grid</code>) it can report bounds well inside those of a denser search (see the benchmark below). At the default <code>n_grid = 50</code> it evaluates 2,500 points in a few seconds.</p>
 </section><section class="level3"><h3 id="low-discrepancy-sequence-sobol">Low-discrepancy sequence (<code>"sobol"</code>)<a class="anchor" aria-label="anchor" href="#low-discrepancy-sequence-sobol"></a>
 </h3>
 <p>Despite its name, this method does not use a Sobol’ sequence. It uses a simple radical-inverse (van der Corput) sequence with a different base for each parameter (bases 3 to 6), a Halton-type design with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌈</mo><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⌉</mo></mrow><annotation encoding="application/x-tex">\lceil n_{grid}^2 \rceil</annotation></semantics></math> points. Like LHS it is deterministic and evaluates no corners.</p>
@@ -244,9 +245,12 @@
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">methods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regular"</span>, <span class="st">"lhs"</span>, <span class="st">"sobol"</span>, <span class="st">"adaptive"</span>, <span class="st">"binary"</span>, <span class="st">"auto"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">configs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regular"</span>, <span class="st">"regular"</span>, <span class="st">"lhs"</span>, <span class="st">"lhs"</span>, <span class="st">"sobol"</span>, <span class="st">"adaptive"</span>, <span class="st">"binary"</span>, <span class="st">"auto"</span><span class="op">)</span>,</span>
+<span>  n_grid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">methods</span>, <span class="kw">function</span><span class="op">(</span><span class="va">method</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">configs</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="co"># "binary" draws from the session's random stream</span></span>
 <span>  <span class="va">secs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>    <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
@@ -257,13 +261,14 @@
 <span>      confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
 <span>      misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
 <span>      sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>      n_grid <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>      grid_method <span class="op">=</span> <span class="va">method</span>,</span>
+<span>      n_grid <span class="op">=</span> <span class="va">configs</span><span class="op">$</span><span class="va">n_grid</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>      grid_method <span class="op">=</span> <span class="va">configs</span><span class="op">$</span><span class="va">method</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
 <span>      verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    Method <span class="op">=</span> <span class="va">method</span>,</span>
+<span>    Method <span class="op">=</span> <span class="va">configs</span><span class="op">$</span><span class="va">method</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
+<span>    n_grid <span class="op">=</span> <span class="va">configs</span><span class="op">$</span><span class="va">n_grid</span><span class="op">[</span><span class="va">k</span><span class="op">]</span>,</span>
 <span>    Evaluated <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">n_evaluated</span>,</span>
 <span>    Compatible <span class="op">=</span> <span class="va">b</span><span class="op">@</span><span class="va">n_compatible</span>,</span>
 <span>    Seconds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">secs</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -276,15 +281,17 @@
 <div class="cell-output-display">
 <table class="table caption-top">
 <colgroup>
+<col style="width: 12%">
+<col style="width: 9%">
 <col style="width: 13%">
 <col style="width: 14%">
-<col style="width: 16%">
-<col style="width: 11%">
-<col style="width: 22%">
-<col style="width: 22%">
+<col style="width: 10%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead><tr class="header">
 <th style="text-align: left;">Method</th>
+<th style="text-align: right;">n_grid</th>
 <th style="text-align: right;">Evaluated</th>
 <th style="text-align: right;">Compatible</th>
 <th style="text-align: right;">Seconds</th>
@@ -294,49 +301,73 @@
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">regular</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">10000</td>
 <td style="text-align: right;">6390</td>
-<td style="text-align: right;">50.5</td>
+<td style="text-align: right;">37.7</td>
 <td style="text-align: left;">[1.050, 1.098]</td>
 <td style="text-align: left;">[0.776, 4.977]</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">regular</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">50625</td>
+<td style="text-align: right;">32185</td>
+<td style="text-align: right;">190.9</td>
+<td style="text-align: left;">[1.050, 1.105]</td>
+<td style="text-align: left;">[0.779, 5.781]</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">lhs</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">100</td>
 <td style="text-align: right;">68</td>
-<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.4</td>
 <td style="text-align: left;">[1.053, 1.078]</td>
 <td style="text-align: left;">[1.069, 2.755]</td>
 </tr>
+<tr class="even">
+<td style="text-align: left;">lhs</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">2500</td>
+<td style="text-align: right;">1686</td>
+<td style="text-align: right;">9.7</td>
+<td style="text-align: left;">[1.050, 1.099]</td>
+<td style="text-align: left;">[0.870, 4.518]</td>
+</tr>
 <tr class="odd">
 <td style="text-align: left;">sobol</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">100</td>
 <td style="text-align: right;">60</td>
-<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.4</td>
 <td style="text-align: left;">[1.052, 1.092]</td>
 <td style="text-align: left;">[1.072, 2.940]</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">adaptive</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">10065</td>
 <td style="text-align: right;">6423</td>
-<td style="text-align: right;">51.8</td>
+<td style="text-align: right;">39.2</td>
 <td style="text-align: left;">[1.050, 1.098]</td>
 <td style="text-align: left;">[0.776, 4.977]</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">binary</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">10016</td>
 <td style="text-align: right;">5888</td>
-<td style="text-align: right;">48.3</td>
+<td style="text-align: right;">37.5</td>
 <td style="text-align: left;">[1.050, 1.100]</td>
 <td style="text-align: left;">[0.811, 5.032]</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">auto</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">10065</td>
 <td style="text-align: right;">6423</td>
-<td style="text-align: right;">52.3</td>
+<td style="text-align: right;">39.8</td>
 <td style="text-align: left;">[1.050, 1.098]</td>
 <td style="text-align: left;">[0.776, 4.977]</td>
 </tr>
@@ -347,9 +378,13 @@
 <p>Reading the table:</p>
 <ul>
 <li>
-<strong>LHS and <code>"sobol"</code></strong> evaluate 100 points and finish in well under a second, but their bounds sit well inside the regular-grid bounds. Here the NDE lower bound moves from below 1 to above 1, which would change the conclusion.</li>
+<strong>LHS and <code>"sobol"</code> at <code>n_grid = 10</code></strong> evaluate only 100 points; their bounds sit well inside the others, and here the NDE lower bound moves from below 1 to above 1, which would change the conclusion.</li>
 <li>
-<strong><code>"adaptive"</code> and <code>"auto"</code></strong> (which runs adaptive on this path) cost as much as the regular grid and give the same bounds: the compatible points span the whole region, so the refinement box is the whole region.</li>
+<strong>LHS at the default <code>n_grid = 50</code></strong> evaluates 2,500 points in a few seconds, and its bounds are much closer to the dense searches.</li>
+<li>
+<strong>The regular grid widens too</strong>: going from <code>n_grid = 10</code> to <code>15</code> (10,000 to 50,625 points) raises the NDE upper bound. The regular grid includes the corners, but it is still an inner approximation, not an exact answer.</li>
+<li>
+<strong><code>"adaptive"</code> and <code>"auto"</code></strong> (which runs adaptive on this path) cost as much as the regular grid at the same <code>n_grid</code> and give the same bounds: the compatible points span the whole region, so the refinement box is the whole region.</li>
 <li>
 <strong><code>"binary"</code></strong> found some corners incompatible, so it drew 10,000 random points. Its bounds are close to the regular grid’s and can extend slightly beyond them, because the random points fall between grid values.</li>
 <li>Times are from the machine that built this page and scale with the number of points evaluated.</li>
@@ -357,13 +392,15 @@
 </h2>
 <ul>
 <li>
-<strong>For reported results, use <code>"regular"</code></strong> (with <code>parallel = TRUE</code> for larger grids), or check that the LHS bounds do not change when you increase <code>n_grid</code> or switch to <code>"regular"</code>. A regular grid at <code>n_grid = 10</code> evaluates 10,000 points; <code>n_grid = 20</code> evaluates 160,000.</li>
+<strong>Check that the bounds have stopped changing.</strong> Before reporting, rerun with a larger <code>n_grid</code> (for LHS, <code>n_grid = 100</code> evaluates 10,000 points) and confirm the bounds, and any conclusion such as whether they exclude 1, stay put. If they still move, keep increasing <code>n_grid</code>.</li>
 <li>
-<strong>For quick exploration, <code>"lhs"</code></strong> is fast and reproducible, but treat its bounds as inner approximations that can be much narrower than the identified set.</li>
+<strong><code>"lhs"</code> at the default <code>n_grid = 50</code></strong> is a reasonable starting point: fast, reproducible, and with enough points to be close. Avoid small <code>n_grid</code> with LHS or <code>"sobol"</code>.</li>
 <li>
-<strong><code>"adaptive"</code> does not save time</strong> in this implementation; it spends the same fine grid on a smaller box. Use it only if you want a finer grid over the compatible part of the region at the regular-grid price.</li>
+<strong><code>"regular"</code></strong> adds the corners and is a useful cross-check, but its cost grows as <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>n</mi><mrow><mi>g</mi><mi>r</mi><mi>i</mi><mi>d</mi></mrow><mn>4</mn></msubsup><annotation encoding="application/x-tex">n_{grid}^4</annotation></semantics></math> (10,000 points at <code>n_grid = 10</code>, 6.25 million at 50), so it is practical only at small <code>n_grid</code>, where it is coarse. It is the only method that uses <code>parallel = TRUE</code>.</li>
 <li>
-<strong><code>"binary"</code></strong> is a reasonable check on the regular grid because it probes the edges, but set a seed, and note that it ignores <code>n_grid</code>.</li>
+<strong><code>"adaptive"</code> does not save time</strong> in this implementation; it spends the same fine grid on a smaller box.</li>
+<li>
+<strong><code>"binary"</code></strong> probes the edges and is another cross-check, but set a seed, and note that it ignores <code>n_grid</code>.</li>
 <li>
 <strong><code>"auto"</code></strong> is not a shortcut on the exposure path: with the defaults it runs the adaptive method.</li>
 </ul></section><section class="level2"><h2 id="reproducibility">Reproducibility<a class="anchor" aria-label="anchor" href="#reproducibility"></a>
@@ -410,12 +447,12 @@
 <span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
 <span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
 <span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  n_grid <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Reported result: full regular grid, in parallel</span></span>
-<span><span class="va">bounds_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
+<span><span class="co"># Stability check: the same search at a higher resolution</span></span>
+<span><span class="va">bounds_check</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bound_ne.html">bound_ne</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  exposure <span class="op">=</span> <span class="st">"A_star"</span>,</span>
 <span>  mediator <span class="op">=</span> <span class="st">"M"</span>,</span>
@@ -423,10 +460,8 @@
 <span>  confounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
 <span>  misclassified_variable <span class="op">=</span> <span class="st">"exposure"</span>,</span>
 <span>  sensitivity_region <span class="op">=</span> <span class="va">sens_region</span>,</span>
-<span>  n_grid <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  grid_method <span class="op">=</span> <span class="st">"regular"</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n_cores <span class="op">=</span> <span class="fl">4</span></span>
+<span>  n_grid <span class="op">=</span> <span class="fl">100</span>, <span class="co"># 10,000 LHS points</span></span>
+<span>  grid_method <span class="op">=</span> <span class="st">"lhs"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

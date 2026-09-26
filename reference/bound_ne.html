@@ -208,11 +208,14 @@ Adaptive refinement does not reduce the number of evaluations (see
 <dd><p>Character string specifying which points of the sensitivity
 region are evaluated. The bounds are the minimum and maximum over the compatible
 points evaluated, so they are an inner approximation of the identified set: a
-method that evaluates fewer points, or no corners, can only report narrower bounds.</p><ul><li><p><code>"lhs"</code> (default): Latin hypercube sample of <code>ceiling(n_grid^2)</code>
-    points (McKay et al., 1979), from a fixed internal design, so the bounds are
-    reproducible. Fast, but it evaluates no corners and its bounds can be much
-    narrower than the regular grid's; check them against <code>"regular"</code> before
-    reporting.</p></li>
+method that evaluates fewer points, or no corners, can only report narrower bounds.
+Every method, <code>"regular"</code> included, tends to report wider bounds as
+<code>n_grid</code> grows, so before reporting, check that the bounds stop changing when
+you increase <code>n_grid</code>.</p><ul><li><p><code>"lhs"</code> (default): Latin hypercube sample of <code>ceiling(n_grid^2)</code>
+    points (McKay et al., 1979; 2,500 at the default <code>n_grid = 50</code>), from a
+    fixed internal design, so the bounds are reproducible. It evaluates no corners,
+    and with few points (small <code>n_grid</code>) its bounds can be much narrower than
+    a denser search's.</p></li>
 <li><p><code>"regular"</code>: every combination of <code>n_grid</code> equally spaced values
     per parameter (<code>n_grid^4</code> points, including all corners). The only method
     that uses <code>parallel = TRUE</code>.</p></li>
@@ -364,7 +367,7 @@ a computer code. <em>Technometrics</em>, 21(2), 239-245.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ============================================================ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> COMPUTATION COMPLETE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ============================================================ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 3.65 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time elapsed: 2.73 seconds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Compatible parameter sets: 100 / 100 (100.0%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NIE Bounds (OR scale): [1.148, 1.457]</span>

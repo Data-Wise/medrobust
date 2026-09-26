@@ -151,13 +151,15 @@ bound_ne(
   evaluated. The bounds are the minimum and maximum over the compatible
   points evaluated, so they are an inner approximation of the identified
   set: a method that evaluates fewer points, or no corners, can only
-  report narrower bounds.
+  report narrower bounds. Every method, `"regular"` included, tends to
+  report wider bounds as `n_grid` grows, so before reporting, check that
+  the bounds stop changing when you increase `n_grid`.
 
   - `"lhs"` (default): Latin hypercube sample of `ceiling(n_grid^2)`
-    points (McKay et al., 1979), from a fixed internal design, so the
-    bounds are reproducible. Fast, but it evaluates no corners and its
-    bounds can be much narrower than the regular grid's; check them
-    against `"regular"` before reporting.
+    points (McKay et al., 1979; 2,500 at the default `n_grid = 50`),
+    from a fixed internal design, so the bounds are reproducible. It
+    evaluates no corners, and with few points (small `n_grid`) its
+    bounds can be much narrower than a denser search's.
 
   - `"regular"`: every combination of `n_grid` equally spaced values per
     parameter (`n_grid^4` points, including all corners). The only
@@ -340,7 +342,7 @@ bounds <- bound_ne(
 #>  ============================================================ 
 #> COMPUTATION COMPLETE
 #> ============================================================ 
-#> Time elapsed: 3.65 seconds
+#> Time elapsed: 2.73 seconds
 #> Compatible parameter sets: 100 / 100 (100.0%)
 #> 
 #> NIE Bounds (OR scale): [1.148, 1.457]

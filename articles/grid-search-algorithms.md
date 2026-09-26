@@ -20,19 +20,22 @@ Two facts shape the choice:
   find the widest bounds.
 - Each evaluation solves the misclassification model once; cost grows
   linearly with the number of points evaluated.
+- Every method, the regular grid included, tends to report wider bounds
+  as `n_grid` grows. No setting is exact, so the useful question is
+  whether the bounds have stopped changing.
 
 ## Points evaluated by each method
 
 | `grid_method` | Points evaluated | Deterministic? |
 |----|----|----|
 | `"regular"` | $`n_{grid}^4`$ (10,000 at `n_grid = 10`) | yes |
-| `"lhs"` (default) | $`\lceil n_{grid}^2 \rceil`$ (100 at `n_grid = 10`) | yes (fixed internal design) |
+| `"lhs"` (default) | $`\lceil n_{grid}^2 \rceil`$ (100 at `n_grid = 10`; 2,500 at the default `n_grid = 50`) | yes (fixed internal design) |
 | `"sobol"` | $`\lceil n_{grid}^2 \rceil`$ | yes |
 | `"adaptive"` | a coarse grid, then a full $`n_{grid}^4`$ grid over part of the region | yes |
 | `"binary"` | 16 corners, then 50 or 10,000 more points | no (uses your random stream) |
 | `"auto"` | depends on the path and a corner probe (see below) | depends on the method chosen |
 
-`n_grid` must be between 10 and 200.
+`n_grid` must be between 10 and 200; the default is 50.
 
 ## The methods
 
@@ -49,9 +52,10 @@ Divides each parameter range into $`N = \lceil n_{grid}^2 \rceil`$
 intervals, draws one value in each, and permutes the columns (McKay et
 al., 1979). The design is generated with a fixed internal seed, so the
 same inputs always give the same bounds, and your own random number
-stream is left untouched. With $`N`$ interior points and no corners, LHS
-is fast but can report bounds well inside the regular-grid bounds (see
-the benchmark below).
+stream is left untouched. It evaluates no corners, and with few points
+(small `n_grid`) it can report bounds well inside those of a denser
+search (see the benchmark below). At the default `n_grid = 50` it
+evaluates 2,500 points in a few seconds.
 
 ### Low-discrepancy sequence (`"sobol"`)
 
@@ -149,9 +153,12 @@ sens_region <- sensitivity_region(
 
 ``` r
 
-methods <- c("regular", "lhs", "sobol", "adaptive", "binary", "auto")
+configs <- data.frame(
+  method = c("regular", "regular", "lhs", "lhs", "sobol", "adaptive", "binary", "auto"),
+  n_grid = c(10, 15, 10, 50, 10, 10, 10, 10)
+)
 
-rows <- lapply(methods, function(method) {
+rows <- lapply(seq_len(nrow(configs)), function(k) {
   set.seed(1) # "binary" draws from the session's random stream
   secs <- system.time(
     b <- bound_ne(
@@ -162,13 +169,14 @@ rows <- lapply(methods, function(method) {
       confounders = c("C1", "C2"),
       misclassified_variable = "exposure",
       sensitivity_region = sens_region,
-      n_grid = 10,
-      grid_method = method,
+      n_grid = configs$n_grid[k],
+      grid_method = configs$method[k],
       verbose = FALSE
     )
   )[["elapsed"]]
   data.frame(
-    Method = method,
+    Method = configs$method[k],
+    n_grid = configs$n_grid[k],
     Evaluated = b@n_evaluated,
     Compatible = b@n_compatible,
     Seconds = round(secs, 1),
@@ -180,25 +188,32 @@ rows <- lapply(methods, function(method) {
 knitr::kable(do.call(rbind, rows))
 ```
 
-| Method   | Evaluated | Compatible | Seconds | NIE              | NDE              |
-|:---------|----------:|-----------:|--------:|:-----------------|:-----------------|
-| regular  |     10000 |       6390 |    50.5 | \[1.050, 1.098\] | \[0.776, 4.977\] |
-| lhs      |       100 |         68 |     0.5 | \[1.053, 1.078\] | \[1.069, 2.755\] |
-| sobol    |       100 |         60 |     0.5 | \[1.052, 1.092\] | \[1.072, 2.940\] |
-| adaptive |     10065 |       6423 |    51.8 | \[1.050, 1.098\] | \[0.776, 4.977\] |
-| binary   |     10016 |       5888 |    48.3 | \[1.050, 1.100\] | \[0.811, 5.032\] |
-| auto     |     10065 |       6423 |    52.3 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| Method   | n_grid | Evaluated | Compatible | Seconds | NIE              | NDE              |
+|:---------|-------:|----------:|-----------:|--------:|:-----------------|:-----------------|
+| regular  |     10 |     10000 |       6390 |    37.7 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| regular  |     15 |     50625 |      32185 |   190.9 | \[1.050, 1.105\] | \[0.779, 5.781\] |
+| lhs      |     10 |       100 |         68 |     0.4 | \[1.053, 1.078\] | \[1.069, 2.755\] |
+| lhs      |     50 |      2500 |       1686 |     9.7 | \[1.050, 1.099\] | \[0.870, 4.518\] |
+| sobol    |     10 |       100 |         60 |     0.4 | \[1.052, 1.092\] | \[1.072, 2.940\] |
+| adaptive |     10 |     10065 |       6423 |    39.2 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| binary   |     10 |     10016 |       5888 |    37.5 | \[1.050, 1.100\] | \[0.811, 5.032\] |
+| auto     |     10 |     10065 |       6423 |    39.8 | \[1.050, 1.098\] | \[0.776, 4.977\] |
 
 Reading the table:
 
-- **LHS and `"sobol"`** evaluate 100 points and finish in well under a
-  second, but their bounds sit well inside the regular-grid bounds. Here
-  the NDE lower bound moves from below 1 to above 1, which would change
-  the conclusion.
+- **LHS and `"sobol"` at `n_grid = 10`** evaluate only 100 points; their
+  bounds sit well inside the others, and here the NDE lower bound moves
+  from below 1 to above 1, which would change the conclusion.
+- **LHS at the default `n_grid = 50`** evaluates 2,500 points in a few
+  seconds, and its bounds are much closer to the dense searches.
+- **The regular grid widens too**: going from `n_grid = 10` to `15`
+  (10,000 to 50,625 points) raises the NDE upper bound. The regular grid
+  includes the corners, but it is still an inner approximation, not an
+  exact answer.
 - **`"adaptive"` and `"auto"`** (which runs adaptive on this path) cost
-  as much as the regular grid and give the same bounds: the compatible
-  points span the whole region, so the refinement box is the whole
-  region.
+  as much as the regular grid at the same `n_grid` and give the same
+  bounds: the compatible points span the whole region, so the refinement
+  box is the whole region.
 - **`"binary"`** found some corners incompatible, so it drew 10,000
   random points. Its bounds are close to the regular grid’s and can
   extend slightly beyond them, because the random points fall between
@@ -208,19 +223,22 @@ Reading the table:
 
 ## Choosing a method
 
-- **For reported results, use `"regular"`** (with `parallel = TRUE` for
-  larger grids), or check that the LHS bounds do not change when you
-  increase `n_grid` or switch to `"regular"`. A regular grid at
-  `n_grid = 10` evaluates 10,000 points; `n_grid = 20` evaluates
-  160,000.
-- **For quick exploration, `"lhs"`** is fast and reproducible, but treat
-  its bounds as inner approximations that can be much narrower than the
-  identified set.
+- **Check that the bounds have stopped changing.** Before reporting,
+  rerun with a larger `n_grid` (for LHS, `n_grid = 100` evaluates 10,000
+  points) and confirm the bounds, and any conclusion such as whether
+  they exclude 1, stay put. If they still move, keep increasing
+  `n_grid`.
+- **`"lhs"` at the default `n_grid = 50`** is a reasonable starting
+  point: fast, reproducible, and with enough points to be close. Avoid
+  small `n_grid` with LHS or `"sobol"`.
+- **`"regular"`** adds the corners and is a useful cross-check, but its
+  cost grows as $`n_{grid}^4`$ (10,000 points at `n_grid = 10`, 6.25
+  million at 50), so it is practical only at small `n_grid`, where it is
+  coarse. It is the only method that uses `parallel = TRUE`.
 - **`"adaptive"` does not save time** in this implementation; it spends
-  the same fine grid on a smaller box. Use it only if you want a finer
-  grid over the compatible part of the region at the regular-grid price.
-- **`"binary"`** is a reasonable check on the regular grid because it
-  probes the edges, but set a seed, and note that it ignores `n_grid`.
+  the same fine grid on a smaller box.
+- **`"binary"`** probes the edges and is another cross-check, but set a
+  seed, and note that it ignores `n_grid`.
 - **`"auto"`** is not a shortcut on the exposure path: with the defaults
   it runs the adaptive method.
 
@@ -246,12 +264,12 @@ bounds_quick <- bound_ne(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
-  n_grid = 20,
+  n_grid = 50,
   grid_method = "lhs"
 )
 
-# Reported result: full regular grid, in parallel
-bounds_final <- bound_ne(
+# Stability check: the same search at a higher resolution
+bounds_check <- bound_ne(
   data = data,
   exposure = "A_star",
   mediator = "M",
@@ -259,10 +277,8 @@ bounds_final <- bound_ne(
   confounders = c("C1", "C2"),
   misclassified_variable = "exposure",
   sensitivity_region = sens_region,
-  n_grid = 20,
-  grid_method = "regular",
-  parallel = TRUE,
-  n_cores = 4
+  n_grid = 100, # 10,000 LHS points
+  grid_method = "lhs"
 )
 ```
 
