@@ -599,10 +599,11 @@ print(bounds_with_ci)
 
 ### Step 6b: Standalone Confidence Intervals with `bound_ci()`
 
-If you already have a `medrobust_bounds` object and want to add or
-update confidence intervals without re-running the full grid search, use
+If you already have a `medrobust_bounds` object and want Imbens–Manski
+confidence intervals without re-running the full grid search, use
 [`bound_ci()`](https://data-wise.github.io/medrobust/reference/bound_ci.md)
-directly:
+directly. It returns the intervals as a list and leaves the bounds
+object unchanged:
 
 ``` r
 
@@ -619,7 +620,8 @@ ci_result <- bound_ci(
   level = 0.95
 )
 
-# ci_result is a medrobust_bounds object with @nde_lower_ci / @nde_upper_ci / @nie_lower_ci / @nie_upper_ci populated
+# ci_result is a list with $NIE and $NDE, each holding lower, upper, se_lower,
+# se_upper, ci_lower and ci_upper (the Imbens-Manski interval)
 print(ci_result)
 ```
 

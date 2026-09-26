@@ -705,7 +705,7 @@ Use summary() for detailed diagnostics
 </section><section class="level3"><h3 id="step-6b-standalone-confidence-intervals-with-bound_ci">Step 6b: Standalone Confidence Intervals with <code>bound_ci()</code>
 <a class="anchor" aria-label="anchor" href="#step-6b-standalone-confidence-intervals-with-bound_ci"></a>
 </h3>
-<p>If you already have a <code>medrobust_bounds</code> object and want to add or update confidence intervals without re-running the full grid search, use <code><a href="../reference/bound_ci.html">bound_ci()</a></code> directly:</p>
+<p>If you already have a <code>medrobust_bounds</code> object and want Imbens–Manski confidence intervals without re-running the full grid search, use <code><a href="../reference/bound_ci.html">bound_ci()</a></code> directly. It returns the intervals as a list and leaves the bounds object unchanged:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compute Imbens-Manski CIs for an existing bounds object</span></span>
@@ -721,7 +721,8 @@ Use summary() for detailed diagnostics
 <span>  level <span class="op">=</span> <span class="fl">0.95</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># ci_result is a medrobust_bounds object with @nde_lower_ci / @nde_upper_ci / @nie_lower_ci / @nie_upper_ci populated</span></span>
+<span><span class="co"># ci_result is a list with $NIE and $NDE, each holding lower, upper, se_lower,</span></span>
+<span><span class="co"># se_upper, ci_lower and ci_upper (the Imbens-Manski interval)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ci_result</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$NIE
