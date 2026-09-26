@@ -1,6 +1,10 @@
+> **Re-run on the `v0.4.4` tag before submitting.** The results below are for `v0.4.3`. 0.4.4 fixes
+> the adaptive grid search leaving the sensitivity region and per-bin falsification rates (#51), and
+> BCa bootstrap results (#52).
+
 ## Submission summary
 
-This is a new submission of **medrobust** (version 0.4.3). The package has not
+This is a new submission of **medrobust** (version 0.4.4). The package has not
 previously been on CRAN.
 
 medrobust provides partial-identification sensitivity analysis for causal mediation
