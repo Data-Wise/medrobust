@@ -137,27 +137,54 @@ sensitivity_plot(bounds, param = "psi_sn")
 | `sensitivity_plot()` | Generate publication-quality sensitivity analysis plots |
 | `falsification_summary()` | Summarize which regions of sensitivity space are falsified |
 | `simulate_dm_data()` | Generate synthetic data with differential misclassification |
-| `extract_bounds()` | Extract bounds at specific parameter values |
+| `extract_bounds()` | Extract the compatible parameter sets from a bounds analysis |
 | `compare_bounds()` | Compare bounds across multiple analyses |
 | `power_analysis()` | Estimate sample size for target bound precision |
 
 ## Example Output
 
-```r
-# Partial Identification Bounds for Natural Effects
+Running the Quick Start above prints:
 
-Misclassified Variable: exposure
-Sample Size: n = 2500
+```
+======================================================================
+PARTIAL IDENTIFICATION BOUNDS
+======================================================================
 
-Natural Indirect Effect (NIE):
-  Lower Bound: 1.12 (95% CI: 1.05 - 1.18)
-  Upper Bound: 1.45 (95% CI: 1.38 - 1.52)
+Effect Scale: OR
+Misclassified Variable: mediator
 
-Natural Direct Effect (NDE):
-  Lower Bound: 1.08 (95% CI: 1.01 - 1.15)
-  Upper Bound: 1.32 (95% CI: 1.25 - 1.39)
+----------------------------------------------------------------------
+NATURAL INDIRECT EFFECT (NIE)
+----------------------------------------------------------------------
+  Lower Bound: 1.1483
+  Upper Bound: 1.4575
+  Width:       0.3092
 
-Falsification: 15.2% of sensitivity region empirically falsified
+----------------------------------------------------------------------
+NATURAL DIRECT EFFECT (NDE)
+----------------------------------------------------------------------
+  Lower Bound: 1.2709
+  Upper Bound: 1.6130
+  Width:       0.3421
+
+----------------------------------------------------------------------
+SENSITIVITY ANALYSIS
+----------------------------------------------------------------------
+  Parameter sets evaluated: 100
+  Compatible sets:          100 (100.0%)
+  Falsified sets:           0 (0.0%)
+
+======================================================================
+Use summary() for detailed diagnostics
+======================================================================
+```
+
+and `bounds@analytic_ci$NDE` gives the raw bound with its Imbens–Manski
+confidence interval:
+
+```
+     lower      upper   se_lower   se_upper   ci_lower   ci_upper
+1.27088581 1.61302492 0.08751905 0.10507136 1.12692987 1.78585183
 ```
 
 ## Documentation

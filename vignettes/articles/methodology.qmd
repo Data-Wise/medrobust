@@ -117,11 +117,11 @@ compat <- check_compatibility(
   exposure = "A",
   mediator = "M_star",
   outcome = "Y",
-  confounders = c("C1", "C2"),
+  confounders = "C1",
   misclassified_variable = "mediator",
-  sn0 = 0.90, sp0 = 0.85, psi_sn = 1.5, psi_sp = 1.2
+  psi = list(sn0 = 0.90, sp0 = 0.95, psi_sn = 1.5, psi_sp = 1.2)
 )
-print(compat)
+print(compat)  # compatible; with sp0 = 0.85 the same set is falsified
 ```
 
 ## Bounds Construction
@@ -165,7 +165,7 @@ bounds <- bound_ne(
   exposure = "A",
   mediator = "M_star",
   outcome = "Y",
-  confounders = c("C1", "C2"),
+  confounders = "C1",
   misclassified_variable = "mediator",
   sensitivity_region = sensitivity_region(
     sn0_range = c(0.80, 0.95),
@@ -182,7 +182,7 @@ ci <- bound_ci(
   exposure = "A",
   mediator = "M_star",
   outcome = "Y",
-  confounders = c("C1", "C2"),
+  confounders = "C1",
   misclassified_variable = "mediator",
   n_boot = 500L,
   level = 0.95
