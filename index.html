@@ -281,7 +281,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/extract_bounds.html">extract_bounds()</a></code></td>
-<td>Extract bounds at specific parameter values</td>
+<td>Extract the compatible parameter sets from a bounds analysis</td>
 </tr>
 <tr>
 <td><code><a href="reference/compare_bounds.html">compare_bounds()</a></code></td>
@@ -297,26 +297,47 @@
 <div class="section level2">
 <h2 id="example-output">Example Output<a class="anchor" aria-label="anchor" href="#example-output"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Partial Identification Bounds for Natural Effects</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>Misclassified Variable<span class="sc">:</span> exposure</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>Sample Size<span class="sc">:</span> n <span class="ot">=</span> <span class="dv">2500</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>Natural Indirect <span class="fu">Effect</span> (NIE)<span class="sc">:</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  Lower Bound<span class="sc">:</span> <span class="fl">1.12</span> (<span class="dv">95</span>% CI<span class="sc">:</span> <span class="fl">1.05</span> <span class="sc">-</span> <span class="fl">1.18</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  Upper Bound<span class="sc">:</span> <span class="fl">1.45</span> (<span class="dv">95</span>% CI<span class="sc">:</span> <span class="fl">1.38</span> <span class="sc">-</span> <span class="fl">1.52</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>Natural Direct <span class="fu">Effect</span> (NDE)<span class="sc">:</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  Lower Bound<span class="sc">:</span> <span class="fl">1.08</span> (<span class="dv">95</span>% CI<span class="sc">:</span> <span class="fl">1.01</span> <span class="sc">-</span> <span class="fl">1.15</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  Upper Bound<span class="sc">:</span> <span class="fl">1.32</span> (<span class="dv">95</span>% CI<span class="sc">:</span> <span class="fl">1.25</span> <span class="sc">-</span> <span class="fl">1.39</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>Falsification<span class="sc">:</span> <span class="fl">15.2</span>% of sensitivity region empirically falsified</span></code></pre></div>
+<p>Running the Quick Start above prints:</p>
+<pre><code>======================================================================
+PARTIAL IDENTIFICATION BOUNDS
+======================================================================
+
+Effect Scale: OR
+Misclassified Variable: mediator
+
+----------------------------------------------------------------------
+NATURAL INDIRECT EFFECT (NIE)
+----------------------------------------------------------------------
+  Lower Bound: 1.1483
+  Upper Bound: 1.4575
+  Width:       0.3092
+
+----------------------------------------------------------------------
+NATURAL DIRECT EFFECT (NDE)
+----------------------------------------------------------------------
+  Lower Bound: 1.2709
+  Upper Bound: 1.6130
+  Width:       0.3421
+
+----------------------------------------------------------------------
+SENSITIVITY ANALYSIS
+----------------------------------------------------------------------
+  Parameter sets evaluated: 100
+  Compatible sets:          100 (100.0%)
+  Falsified sets:           0 (0.0%)
+
+======================================================================
+Use summary() for detailed diagnostics
+======================================================================</code></pre>
+<p>and <code>bounds@analytic_ci$NDE</code> gives the raw bound with its Imbens–Manski confidence interval:</p>
+<pre><code>     lower      upper   se_lower   se_upper   ci_lower   ci_upper
+1.27088581 1.61302492 0.08751905 0.10507136 1.12692987 1.78585183</code></pre>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
 <p>Detailed documentation and tutorials are available:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View main function documentation</span></span>
 <span><span class="op">?</span><span class="va">bound_ne</span></span>
 <span></span>
@@ -376,27 +397,27 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use this package, please cite both the software and the paper:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"medrobust"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">tofighi2025medrobust</span>,</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="dt">title</span> = {Partial Identification of Causal Mediation Effects Under</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>           Differential Misclassification},</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="dt">author</span> = {Davood Tofighi},</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="dt">journal</span> = {Biostatistics},</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="dt">year</span> = {2025},</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="dt">volume</span> = {XX},</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="dt">pages</span> = {XXX--XXX},</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1093/biostatistics/xxxxx},</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>}</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">medrobust2025</span>,</span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="dt">title</span> = {medrobust: Robust Causal Mediation Analysis Under</span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>           Differential Misclassification},</span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>  <span class="dt">author</span> = {Davood Tofighi},</span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="dt">year</span> = {2025},</span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.4.4},</span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="dt">url</span> = {https://github.com/data-wise/medrobust},</span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">tofighi2025medrobust</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="dt">title</span> = {Partial Identification of Causal Mediation Effects Under</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>           Differential Misclassification},</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="dt">author</span> = {Davood Tofighi},</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="dt">journal</span> = {Biostatistics},</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="dt">year</span> = {2025},</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="dt">volume</span> = {XX},</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="dt">pages</span> = {XXX--XXX},</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1093/biostatistics/xxxxx},</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>}</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">medrobust2025</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="dt">title</span> = {medrobust: Robust Causal Mediation Analysis Under</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>           Differential Misclassification},</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="dt">author</span> = {Davood Tofighi},</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="dt">year</span> = {2025},</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.4.4},</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="dt">url</span> = {https://github.com/data-wise/medrobust},</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
