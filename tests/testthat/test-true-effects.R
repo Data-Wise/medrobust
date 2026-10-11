@@ -27,7 +27,6 @@ po_oracle <- function(Cvals, coefs, seed = 99) {
 }
 
 test_that("true_effects use g-computation, matching a brute-force PO oracle (no misclass)", {
-  skip_on_cran()
   coefs <- list(bM = -1.5, bY = -2.0, bAM = log(2.5),
                 tAY = log(1.5), tMY = log(2.5), bC = 0.3, tC = 0.3)
 

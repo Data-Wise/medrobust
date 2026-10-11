@@ -56,11 +56,11 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         env:
-          # The r-lib actions set NOT_CRAN=true, which runs the 22 skip_on_cran()
-          # simulation tests (~80% of test time: ~23 min on ubuntu, ~30 on
-          # windows). Pull requests skip them; pushes to main/dev and the weekly
-          # schedule run the full suite, so every commit that lands is still
-          # fully checked.
+          # The r-lib actions set NOT_CRAN=true, which runs the skip_on_cran()
+          # simulation tests (the 8 heavy ones are ~70% of test time: ~23 min on
+          # ubuntu, ~30 on windows, as of the 2026-10 profile). Pull requests skip
+          # them; pushes to main/dev and the weekly schedule run the full suite,
+          # so every commit that lands is still fully checked.
           NOT_CRAN: ${{ github.event_name == 'pull_request' && 'false' || 'true' }}
         with:
           upload-snapshots: true

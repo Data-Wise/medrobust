@@ -36,7 +36,6 @@ test_that("the LHS design is still reproducible across calls", {
 })
 
 test_that("bootstrap replicates differ from one another", {
-  skip_on_cran()
   d <- rng_sim()
   set.seed(7)
   fit <- suppressWarnings(bound_ne(
