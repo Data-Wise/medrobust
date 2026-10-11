@@ -1,6 +1,4 @@
 test_that("power_analysis runs successfully with minimal parameters", {
-  # Skip on CRAN to avoid long-running tests
-  skip_on_cran()
 
   # Define minimal test parameters
   true_params <- list(
@@ -71,7 +69,6 @@ test_that("power_analysis runs successfully with minimal parameters", {
 })
 
 test_that("power_analysis validates input parameters", {
-  skip_on_cran()
 
   # Test that invalid misclass_type is caught
   expect_error(
@@ -115,7 +112,6 @@ test_that("power_analysis validates input parameters", {
 })
 
 test_that("power_analysis returns correct structure for mediator misclassification", {
-  skip_on_cran()
 
   true_params <- list(
     beta_AM = 0.3,
@@ -155,7 +151,6 @@ test_that("power_analysis returns correct structure for mediator misclassificati
 })
 
 test_that("power_analysis with target_width works", {
-  skip_on_cran()
 
   true_params <- list(
     beta_AM = 0.4,
@@ -197,7 +192,6 @@ test_that("power_analysis with target_width works", {
 })
 
 test_that("power_analysis seed produces reproducible results", {
-  skip_on_cran()
 
   params <- list(
     true_params = list(beta_AM = 0.4, theta_AY = 0.4, theta_MY = 0.4),

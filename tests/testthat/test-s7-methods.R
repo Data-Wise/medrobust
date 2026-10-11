@@ -1,5 +1,4 @@
 test_that("medrobust_bounds methods work correctly", {
-  skip_on_cran()
 
   # Create test data with larger sample
   set.seed(123)
@@ -48,7 +47,6 @@ test_that("medrobust_bounds methods work correctly", {
 
 
 test_that("power_analysis_result methods work correctly", {
-  skip_on_cran()
 
   # Create test power analysis result
   result <- power_analysis(
@@ -86,7 +84,6 @@ test_that("power_analysis_result methods work correctly", {
 })
 
 test_that("medrobust_bounds plot method works", {
-  skip_on_cran()
   
   # Create test data
   set.seed(123)
@@ -125,7 +122,6 @@ test_that("medrobust_bounds plot method works", {
 
 
 test_that("sensitivity_plot works with different parameters", {
-  skip_on_cran()
 
   # Create test data
   set.seed(123)

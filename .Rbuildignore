@@ -62,3 +62,4 @@
 ^Rplots\.pdf$
 ^DEBUG-REPORT.*\.md$
 ^CITATION\.cff$
+^scripts$

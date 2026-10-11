@@ -13,7 +13,6 @@ test_that("Imbens-Manski helper hits the known limits", {
 })
 
 test_that("single-Psi primitives reproduce bound_ne (both paths)", {
-  skip_on_cran()
   tp <- list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5))
   dm <- list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1)
   reg <- as_sensitivity_region(list(sn0_range = c(0.899, 0.901),
@@ -41,7 +40,6 @@ test_that("single-Psi primitives reproduce bound_ne (both paths)", {
 })
 
 test_that("bound_ci returns well-formed CI-widened envelopes", {
-  skip_on_cran()
   sim <- simulate_dm_data(n = 4000,
     true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
     dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
@@ -63,7 +61,6 @@ test_that("bound_ci returns well-formed CI-widened envelopes", {
 })
 
 test_that("bound_ne(ci_method='analytic') attaches @analytic_ci", {
-  skip_on_cran()
   sim <- simulate_dm_data(n = 3000,
     true_params = list(beta_AM = log(2.5), theta_AY = log(1.5), theta_MY = log(2.5)),
     dm_params = list(sn0 = 0.9, sp0 = 0.9, psi_sn = 1, psi_sp = 1),
