@@ -2,6 +2,8 @@
 
 ## medrobust (development version)
 
+- S7 property access now works under the declared R 4.1 minimum.
+
 ### Documentation
 
 - The `grid_method` and `use_adaptive_grid` help in

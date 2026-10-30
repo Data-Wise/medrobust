@@ -190,14 +190,14 @@ knitr::kable(do.call(rbind, rows))
 
 | Method   | n_grid | Evaluated | Compatible | Seconds | NIE              | NDE              |
 |:---------|-------:|----------:|-----------:|--------:|:-----------------|:-----------------|
-| regular  |     10 |     10000 |       6390 |    39.1 | \[1.050, 1.098\] | \[0.776, 4.977\] |
-| regular  |     15 |     50625 |      32185 |   198.2 | \[1.050, 1.105\] | \[0.779, 5.781\] |
-| lhs      |     10 |       100 |         68 |     0.4 | \[1.053, 1.078\] | \[1.069, 2.755\] |
-| lhs      |     50 |      2500 |       1686 |     9.8 | \[1.050, 1.099\] | \[0.870, 4.518\] |
-| sobol    |     10 |       100 |         60 |     0.4 | \[1.052, 1.092\] | \[1.072, 2.940\] |
-| adaptive |     10 |     10065 |       6423 |    40.1 | \[1.050, 1.098\] | \[0.776, 4.977\] |
-| binary   |     10 |     10016 |       5888 |    37.8 | \[1.050, 1.100\] | \[0.811, 5.032\] |
-| auto     |     10 |     10065 |       6423 |    39.5 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| regular  |     10 |     10000 |       6390 |    52.2 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| regular  |     15 |     50625 |      32185 |   262.2 | \[1.050, 1.105\] | \[0.779, 5.781\] |
+| lhs      |     10 |       100 |         68 |     0.6 | \[1.053, 1.078\] | \[1.069, 2.755\] |
+| lhs      |     50 |      2500 |       1686 |    13.4 | \[1.050, 1.099\] | \[0.870, 4.518\] |
+| sobol    |     10 |       100 |         60 |     0.5 | \[1.052, 1.092\] | \[1.072, 2.940\] |
+| adaptive |     10 |     10065 |       6423 |    54.2 | \[1.050, 1.098\] | \[0.776, 4.977\] |
+| binary   |     10 |     10016 |       5888 |    50.6 | \[1.050, 1.100\] | \[0.811, 5.032\] |
+| auto     |     10 |     10065 |       6423 |    53.6 | \[1.050, 1.098\] | \[0.776, 4.977\] |
 
 Reading the table:
 
@@ -294,13 +294,13 @@ output from a computer code. *Technometrics*, 21(2), 239-245.
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.5 LTS
+#> Running under: Ubuntu 26.04.1 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.32.so;  LAPACK version 3.12.0
 #> 
 #> locale:
 #>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
@@ -319,12 +319,12 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       
-#>  [5] xfun_0.61          otel_0.2.0         generics_0.1.4     S7_0.2.2          
+#>  [5] xfun_0.62          otel_0.2.0         generics_0.1.4     S7_0.2.2          
 #>  [9] jsonlite_2.0.0     glue_1.8.1         htmltools_0.5.9    scales_1.4.0      
-#> [13] rmarkdown_2.32     grid_4.6.1         evaluate_1.0.5     tibble_3.3.1      
-#> [17] fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5    compiler_4.6.1    
+#> [13] rmarkdown_2.32     grid_4.6.2         evaluate_1.0.5     tibble_3.3.1      
+#> [17] fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5    compiler_4.6.2    
 #> [21] dplyr_1.2.1        RColorBrewer_1.1-3 pkgconfig_2.0.3    farver_2.1.2      
-#> [25] digest_0.6.39      R6_2.6.1           tidyselect_1.2.1   parallel_4.6.1    
-#> [29] pillar_1.11.1      magrittr_2.0.5     withr_3.0.3        tools_4.6.1       
+#> [25] digest_0.6.39      R6_2.6.1           tidyselect_1.2.1   parallel_4.6.2    
+#> [29] pillar_1.11.1      magrittr_2.0.5     withr_3.0.3        tools_4.6.2       
 #> [33] gtable_0.3.6       ggplot2_4.0.3
 ```
