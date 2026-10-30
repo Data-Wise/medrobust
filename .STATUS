@@ -1,3 +1,4 @@
+# 2026-10-29 compatibility: PR #59 merged into dev as 0ee4409; R 4.1 S7 namespace fix and declared test dependency passed all hosted PR checks and local R 4.6.2 as-cran check. Existing submission hold remains.
 status: released
 priority: P0
 progress: 100
